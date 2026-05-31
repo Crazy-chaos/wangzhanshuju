@@ -89,18 +89,49 @@
     <h1>🌟 关注塔菲喵 🌟</h1>
     <div class="subtitle">Taffy's Exclusive Video Hub</div>
 
-<video 
-  controls 
-  preload="auto" 
-  playsinline 
-  webkit-playsinline 
-  x5-playsinline="true" 
-  x5-video-player-type="h5" 
-  x5-video-player-fullscreen="false"
->
-  <source src="taffy.mp4" type="video/mp4">
-  您的浏览器不支持视频播放。
-</video>
+<style>
+  .glass-video-container {
+    width: 90%;               
+    max-width: 800px;         
+    margin: 40px auto;        
+    background: rgba(255, 255, 255, 0.25); 
+    backdrop-filter: blur(12px);           
+    -webkit-backdrop-filter: blur(12px);   
+    border: 1px solid rgba(255, 255, 255, 0.5); 
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    border-radius: 20px;      
+    padding: 16px;            
+    box-sizing: border-box;
+  }
+
+  .glass-video-container video {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border-radius: 12px;      
+    border: none;
+    object-fit: cover;        
+    background-color: transparent;
+  }
+</style>
+
+<div class="glass-video-container">
+  <video 
+    controls 
+    preload="auto" 
+    playsinline 
+    webkit-playsinline 
+    x5-playsinline="true" 
+    x5-video-player-type="h5" 
+    x5-video-player-fullscreen="false"
+  >
+    <source src="taffy.mp4" type="video/mp4">
+    您的浏览器不支持视频播放。
+  </video>
+</div>
+
+
 
 
 </body>
