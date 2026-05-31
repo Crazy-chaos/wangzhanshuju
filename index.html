@@ -89,13 +89,19 @@
     <h1>🌟 关注塔菲喵 🌟</h1>
     <div class="subtitle">Taffy's Exclusive Video Hub</div>
 
-<div class="video-container">
-        <!-- 视频源指向同目录下的 taffy.mp4，增加 preload="auto" 提前加载视频 -->
-        <video controls preload="auto">
-            <source src="taffy.mp4" type="video/mp4">
-            您的浏览器不支持视频播放。
-        </video>
-    </div>
+<video 
+  controls 
+  preload="auto" 
+  playsinline 
+  webkit-playsinline 
+  x5-playsinline="true" 
+  x5-video-player-type="h5" 
+  x5-video-player-fullscreen="false"
+>
+  <source src="taffy.mp4" type="video/mp4">
+  您的浏览器不支持视频播放。
+</video>
+
 
 </body>
 <script>
