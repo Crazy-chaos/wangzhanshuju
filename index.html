@@ -104,18 +104,7 @@
 
 
 </body>
-<script>
-    // 注册 Service Worker 以启用离线/弱网缓存加速
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(registration => {
-                console.log('缓存加速引擎 (ServiceWorker) 注册成功: ', registration.scope);
-            }).catch(err => {
-                console.log('缓存加速引擎注册失败: ', err);
-            });
-        });
-    }
-</script>
+
 <script>
     // 烟花表情包效果
     const emojis = [
