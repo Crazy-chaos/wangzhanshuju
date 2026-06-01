@@ -48,6 +48,7 @@
             text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
             font-size: 2.5rem;
             margin-bottom: 10px;
+            text-align: center;
         }
         
         .subtitle {
@@ -55,6 +56,7 @@
             margin-bottom: 30px;
             font-size: 1.2rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-align: center;
         }
 
         .glass-video-container {
@@ -122,7 +124,6 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 10000;
-            /* 爆发快，消失慢的贝塞尔曲线 */
             animation: particleFade 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; 
         }
 
@@ -135,6 +136,13 @@
                 transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
                 opacity: 0;
             }
+        }
+
+        /* 适配手机端小屏幕 */
+        @media (max-width: 600px) {
+            body { padding: 20px 10px; }
+            h1 { font-size: 1.8rem; }
+            .subtitle { font-size: 1rem; }
         }
 
     </style>
@@ -195,10 +203,8 @@
         "fb85689ec2fd4e9be2668234e1e7951d3461578294823336.jpg@1192w_1192h.avif"
     ];
 
-    // 生成爆炸粒子函数
     function createExplosion(x, y) {
-        const particleCount = 15; // 每次爆炸的粒子数量
-        // 塔菲主题配色：粉色、紫色、白色、浅橙色
+        const particleCount = 15; 
         const colors = ['#ff9a9e', '#fecfef', '#bd93f9', '#ffb199', '#ffffff'];
 
         for (let i = 0; i < particleCount; i++) {
@@ -206,15 +212,13 @@
             particle.className = 'particle';
             
             const color = colors[Math.floor(Math.random() * colors.length)];
-            const size = Math.random() * 8 + 4; // 粒子大小 4px - 12px
+            const size = Math.random() * 8 + 4; 
             
-            // 计算放射性散开的方向和距离
             const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * 80 + 40; // 散开距离 40px - 120px
+            const distance = Math.random() * 80 + 40; 
             const dx = Math.cos(angle) * distance;
             const dy = Math.sin(angle) * distance;
 
-            // 设置样式和自定义属性
             particle.style.backgroundColor = color;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
@@ -227,7 +231,6 @@
 
             document.body.appendChild(particle);
 
-            // 动画结束后清理 DOM (与 CSS 动画时间一致 600ms)
             setTimeout(() => {
                 particle.remove();
             }, 600);
@@ -239,7 +242,7 @@
         const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
         img.src = `123/${randomEmoji}`;
         
-        const size = Math.random() * 50 + 40; 
+        const size = Math.random() * 40 + 40; // 稍微改小一点，适配手机
         const duration = Math.random() * 8 + 10; 
         const direction = Math.random() > 0.5 ? 1 : -1;
         const tx = direction * (Math.random() * 40 + 20); 
@@ -253,20 +256,15 @@
         img.style.setProperty('--ty', `${ty}vh`);
         img.style.setProperty('--rot', `${rot}deg`);
         
-        const startXOffset = (Math.random() - 0.5) * 20;
+        const startXOffset = (Math.random() - 0.5) * 40; // 扩大发射范围
         img.style.left = `calc(50% + ${startXOffset}vw)`;
 
-        // 点击事件：获取坐标，生成特效，移除自身
         img.addEventListener('click', (e) => {
-            // 获取点击时表情包所在的精确位置中心点
             const rect = img.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            // 触发爆炸特效
             createExplosion(centerX, centerY);
-            
-            // 移除图片
             img.remove();
         });
 
@@ -277,13 +275,13 @@
         });
     }
 
-    setInterval(createFireworkEmoji, 2500);
+    setInterval(createFireworkEmoji, 3000); // 频率调慢一点防止手机卡顿
     setTimeout(createFireworkEmoji, 500);
     setTimeout(createFireworkEmoji, 1500);
 
 
     // ==========================================
-    // 2. 炸裂式 Canvas 音乐频谱可视化
+    // 2. 改进版 Canvas 横线音乐频谱与环境粒子
     // ==========================================
     const videoElement = document.getElementById('taffy-video');
     const canvas = document.getElementById('visualizer');
@@ -292,10 +290,30 @@
     let audioCtx, analyser, dataArray, bufferLength;
     let isAudioInitialized = false;
 
+    // 存储环境发光粒子
+    let ambientParticles = [];
+
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        initParticles();
     }
+    
+    // 初始化背景发光粒子
+    function initParticles() {
+        ambientParticles = [];
+        const particleCount = canvas.width < 600 ? 30 : 60; // 手机端少一点，PC端多一点
+        for (let i = 0; i < particleCount; i++) {
+            ambientParticles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1,
+                speedY: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.5 + 0.2
+            });
+        }
+    }
+
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
@@ -304,8 +322,9 @@
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
             
-            analyser.fftSize = 256; 
-            analyser.smoothingTimeConstant = 0.6; 
+            // 降低 fftSize 让柱子少一点宽一点，更好看
+            analyser.fftSize = 128; 
+            analyser.smoothingTimeConstant = 0.7; 
 
             const source = audioCtx.createMediaElementSource(videoElement);
             source.connect(analyser);
@@ -322,52 +341,86 @@
     function drawVisualizer() {
         requestAnimationFrame(drawVisualizer);
         
+        // 每次清空画布
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        if (videoElement.paused) return;
+        let bassAvg = 0;
 
-        analyser.getByteFrequencyData(dataArray);
-
-        let bassSum = 0;
-        for (let i = 0; i < 5; i++) {
-            bassSum += dataArray[i];
+        // 如果音乐在播放，提取数据
+        if (!videoElement.paused) {
+            analyser.getByteFrequencyData(dataArray);
+            let bassSum = 0;
+            for (let i = 0; i < 5; i++) {
+                bassSum += dataArray[i];
+            }
+            bassAvg = bassSum / 5; // 用于控制粒子发光
+        } else {
+            // 如果暂停了，生成一个假数据的空数组，或者直接全零让它平息
+            dataArray.fill(0);
         }
-        const bassAvg = bassSum / 5; 
-        
-        const coreRadius = (canvas.width < 800 ? 100 : 200) + (bassAvg * 0.5);
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2 + 50; 
+        // ============================
+        // 渲染背景发光粒子
+        // ============================
+        ambientParticles.forEach(p => {
+            p.y -= p.speedY;
+            if (p.y < -10) {
+                p.y = canvas.height + 10;
+                p.x = Math.random() * canvas.width;
+            }
+            
+            // 鼓点越强，粒子越亮越大
+            const pulseSize = p.size + (bassAvg / 255) * 3;
+            const pulseOpacity = Math.min(1, p.opacity + (bassAvg / 255));
 
-        const bars = bufferLength; 
-        const angleStep = (Math.PI * 2) / bars;
-
-        for (let i = 0; i < bars; i++) {
-            const barHeight = dataArray[i] * 1.5; 
-            
-            const angle = i * angleStep;
-            
-            const startX = centerX + Math.cos(angle) * coreRadius;
-            const startY = centerY + Math.sin(angle) * coreRadius;
-            
-            const endX = centerX + Math.cos(angle) * (coreRadius + barHeight);
-            const endY = centerY + Math.sin(angle) * (coreRadius + barHeight);
-
-            const hue = 300 + (i / bars) * 60; 
-            const lightness = 50 + (barHeight / 255) * 50; 
-            
             ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
+            ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 182, 193, ${pulseOpacity})`; // 浅粉色
+            ctx.shadowBlur = (bassAvg / 255) * 15;
+            ctx.shadowColor = '#ff79c6';
+            ctx.fill();
+        });
+
+        // ============================
+        // 渲染横线上下对称柱状图
+        // ============================
+        
+        // 我们只取前一半的频谱，因为高频通常没有太多数据
+        const barsToDraw = Math.floor(bufferLength * 0.7); 
+        
+        // 设置绘制区域，避免靠边太近
+        const visualizerWidth = canvas.width;
+        const barWidth = (visualizerWidth / barsToDraw) * 0.7; // 柱子宽度，留出 30% 间隙
+        const step = visualizerWidth / barsToDraw; // 步长
+        const centerY = canvas.height / 2; // 中心横线
+
+        for (let i = 0; i < barsToDraw; i++) {
+            // 将音量数据映射到屏幕高度，根据屏幕大小自适应
+            const value = dataArray[i];
+            const maxBarHeight = canvas.height * 0.25; // 柱子最高占屏幕的四分之一
+            const barHeight = (value / 255) * maxBarHeight;
             
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+            // 计算每个柱子的X坐标
+            const x = i * step + (step - barWidth) / 2;
+
+            // 色彩：以粉色为主 (hue: 310 到 340 左右)
+            const hue = 310 + (i / barsToDraw) * 30; 
+            const lightness = 60 + (value / 255) * 20; // 声音越大越亮
             
-            ctx.shadowBlur = barHeight > 100 ? 20 : 0; 
+            ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+            
+            // 发光效果
+            ctx.shadowBlur = value > 100 ? 15 : 5; 
             ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
             
-            ctx.stroke();
+            // 绘制对称柱状图：
+            // fillRect(x, y, width, height)
+            // centerY - barHeight 是起点，高度为 barHeight * 2 (上下对称)
+            
+            // 为了视觉柔和，给一点圆角可以改用 path，但直接画矩形性能更好
+            // 如果 value 为 0 时给个 2px 最小高度，保证中心有一条线
+            const finalHeight = barHeight < 2 ? 2 : barHeight;
+            ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
         }
     }
 </script>
