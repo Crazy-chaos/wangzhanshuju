@@ -7,10 +7,6 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* 动态粉亮色渐变背景 */
-            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -18,6 +14,29 @@
             padding: 50px;
             margin: 0;
             min-height: 100vh;
+            position: relative;
+            /* 防止背景放大时出现滚动条 */
+            overflow-x: hidden; 
+        }
+
+        /* * 将背景渐变移动到伪元素上，
+         * 这样律动的缩放和高亮效果就不会影响到视频和文字内容。
+         */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            /* 动态粉亮色渐变背景 */
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            
+            /* 音乐律动变量控制 */
+            --beat-intensity: 0;
+            filter: brightness(calc(1 + var(--beat-intensity) * 0.4)) saturate(calc(1 + var(--beat-intensity) * 0.6));
+            transform: scale(calc(1 + var(--beat-intensity) * 0.05));
+            transition: filter 0.1s ease-out, transform 0.1s ease-out;
         }
 
         /* 渐变动画关键帧 */
@@ -26,31 +45,43 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
         h1 {
             color: #ff79c6;
             text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
+
         .subtitle {
             color: #bd93f9;
             margin-bottom: 30px;
             font-size: 1.2rem;
         }
-        .video-container {
-            background: #282a36;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            max-width: 800px;
+
+        /* 玻璃拟态视频容器 */
+        .glass-video-container {
+            width: 90%;               
+            max-width: 800px;         
+            margin: 40px auto;        
+            background: rgba(255, 255, 255, 0.25); 
+            backdrop-filter: blur(12px);           
+            -webkit-backdrop-filter: blur(12px);   
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 20px;      
+            padding: 16px;            
+            box-sizing: border-box;
         }
-        video {
-            border-radius: 10px;
+
+        .glass-video-container video {
             width: 100%;
+            height: 100%;
+            aspect-ratio: 16 / 9;
+            display: block;
+            border-radius: 12px;      
+            border: none;
+            object-fit: cover;        
             background-color: #000;
         }
 
@@ -76,10 +107,18 @@
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            pointer-events: none;
             z-index: 9999;
-            /* 使用 ease-out 类似烟花初期快后面慢的效果 */
             animation: fireworkFloat var(--duration) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            
+            /* 【修改点】：允许鼠标交互，并且鼠标悬浮时变为手指形状 */
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .emoji-firework:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
         }
 
     </style>
@@ -89,55 +128,28 @@
     <h1>🌟 关注塔菲喵 🌟</h1>
     <div class="subtitle">Taffy's Exclusive Video Hub</div>
 
-<style>
-  .glass-video-container {
-    width: 90%;               
-    max-width: 800px;         
-    margin: 40px auto;        
-    background: rgba(255, 255, 255, 0.25); 
-    backdrop-filter: blur(12px);           
-    -webkit-backdrop-filter: blur(12px);   
-    border: 1px solid rgba(255, 255, 255, 0.5); 
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-    border-radius: 20px;      
-    padding: 16px;            
-    box-sizing: border-box;
-  }
-
-  .glass-video-container video {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 16 / 9;
-    display: block;
-    border-radius: 12px;      
-    border: none;
-    object-fit: cover;        
-    background-color: transparent;
-  }
-</style>
-
-<div class="glass-video-container">
-  <video 
-    controls 
-    preload="auto" 
-    playsinline 
-    webkit-playsinline 
-    x5-playsinline="true" 
-    x5-video-player-type="h5" 
-    x5-video-player-fullscreen="false"
-  >
-    <source src="taffy.mp4" type="video/mp4">
-    您的浏览器不支持视频播放。
-  </video>
-</div>
-
-
-
+    <div class="glass-video-container">
+      <video 
+        id="taffy-video"
+        controls 
+        preload="auto" 
+        playsinline 
+        webkit-playsinline 
+        x5-playsinline="true" 
+        x5-video-player-type="h5" 
+        x5-video-player-fullscreen="false"
+      >
+        <source src="taffy.mp4" type="video/mp4">
+        您的浏览器不支持视频播放。
+      </video>
+    </div>
 
 </body>
 
 <script>
-    // 烟花表情包效果
+    // ==========================================
+    // 1. 烟花表情包效果及点击消失交互
+    // ==========================================
     const emojis = [
         "0400dd7447beda198f9824067bd26982861df42c.gif@304w_300h.webp",
         "04623c9d7b850f86f80342afae9272d0119db692.gif@364w_426h.webp",
@@ -170,19 +182,11 @@
         const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
         img.src = `123/${randomEmoji}`;
         
-        // 中小体积 40px - 90px
         const size = Math.random() * 50 + 40; 
-        
-        // 慢速，设置较长的动画时间 10s - 18s
         const duration = Math.random() * 8 + 10; 
-
-        // 终点位置：向两边飘散
-        // tx 控制水平偏移，-60vw 到 60vw
         const direction = Math.random() > 0.5 ? 1 : -1;
         const tx = direction * (Math.random() * 40 + 20); 
-        // ty 控制垂直高度，从底部一直飘到上方
         const ty = -(Math.random() * 60 + 40); 
-        // rot 最终旋转角度
         const rot = (Math.random() - 0.5) * 360; 
 
         img.className = 'emoji-firework';
@@ -192,22 +196,88 @@
         img.style.setProperty('--ty', `${ty}vh`);
         img.style.setProperty('--rot', `${rot}deg`);
         
-        // 从中间左右随机小范围内发射
         const startXOffset = (Math.random() - 0.5) * 20;
         img.style.left = `calc(50% + ${startXOffset}vw)`;
 
+        // 【修改点】：点击即时移除元素
+        img.addEventListener('click', () => {
+            img.remove();
+        });
+
         document.body.appendChild(img);
 
-        // 动画结束后移除元素
         img.addEventListener('animationend', () => {
             img.remove();
         });
     }
 
-    // 设置初始创建频率，2.5秒一个，比较慢比较护眼
     setInterval(createFireworkEmoji, 2500);
-    // 初始也生成几个
     setTimeout(createFireworkEmoji, 500);
     setTimeout(createFireworkEmoji, 1500);
+
+    // ==========================================
+    // 2. 视频音乐律动效果 (Audio Reactivity)
+    // ==========================================
+    const videoElement = document.getElementById('taffy-video');
+    let audioCtx, analyser, dataArray;
+    let isAudioInitialized = false;
+
+    // 为了兼容浏览器策略，音频分析只能在用户交互（播放）后开始
+    videoElement.addEventListener('play', () => {
+        if (!isAudioInitialized) {
+            // 初始化 Web Audio API
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256; 
+
+            // 将视频声音连接到分析器
+            const source = audioCtx.createMediaElementSource(videoElement);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination); // 保持声音原本的输出
+
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            
+            isAudioInitialized = true;
+            visualizeBeat();
+        }
+    });
+
+    function visualizeBeat() {
+        requestAnimationFrame(visualizeBeat);
+        analyser.getByteFrequencyData(dataArray);
+
+        // 获取低频区间的平均值（鼓点/Bass 通常分布在前几个频段）
+        let bassSum = 0;
+        const bassRange = 5; 
+        for (let i = 0; i < bassRange; i++) {
+            bassSum += dataArray[i];
+        }
+        const bassAvg = bassSum / bassRange; // 范围 0 - 255
+
+        // 计算强度 (0.0 到 1.0)
+        let intensity = bassAvg / 255;
+        
+        // 设定阈值，滤除底噪，仅在真正的鼓点时爆发
+        if (intensity < 0.6) {
+            intensity = 0;
+        } else {
+            // 归一化强度，使其在爆发区间变化更明显
+            intensity = (intensity - 0.6) / 0.4; 
+        }
+
+        // 修改 CSS 变量，控制背景滤镜和缩放
+        document.body.style.setProperty('--beat-intensity', intensity);
+
+        // 动态修改背景动画渐变的速度
+        const animations = document.getAnimations();
+        const bgAnim = animations.find(anim => anim.animationName === 'gradientBG');
+        if (bgAnim) {
+            // targetRate：1为原始速度，最强鼓点时提速到 8 倍
+            let targetRate = 1 + (intensity * 7); 
+            // 平滑插值，避免画面抖动
+            bgAnim.playbackRate += (targetRate - bgAnim.playbackRate) * 0.15;
+        }
+    }
 </script>
 </html>
