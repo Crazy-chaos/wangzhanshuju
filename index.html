@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>你关注塔菲了嘛？！</title>
+    
+    <!-- 网页标签页的头像 (Favicon) -->
+    <link rel="icon" href="123/emoji_23.avif" type="image/avif">
+    <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -60,16 +64,16 @@
         }
 
         .glass-video-container {
-            width: 90%;               
-            max-width: 800px;         
+            width: 95%;               
+            max-width: 1100px;         
             margin: 40px auto;        
             background: rgba(255, 255, 255, 0.25); 
             backdrop-filter: blur(12px);           
             -webkit-backdrop-filter: blur(12px);   
             border: 1px solid rgba(255, 255, 255, 0.5); 
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            border-radius: 20px;      
-            padding: 16px;            
+            border-radius: 24px;      
+            padding: 24px;            
             box-sizing: border-box;
         }
 
@@ -111,6 +115,8 @@
             pointer-events: auto;
             cursor: pointer;
             transition: transform 0.1s, filter 0.1s;
+            -webkit-user-drag: none; /* 禁止原生拖拽 */
+            user-select: none; /* 禁止选中文本/图片 */
         }
         
         .emoji-firework:hover {
@@ -138,16 +144,163 @@
             }
         }
 
+        /* 关注按钮样式 */
+        .glass-btn {
+            display: inline-block;
+            margin-top: -10px;
+            margin-bottom: 40px;
+            padding: 12px 40px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px 0 rgba(255, 121, 198, 0.5);
+            color: #ff79c6;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
         /* 适配手机端小屏幕 */
         @media (max-width: 600px) {
             body { padding: 20px 10px; }
             h1 { font-size: 1.8rem; }
             .subtitle { font-size: 1rem; }
+            .glass-btn { font-size: 1.1rem; padding: 10px 30px; }
+        }
+
+        /* 侧边导航栏相关样式 */
+        .hamburger-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 121, 198, 0.5);
+        }
+
+        .hamburger-btn .bar {
+            width: 26px;
+            height: 3px;
+            background-color: #fff;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .hamburger-btn.active .bar:nth-child(1) {
+            transform: translateY(11px) rotate(45deg);
+        }
+        .hamburger-btn.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active .bar:nth-child(3) {
+            transform: translateY(-11px) rotate(-45deg);
+        }
+
+        .glass-sidebar {
+            position: fixed;
+            top: 0;
+            /* 初始隐藏在左侧，留出足够的隐藏宽度 */
+            left: -400px;
+            /* 宽度增加 100px 以便弥补弹性动画弹过头时的左侧空隙 */
+            width: 360px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            padding-top: 100px;
+            /* 使用 padding-left 将内容区推到原来的视觉中心（只用多出来的右边260px） */
+            padding-left: 100px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 弹性非线性动画 */
+            transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .glass-sidebar.open {
+            /* 弹出的停靠位置设为 -100px，这样它往右弹过头时左边依然有 100px 的背景遮挡 */
+            left: -100px;
+        }
+
+        .sidebar-item {
+            width: 75%;
+            margin: 15px 0;
+            padding: 15px 20px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 121, 198, 0.5);
+            color: #ff79c6;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
         }
 
     </style>
 </head>
 <body>
+
+    <!-- 侧边导航栏 -->
+    <div class="glass-sidebar" id="sidebar">
+        <a href="/" class="sidebar-item">主页</a>
+        <a href="http://mail.crazychaos.top" target="_blank" class="sidebar-item">mail</a>
+    </div>
+
+    <!-- 汉堡菜单按钮 -->
+    <div class="hamburger-btn" id="hamburgerBtn">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
 
     <canvas id="visualizer"></canvas>
 
@@ -170,37 +323,47 @@
       </video>
     </div>
 
+    <a href="https://space.bilibili.com/1265680561" target="_blank" class="glass-btn">🌟 关注taffy！ 🌟</a>
+
 </body>
 
 <script>
     // ==========================================
+    // 0. 汉堡菜单逻辑
+    // ==========================================
+    document.getElementById('hamburgerBtn').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // ==========================================
     // 1. 烟花表情包效果、点击消失及粒子爆炸交互
     // ==========================================
     const emojis = [
-        "0400dd7447beda198f9824067bd26982861df42c.gif@304w_300h.webp",
-        "04623c9d7b850f86f80342afae9272d0119db692.gif@364w_426h.webp",
-        "0b28a22471e744ffd497830b95ee5233ea1bddd7.gif@708w.webp",
-        "0c0ab9325ece6f30f92fea4b147c493f3461578294823336.jpg@1192w.avif",
-        "17b3d997fca67b7dac05edd67693ec2c1ef3c9bf.jpg@576w_556h.avif",
-        "1e399986caac1490d85fd470267ff13f2c274c1d.jpg@1092w_1090h.avif",
-        "1fcc4b6492be2e9a9779f638ae0a6ea03461578294823336.gif@720w_960h.webp",
-        "29d27dd203a99415ec4870749f9d75279e514b19.gif@738w_670h.webp",
-        "35dbb3220372829f06e93287af30ef795ed309f0.jpg@1192w.avif",
-        "3df5bbac7eff95a9ed5d06813e4cd7c197c0e6a3.gif@700w_800h.webp",
-        "6fe583cb9a1ccc5896e63317e3818944105c0f49.gif@1192w_1192h.webp",
-        "a4b1949f152525df0608246f718aa6dec758c272.gif@820w.webp",
-        "a709702002ff8fdc6fb2588371acfaea95253a7b.gif@650w_724h.webp",
-        "adeefe0e1620989ab624f64b2f3a72bb21409d92.gif@720w_720h.webp",
-        "b258d00b78460968daa6b9fa7c04bc623461578294823336.gif@416w_398h.webp",
-        "c2a0fa77e6c23b768babc91e35bd81cf70146642.gif@400w_400h.webp",
-        "c4304060f66d6fe041bc2b6008b1a35e3461578294823336.jpg@1192w_1192h.avif",
-        "d3fec7fe61e1b5351df7f3cd2c2d878771c0bc24.jpg@732w_732h.avif",
-        "dc56dfa7814dbde1d3fee8805f2000013461578294823336.jpg@1192w_1192h.avif",
-        "dd011bf64cc8d3ce27b05dd490b823023461578294823336.jpg@960w_960h.avif",
-        "df9e207c6d2a74d3882e6c749d4a457167cb0663.gif@750w_620h.webp",
-        "ecf44a6507ec0b322edca05d75b20c9e3461578294823336.jpg@576w_556h.avif",
-        "fb819e04d41258af26c60e32bf939860c837fbce.jpg@960w_960h.avif",
-        "fb85689ec2fd4e9be2668234e1e7951d3461578294823336.jpg@1192w_1192h.avif"
+        "emoji_1.webp",
+        "emoji_2.webp",
+        "emoji_3.webp",
+        "emoji_4.avif",
+        "emoji_5.avif",
+        "emoji_6.avif",
+        "emoji_7.webp",
+        "emoji_8.webp",
+        "emoji_9.avif",
+        "emoji_10.webp",
+        "emoji_11.webp",
+        "emoji_12.webp",
+        "emoji_13.webp",
+        "emoji_14.webp",
+        "emoji_15.webp",
+        "emoji_16.webp",
+        "emoji_17.avif",
+        "emoji_18.avif",
+        "emoji_19.avif",
+        "emoji_20.avif",
+        "emoji_21.webp",
+        "emoji_22.avif",
+        "emoji_23.avif",
+        "emoji_24.avif"
     ];
 
     function createExplosion(x, y) {
@@ -242,7 +405,7 @@
         const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
         img.src = `123/${randomEmoji}`;
         
-        const size = Math.random() * 40 + 40; // 稍微改小一点，适配手机
+        const size = Math.random() * 50 + 60; // 稍微变大一点 60px 到 110px
         const duration = Math.random() * 8 + 10; 
         const direction = Math.random() > 0.5 ? 1 : -1;
         const tx = direction * (Math.random() * 40 + 20); 
@@ -250,6 +413,7 @@
         const rot = (Math.random() - 0.5) * 360; 
 
         img.className = 'emoji-firework';
+        img.draggable = false; // 进一步防止被拖拽
         img.style.setProperty('--size', `${size}px`);
         img.style.setProperty('--duration', `${duration}s`);
         img.style.setProperty('--tx', `${tx}vw`);
@@ -316,6 +480,9 @@
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+    
+    // 提前启动绘制循环，使得背景光粒子常驻，不受音乐播放状态限制
+    drawVisualizer();
 
     videoElement.addEventListener('play', () => {
         if (!isAudioInitialized) {
@@ -334,7 +501,7 @@
             dataArray = new Uint8Array(bufferLength);
             
             isAudioInitialized = true;
-            drawVisualizer();
+            // 绘制循环已经在外部启动了，这里不需要再次调用 drawVisualizer()
         }
     });
 
@@ -346,21 +513,21 @@
         
         let bassAvg = 0;
 
-        // 如果音乐在播放，提取数据
-        if (!videoElement.paused) {
+        // 如果音乐在播放且音频已初始化，提取数据
+        if (isAudioInitialized && !videoElement.paused) {
             analyser.getByteFrequencyData(dataArray);
             let bassSum = 0;
             for (let i = 0; i < 5; i++) {
                 bassSum += dataArray[i];
             }
             bassAvg = bassSum / 5; // 用于控制粒子发光
-        } else {
-            // 如果暂停了，生成一个假数据的空数组，或者直接全零让它平息
+        } else if (isAudioInitialized) {
+            // 如果暂停了，全零让它平息
             dataArray.fill(0);
         }
 
         // ============================
-        // 渲染背景发光粒子
+        // 渲染背景发光粒子（常驻）
         // ============================
         ambientParticles.forEach(p => {
             p.y -= p.speedY;
@@ -382,11 +549,12 @@
         });
 
         // ============================
-        // 渲染横线上下对称柱状图
+        // 渲染横线上下对称柱状图 (仅在播放时显示)
         // ============================
         
-        // 我们只取前一半的频谱，因为高频通常没有太多数据
-        const barsToDraw = Math.floor(bufferLength * 0.7); 
+        if (isAudioInitialized && !videoElement.paused) {
+            // 我们只取前一半的频谱，因为高频通常没有太多数据
+            const barsToDraw = Math.floor(bufferLength * 0.7); 
         
         // 设置绘制区域，避免靠边太近
         const visualizerWidth = canvas.width;
@@ -422,6 +590,7 @@
             const finalHeight = barHeight < 2 ? 2 : barHeight;
             ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
         }
+        } // 结束 if 块
     }
 </script>
 </html>
