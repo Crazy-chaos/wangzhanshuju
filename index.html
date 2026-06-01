@@ -453,6 +453,8 @@
     
     let audioCtx, analyser, dataArray, bufferLength;
     let isAudioInitialized = false;
+    let visualizerOpacity = 0; // 用于实现频谱平滑过渡的透明度
+    let bassAvg = 0; // 将 bassAvg 提取为全局变量以便做过渡效果
 
     // 存储环境发光粒子
     let ambientParticles = [];
@@ -511,19 +513,19 @@
         // 每次清空画布
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        let bassAvg = 0;
-
-        // 如果音乐在播放且音频已初始化，提取数据
+        // 如果音乐在播放且音频已初始化，提取数据并平滑显示
         if (isAudioInitialized && !videoElement.paused) {
+            visualizerOpacity += (1 - visualizerOpacity) * 0.1; // 缓动显示
             analyser.getByteFrequencyData(dataArray);
             let bassSum = 0;
             for (let i = 0; i < 5; i++) {
                 bassSum += dataArray[i];
             }
-            bassAvg = bassSum / 5; // 用于控制粒子发光
+            // 平滑过渡 bassAvg（背景粒子发光强度）
+            bassAvg += (bassSum / 5 - bassAvg) * 0.2; 
         } else if (isAudioInitialized) {
-            // 如果暂停了，全零让它平息
-            dataArray.fill(0);
+            visualizerOpacity += (0 - visualizerOpacity) * 0.1; // 缓动消失
+            bassAvg += (0 - bassAvg) * 0.1; // 缓动平息粒子
         }
 
         // ============================
@@ -549,48 +551,50 @@
         });
 
         // ============================
-        // 渲染横线上下对称柱状图 (仅在播放时显示)
+        // 渲染横线上下对称柱状图 (带平滑消失过渡)
         // ============================
         
-        if (isAudioInitialized && !videoElement.paused) {
+        if (isAudioInitialized && visualizerOpacity > 0.01) {
+            // 设置全局透明度，实现平滑淡入淡出
+            ctx.globalAlpha = visualizerOpacity;
+
             // 我们只取前一半的频谱，因为高频通常没有太多数据
             const barsToDraw = Math.floor(bufferLength * 0.7); 
         
-        // 设置绘制区域，避免靠边太近
-        const visualizerWidth = canvas.width;
-        const barWidth = (visualizerWidth / barsToDraw) * 0.7; // 柱子宽度，留出 30% 间隙
-        const step = visualizerWidth / barsToDraw; // 步长
-        const centerY = canvas.height / 2; // 中心横线
+            // 设置绘制区域，避免靠边太近
+            const visualizerWidth = canvas.width;
+            const barWidth = (visualizerWidth / barsToDraw) * 0.7; // 柱子宽度，留出 30% 间隙
+            const step = visualizerWidth / barsToDraw; // 步长
+            const centerY = canvas.height / 2; // 中心横线
 
-        for (let i = 0; i < barsToDraw; i++) {
-            // 将音量数据映射到屏幕高度，根据屏幕大小自适应
-            const value = dataArray[i];
-            const maxBarHeight = canvas.height * 0.25; // 柱子最高占屏幕的四分之一
-            const barHeight = (value / 255) * maxBarHeight;
-            
-            // 计算每个柱子的X坐标
-            const x = i * step + (step - barWidth) / 2;
+            for (let i = 0; i < barsToDraw; i++) {
+                // 将音量数据映射到屏幕高度，根据屏幕大小自适应
+                // 结合透明度让它不仅淡出，还可以有一点缩小的效果
+                const value = dataArray[i];
+                const maxBarHeight = canvas.height * 0.25; 
+                const barHeight = (value / 255) * maxBarHeight * visualizerOpacity;
+                
+                // 计算每个柱子的X坐标
+                const x = i * step + (step - barWidth) / 2;
 
-            // 色彩：以粉色为主 (hue: 310 到 340 左右)
-            const hue = 310 + (i / barsToDraw) * 30; 
-            const lightness = 60 + (value / 255) * 20; // 声音越大越亮
+                // 色彩：以粉色为主 (hue: 310 到 340 左右)
+                const hue = 310 + (i / barsToDraw) * 30; 
+                const lightness = 60 + (value / 255) * 20; // 声音越大越亮
+                
+                ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+                
+                // 发光效果也随之减弱
+                ctx.shadowBlur = (value > 100 ? 15 : 5) * visualizerOpacity; 
+                ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
+                
+                // 为了视觉柔和，给一点最小高度，保证中心有一条线
+                const finalHeight = barHeight < 2 ? 2 * visualizerOpacity : barHeight;
+                ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
+            }
             
-            ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
-            
-            // 发光效果
-            ctx.shadowBlur = value > 100 ? 15 : 5; 
-            ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
-            
-            // 绘制对称柱状图：
-            // fillRect(x, y, width, height)
-            // centerY - barHeight 是起点，高度为 barHeight * 2 (上下对称)
-            
-            // 为了视觉柔和，给一点圆角可以改用 path，但直接画矩形性能更好
-            // 如果 value 为 0 时给个 2px 最小高度，保证中心有一条线
-            const finalHeight = barHeight < 2 ? 2 : barHeight;
-            ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
+            // 恢复全局透明度
+            ctx.globalAlpha = 1.0;
         }
-        } // 结束 if 块
     }
 </script>
 </html>
