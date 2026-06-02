@@ -2,7 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffb6cf">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="关注塔菲喵">
     <title>你关注塔菲了嘛？！</title>
     
     <!-- 网页标签页的头像 (Favicon) -->
@@ -21,6 +25,7 @@
             padding: 50px;
             margin: 0;
             min-height: 100vh;
+            min-height: 100svh;
             overflow-x: hidden;
         }
 
@@ -175,10 +180,62 @@
 
         /* 适配手机端小屏幕 */
         @media (max-width: 600px) {
-            body { padding: 20px 10px; }
-            h1 { font-size: 1.8rem; }
-            .subtitle { font-size: 1rem; }
-            .glass-btn { font-size: 1.1rem; padding: 10px 30px; }
+            html,
+            body {
+                min-height: 100svh;
+                min-height: 100dvh;
+                overscroll-behavior-y: none;
+            }
+
+            body {
+                padding: 0 10px calc(28px + env(safe-area-inset-bottom));
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: inherit;
+                z-index: -1;
+            }
+
+            h1 {
+                margin-top: calc(178px + env(safe-area-inset-top));
+                font-size: clamp(1.7rem, 7vw, 2.1rem);
+                line-height: 1.18;
+                padding: 0 8px;
+            }
+
+            body.authenticated h1 {
+                margin-top: calc(142px + env(safe-area-inset-top));
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 18px;
+                padding: 0 8px;
+            }
+
+            .glass-video-container {
+                width: min(100%, 520px);
+                margin: 28px auto 34px;
+                padding: 14px;
+                border-radius: 22px;
+            }
+
+            .glass-video-container video {
+                border-radius: 14px;
+            }
+
+            .glass-btn {
+                font-size: 1.08rem;
+                padding: 12px 30px;
+                margin-top: 0;
+                margin-bottom: 70px;
+                max-width: calc(100vw - 52px);
+                box-sizing: border-box;
+            }
         }
 
         /* 侧边导航栏相关样式 */
@@ -523,29 +580,64 @@
         }
 
         @media (max-width: 600px) {
+            .hamburger-btn {
+                top: calc(28px + env(safe-area-inset-top));
+                left: 20px;
+                width: 52px;
+                height: 52px;
+                z-index: 1003;
+            }
+
+            .glass-sidebar {
+                top: 0;
+                left: -100vw;
+                width: min(84vw, 360px);
+                height: 100vh;
+                height: 100dvh;
+                padding: calc(108px + env(safe-area-inset-top)) 24px 28px;
+                align-items: stretch;
+                background: rgba(255, 255, 255, 0.2);
+                transition: left 0.36s cubic-bezier(0.25, 0.8, 0.25, 1);
+                z-index: 1002;
+            }
+
+            .glass-sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-item {
+                width: 100%;
+                margin: 12px 0;
+                padding: 15px 18px;
+                font-size: 1.16rem;
+            }
+
             .auth-login-btn {
-                top: 86px;
-                left: 25px;
-                min-height: 42px;
-                padding: 0 18px;
+                top: calc(96px + env(safe-area-inset-top));
+                left: 20px;
+                min-height: 46px;
+                padding: 0 24px;
+                z-index: 1001;
             }
 
             .auth-user-pill {
-                top: 18px;
-                right: 86px;
-                padding-right: 12px;
+                top: calc(28px + env(safe-area-inset-top));
+                right: 82px;
+                max-width: calc(100vw - 176px);
+                min-height: 52px;
+                padding: 6px 12px 6px 7px;
             }
 
             .auth-logout-btn {
-                top: 18px;
+                top: calc(28px + env(safe-area-inset-top));
                 right: 14px;
-                min-height: 42px;
+                min-height: 52px;
                 padding: 0 14px;
             }
 
             .auth-nickname,
             .auth-email {
-                max-width: 135px;
+                max-width: calc(100vw - 254px);
             }
 
             .auth-email-row {
@@ -712,6 +804,7 @@
         currentUser = user;
 
         if (!user) {
+            document.body.classList.remove('authenticated');
             loginBtn.style.display = 'block';
             quickLogoutBtn.classList.remove('show');
             userPill.classList.remove('show');
@@ -719,6 +812,7 @@
         }
 
         loginBtn.style.display = 'none';
+        document.body.classList.add('authenticated');
         quickLogoutBtn.classList.add('show');
         userNickname.textContent = getDisplayName(user);
         userEmail.textContent = user.email || '';
