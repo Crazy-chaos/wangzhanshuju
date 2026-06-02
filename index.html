@@ -286,6 +286,7 @@
         }
 
         .auth-login-btn,
+        .auth-logout-btn,
         .auth-user-pill {
             position: fixed;
             top: 25px;
@@ -309,7 +310,23 @@
             cursor: pointer;
         }
 
+        .auth-logout-btn {
+            right: 25px;
+            display: none;
+            min-width: 50px;
+            padding: 0 16px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .auth-logout-btn.show {
+            display: block;
+        }
+
         .auth-login-btn:hover,
+        .auth-logout-btn:hover,
         .auth-user-pill:hover {
             background: rgba(255, 255, 255, 0.4);
             transform: translateY(-3px) scale(1.03);
@@ -319,7 +336,7 @@
         }
 
         .auth-user-pill {
-            right: 25px;
+            right: 104px;
             display: none;
             align-items: center;
             gap: 12px;
@@ -427,6 +444,34 @@
             font-size: 1rem;
         }
 
+        .auth-email-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: stretch;
+        }
+
+        .auth-email-row input {
+            border-radius: 15px 0 0 15px;
+            border-right: 0;
+        }
+
+        .auth-email-row select {
+            height: 46px;
+            padding: 0 12px;
+            border-radius: 0 15px 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            outline: none;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 12px rgba(255, 255, 255, 0.08);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .auth-email-row option {
+            color: #222;
+        }
+
         .auth-card input::placeholder {
             color: rgba(255, 255, 255, 0.72);
         }
@@ -487,13 +532,34 @@
 
             .auth-user-pill {
                 top: 18px;
-                right: 14px;
+                right: 86px;
                 padding-right: 12px;
+            }
+
+            .auth-logout-btn {
+                top: 18px;
+                right: 14px;
+                min-height: 42px;
+                padding: 0 14px;
             }
 
             .auth-nickname,
             .auth-email {
                 max-width: 135px;
+            }
+
+            .auth-email-row {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-email-row input {
+                border-radius: 15px 15px 0 0;
+                border-right: 1px solid rgba(255, 255, 255, 0.55);
+            }
+
+            .auth-email-row select {
+                border-radius: 0 0 15px 15px;
+                border-top: 0;
             }
         }
 
@@ -515,6 +581,7 @@
     </div>
 
     <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
+    <button class="auth-logout-btn" id="quickLogoutBtn" type="button">退出</button>
 
     <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
         <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
@@ -528,7 +595,12 @@
         <form class="auth-card" id="loginForm">
             <h2>登录邮箱账号</h2>
             <label for="loginEmail">邮箱</label>
-            <input id="loginEmail" name="email" type="email" autocomplete="username" placeholder="name@crazychaos.top" required>
+            <div class="auth-email-row">
+                <input id="loginEmail" name="email" type="text" inputmode="email" autocomplete="username" placeholder="name" required>
+                <select id="loginDomain" name="domain" aria-label="邮箱域名">
+                    <option value="@crazychaos.top" selected>@crazychaos.top</option>
+                </select>
+            </div>
             <label for="loginPassword">密码</label>
             <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="输入邮箱密码" required>
             <div class="auth-actions">
@@ -596,6 +668,7 @@
     const API_BASE = 'https://mail.crazychaos.top/api';
     const MAIL_URL = 'https://mail.crazychaos.top';
     const loginBtn = document.getElementById('loginBtn');
+    const quickLogoutBtn = document.getElementById('quickLogoutBtn');
     const userPill = document.getElementById('userPill');
     const userNickname = document.getElementById('userNickname');
     const userEmail = document.getElementById('userEmail');
@@ -606,6 +679,7 @@
     const loginMsg = document.getElementById('loginMsg');
     const profileMsg = document.getElementById('profileMsg');
     const nicknameInput = document.getElementById('nicknameInput');
+    const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
 
     let currentUser = null;
 
@@ -628,16 +702,24 @@
         target.style.color = isError ? '#ffedf6' : '#fff';
     }
 
+    function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
+        const value = String(email || '').trim();
+        if (!value) return '';
+        return value.includes('@') ? value : `${value}${domain || DEFAULT_LOGIN_DOMAIN}`;
+    }
+
     function renderUser(user) {
         currentUser = user;
 
         if (!user) {
             loginBtn.style.display = 'block';
+            quickLogoutBtn.classList.remove('show');
             userPill.classList.remove('show');
             return;
         }
 
         loginBtn.style.display = 'none';
+        quickLogoutBtn.classList.add('show');
         userNickname.textContent = getDisplayName(user);
         userEmail.textContent = user.email || '';
         nicknameInput.value = user.nickname || '';
@@ -704,7 +786,7 @@
             const data = await apiFetch('/login', {
                 method: 'POST',
                 body: JSON.stringify({
-                    email: form.get('email'),
+                    email: normalizeLoginEmail(form.get('email'), form.get('domain')),
                     password: form.get('password')
                 })
             });
@@ -743,8 +825,8 @@
         }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-        setMessage(profileMsg, '退出中...');
+    async function logoutCurrentUser(messageTarget = profileMsg) {
+        setMessage(messageTarget, '退出中...');
 
         try {
             await apiFetch('/logout', { method: 'DELETE' });
@@ -755,7 +837,10 @@
         localStorage.removeItem('token');
         renderUser(null);
         closeModal(profileModal);
-    });
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => logoutCurrentUser(profileMsg));
+    quickLogoutBtn.addEventListener('click', () => logoutCurrentUser(profileMsg));
 
     loadLoginUser();
 
