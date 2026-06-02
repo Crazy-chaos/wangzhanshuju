@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#ffb6cf">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="关注塔菲喵">
@@ -13,6 +14,7 @@
     <link rel="icon" href="123/emoji_23.avif" type="image/avif">
     <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
     <link rel="apple-touch-icon" href="123/emoji_23.avif">
+    <link rel="manifest" href="manifest.webmanifest">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -676,39 +678,35 @@
                 left: 20px;
                 width: 52px;
                 height: 52px;
-                z-index: 1003;
+                z-index: 1005;
             }
 
             .glass-sidebar {
-                top: calc(92px + env(safe-area-inset-top));
-                left: 20px;
-                width: min(72vw, 300px);
-                height: auto;
-                max-height: 270px;
-                padding: 16px;
-                align-items: stretch;
+                top: 0;
+                left: -72vw;
+                width: min(62vw, 260px);
+                height: 100vh;
+                height: 100dvh;
+                padding-top: calc(112px + env(safe-area-inset-top));
+                padding-left: 18px;
+                padding-right: 18px;
+                padding-bottom: 28px;
+                align-items: center;
                 background: rgba(255, 255, 255, 0.2);
-                border-radius: 24px;
-                border: 1px solid rgba(255, 255, 255, 0.5);
-                opacity: 0;
-                pointer-events: none;
-                transform: translateY(-10px) scale(0.94);
-                transform-origin: top left;
-                transition:
-                    opacity 180ms ease,
-                    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
                 z-index: 1002;
+                opacity: 1;
+                pointer-events: auto;
+                transform: none;
+                transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             }
 
             .glass-sidebar.open {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translateY(0) scale(1);
+                left: 0;
             }
 
             .sidebar-item {
-                width: 100%;
-                margin: 12px 0;
+                width: 88%;
+                margin: 12px auto;
                 padding: 15px 18px;
                 font-size: 1.16rem;
             }
@@ -718,7 +716,7 @@
                 left: 86px;
                 min-height: 52px;
                 padding: 0 24px;
-                z-index: 1001;
+                z-index: 1005;
             }
 
             .auth-user-pill {
@@ -779,7 +777,7 @@
     <!-- 侧边导航栏 -->
     <div class="glass-sidebar" id="sidebar">
         <a href="/" class="sidebar-item">主页</a>
-        <a href="https://mail.crazychaos.top" target="_blank" class="sidebar-item">mail</a>
+        <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
     </div>
 
     <!-- 汉堡菜单按钮 -->
@@ -877,6 +875,9 @@
 
     const API_BASE = 'https://mail.crazychaos.top/api';
     const MAIL_URL = 'https://mail.crazychaos.top';
+    const sidebar = document.getElementById('sidebar');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mailNavLink = document.getElementById('mailNavLink');
     const loginBtn = document.getElementById('loginBtn');
     const quickLogoutBtn = document.getElementById('quickLogoutBtn');
     const userPill = document.getElementById('userPill');
@@ -891,6 +892,13 @@
     const profileMsg = document.getElementById('profileMsg');
     const nicknameInput = document.getElementById('nicknameInput');
     const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
+
+    mailNavLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        sidebar.classList.remove('open');
+        hamburgerBtn.classList.remove('active');
+        window.location.assign(MAIL_URL);
+    });
 
     let currentUser = null;
 

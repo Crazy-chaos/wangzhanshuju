@@ -1,0 +1,27 @@
+{
+  "name": "关注塔菲喵",
+  "short_name": "塔菲喵",
+  "description": "Taffy's Exclusive Video Hub",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#ffb6cf",
+  "background_color": "#ffb6cf",
+  "icons": [
+    {
+      "src": "123/emoji_1.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "123/emoji_1.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}
