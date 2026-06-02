@@ -12,6 +12,7 @@
     <!-- 网页标签页的头像 (Favicon) -->
     <link rel="icon" href="123/emoji_23.avif" type="image/avif">
     <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="123/emoji_23.avif">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -201,14 +202,14 @@
             }
 
             h1 {
-                margin-top: calc(178px + env(safe-area-inset-top));
+                margin-top: calc(112px + env(safe-area-inset-top));
                 font-size: clamp(1.7rem, 7vw, 2.1rem);
                 line-height: 1.18;
                 padding: 0 8px;
             }
 
             body.authenticated h1 {
-                margin-top: calc(142px + env(safe-area-inset-top));
+                margin-top: calc(118px + env(safe-area-inset-top));
             }
 
             .subtitle {
@@ -454,10 +455,16 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             z-index: 11000;
+            opacity: 0;
+            transition: opacity 260ms ease;
+        }
+
+        .auth-modal.open {
+            display: flex;
         }
 
         .auth-modal.show {
-            display: flex;
+            opacity: 1;
         }
 
         .auth-card {
@@ -471,6 +478,16 @@
             padding: 26px;
             box-sizing: border-box;
             color: #fff;
+            transform: translateY(18px) scale(0.92);
+            opacity: 0;
+            transition:
+                transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 260ms ease;
+        }
+
+        .auth-modal.show .auth-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
         }
 
         .auth-card h2 {
@@ -566,6 +583,80 @@
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
+        .auth-status-strip {
+            position: relative;
+            width: 76px;
+            height: 7px;
+            margin: 16px auto 0;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transform: translateY(-8px) scaleX(0.55);
+            transform-origin: center;
+            transition:
+                opacity 180ms ease,
+                transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-radius 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                background 220ms ease;
+        }
+
+        .auth-status-strip.active {
+            opacity: 1;
+            transform: translateY(0) scaleX(1);
+        }
+
+        .auth-status-strip.loading::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            width: 45%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, rgba(255,255,255,0.35), #ff79c6, rgba(255,255,255,0.35));
+            animation: auth-strip-loading 900ms ease-in-out infinite;
+        }
+
+        .auth-status-strip.success,
+        .auth-status-strip.error {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 8px 24px rgba(255, 121, 198, 0.3);
+        }
+
+        .auth-status-strip.success::after,
+        .auth-status-strip.error::after {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .auth-status-strip.success::after {
+            content: "✓";
+            color: #28d17c;
+        }
+
+        .auth-status-strip.error::after {
+            content: "×";
+            color: #ff4d8d;
+        }
+
+        @keyframes auth-strip-loading {
+            0% {
+                transform: translateX(-110%);
+            }
+            100% {
+                transform: translateX(230%);
+            }
+        }
+
         .auth-profile-head {
             display: flex;
             align-items: center;
@@ -589,20 +680,30 @@
             }
 
             .glass-sidebar {
-                top: 0;
-                left: -100vw;
-                width: min(84vw, 360px);
-                height: 100vh;
-                height: 100dvh;
-                padding: calc(108px + env(safe-area-inset-top)) 24px 28px;
+                top: calc(92px + env(safe-area-inset-top));
+                left: 20px;
+                width: min(72vw, 300px);
+                height: auto;
+                max-height: 270px;
+                padding: 16px;
                 align-items: stretch;
                 background: rgba(255, 255, 255, 0.2);
-                transition: left 0.36s cubic-bezier(0.25, 0.8, 0.25, 1);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-10px) scale(0.94);
+                transform-origin: top left;
+                transition:
+                    opacity 180ms ease,
+                    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
                 z-index: 1002;
             }
 
             .glass-sidebar.open {
-                left: 0;
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0) scale(1);
             }
 
             .sidebar-item {
@@ -613,9 +714,9 @@
             }
 
             .auth-login-btn {
-                top: calc(96px + env(safe-area-inset-top));
-                left: 20px;
-                min-height: 46px;
+                top: calc(28px + env(safe-area-inset-top));
+                left: 86px;
+                min-height: 52px;
                 padding: 0 24px;
                 z-index: 1001;
             }
@@ -652,6 +753,22 @@
             .auth-email-row select {
                 border-radius: 0 0 15px 15px;
                 border-top: 0;
+            }
+
+            .auth-modal {
+                align-items: flex-start;
+                padding-top: calc(92px + env(safe-area-inset-top));
+            }
+
+            .auth-card {
+                width: min(390px, calc(100vw - 32px));
+                border-radius: 26px;
+                transform: translate(-86px, -28px) scale(0.34);
+                transform-origin: 88px 0;
+            }
+
+            .auth-modal.show .auth-card {
+                transform: translate(0, 0) scale(1);
             }
         }
 
@@ -699,6 +816,7 @@
                 <button type="button" id="closeLoginBtn">取消</button>
                 <button type="submit">登录</button>
             </div>
+            <div class="auth-status-strip" id="loginStatus" aria-hidden="true"></div>
             <div class="auth-msg" id="loginMsg"></div>
         </form>
     </div>
@@ -769,6 +887,7 @@
     const loginForm = document.getElementById('loginForm');
     const profileForm = document.getElementById('profileForm');
     const loginMsg = document.getElementById('loginMsg');
+    const loginStatus = document.getElementById('loginStatus');
     const profileMsg = document.getElementById('profileMsg');
     const nicknameInput = document.getElementById('nicknameInput');
     const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
@@ -776,11 +895,28 @@
     let currentUser = null;
 
     function openModal(modal) {
-        modal.classList.add('show');
+        modal.classList.add('open');
+        requestAnimationFrame(() => {
+            modal.classList.add('show');
+        });
     }
 
     function closeModal(modal) {
         modal.classList.remove('show');
+        setTimeout(() => {
+            if (!modal.classList.contains('show')) {
+                modal.classList.remove('open');
+            }
+        }, 260);
+    }
+
+    function setLoginStatus(status) {
+        loginStatus.className = 'auth-status-strip';
+        if (status) {
+            requestAnimationFrame(() => {
+                loginStatus.classList.add('active', status);
+            });
+        }
     }
 
     function getDisplayName(user) {
@@ -847,6 +983,7 @@
 
     loginBtn.addEventListener('click', () => {
         setMessage(loginMsg, '');
+        setLoginStatus('');
         openModal(loginModal);
     });
 
@@ -874,6 +1011,7 @@
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         setMessage(loginMsg, '登录中...');
+        setLoginStatus('loading');
 
         try {
             const form = new FormData(loginForm);
@@ -891,9 +1029,11 @@
 
             await loadLoginUser();
             loginForm.reset();
+            setLoginStatus('success');
             setMessage(loginMsg, '登录成功');
-            setTimeout(() => closeModal(loginModal), 450);
+            setTimeout(() => closeModal(loginModal), 720);
         } catch (error) {
+            setLoginStatus('error');
             setMessage(loginMsg, error.message || '登录失败', true);
         }
     });
