@@ -323,6 +323,7 @@
             margin: 15px 0;
             padding: 15px 20px;
             color: #fff;
+            font-family: inherit;
             font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
@@ -683,30 +684,30 @@
 
             .glass-sidebar {
                 top: 0;
-                left: -72vw;
+                left: 0;
                 width: min(62vw, 260px);
                 height: 100vh;
                 height: 100dvh;
                 padding-top: calc(112px + env(safe-area-inset-top));
-                padding-left: 18px;
-                padding-right: 18px;
+                padding-left: 10px;
+                padding-right: 12px;
                 padding-bottom: 28px;
-                align-items: center;
+                align-items: flex-start;
                 background: rgba(255, 255, 255, 0.2);
                 z-index: 1002;
                 opacity: 1;
                 pointer-events: auto;
-                transform: none;
-                transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                transform: translateX(-100%);
+                transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             }
 
             .glass-sidebar.open {
-                left: 0;
+                transform: translateX(0);
             }
 
             .sidebar-item {
-                width: 88%;
-                margin: 12px auto;
+                width: calc(100% - 8px);
+                margin: 12px 0;
                 padding: 15px 18px;
                 font-size: 1.16rem;
             }
@@ -777,7 +778,7 @@
     <!-- 侧边导航栏 -->
     <div class="glass-sidebar" id="sidebar">
         <a href="/" class="sidebar-item">主页</a>
-        <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
+        <button type="button" class="sidebar-item" id="mailNavLink">mail</button>
     </div>
 
     <!-- 汉堡菜单按钮 -->
