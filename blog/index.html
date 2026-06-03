@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffb6cf">
+    <meta name="description" content="CrazyChaos 的博客，文章元数据保存在 D1，正文保存在 R2，对外展示在 www.crazychaos.top。">
+    <meta property="og:title" content="塔菲喵博客">
+    <meta property="og:description" content="笔记、教程、更新记录和一点点粉色废话。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.crazychaos.top/blog/">
+    <meta property="og:image" content="https://www.crazychaos.top/123/emoji_23.avif">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="塔菲喵博客">
+    <title>塔菲喵博客</title>
+    <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="../123/emoji_23.avif">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="canonical" href="https://www.crazychaos.top/blog/">
+    <link rel="alternate" type="application/rss+xml" title="CrazyChaos Blog RSS" href="https://mail.crazychaos.top/api/blog/rss">
+    <style>
+        :root {
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.78);
+            --glass: rgba(255, 255, 255, 0.24);
+            --glass-strong: rgba(255, 255, 255, 0.34);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow: 0 18px 55px rgba(255, 121, 198, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: #ffb6cf;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100svh;
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: calc(44px + env(safe-area-inset-top)) 0 calc(36px + env(safe-area-inset-bottom));
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 34px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .glass-link,
+        .tag-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            box-shadow: 0 8px 28px rgba(31, 38, 135, 0.14);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            cursor: pointer;
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+        }
+
+        .glass-link:hover,
+        .tag-button:hover,
+        .tag-button.active {
+            transform: translateY(-2px);
+            background: var(--glass-strong);
+            color: var(--pink);
+        }
+
+        .hero {
+            position: relative;
+            min-height: 290px;
+            display: grid;
+            align-items: end;
+            padding: 42px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.14));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -40px;
+            width: 260px;
+            height: 260px;
+            background: url("../123/emoji_1.webp") center / contain no-repeat;
+            opacity: 0.28;
+            transform: rotate(13deg);
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 10px;
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
+            line-height: 1;
+            color: var(--pink);
+            text-shadow: 0 0 16px rgba(255, 121, 198, 0.48);
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            max-width: 620px;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 280px;
+            gap: 22px;
+            margin-top: 24px;
+            align-items: start;
+        }
+
+        .search-panel {
+            margin-top: 24px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 0;
+            height: 46px;
+            padding: 0 18px;
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .panel {
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.21);
+            box-shadow: 0 12px 36px rgba(31, 38, 135, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .article-list {
+            display: grid;
+            gap: 16px;
+            padding: 18px;
+        }
+
+        .post-card {
+            display: grid;
+            grid-template-columns: 140px minmax(0, 1fr);
+            gap: 18px;
+            padding: 16px;
+            min-height: 142px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.36);
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 34px rgba(255, 121, 198, 0.28);
+        }
+
+        .post-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .post-title {
+            margin: 3px 0 8px;
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+        .post-summary {
+            margin: 0 0 12px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .post-meta,
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .sidebar {
+            padding: 18px;
+            position: sticky;
+            top: 18px;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 14px;
+            font-size: 1.1rem;
+            color: var(--pink);
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-button {
+            min-height: 36px;
+            padding: 0 14px;
+            font-size: 0.92rem;
+        }
+
+        .detail {
+            display: none;
+            padding: 26px;
+        }
+
+        .detail.open {
+            display: block;
+        }
+
+        .detail h2 {
+            margin: 0 0 12px;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: #fff;
+        }
+
+        .detail-body {
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.02rem;
+            line-height: 1.9;
+        }
+
+        .detail-body h1,
+        .detail-body h2,
+        .detail-body h3 {
+            color: var(--pink);
+        }
+
+        .detail-body pre {
+            overflow-x: auto;
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(25, 15, 28, 0.55);
+        }
+
+        .detail-body code {
+            font-family: Consolas, "SFMono-Regular", monospace;
+        }
+
+        .detail-body img {
+            max-width: 100%;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 12px 34px rgba(31, 38, 135, 0.15);
+        }
+
+        .detail-body a {
+            color: #fff;
+            font-weight: 800;
+            text-decoration-color: rgba(255, 255, 255, 0.55);
+            text-underline-offset: 4px;
+        }
+
+        .state {
+            padding: 46px 22px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.8;
+        }
+
+        .load-more {
+            width: min(240px, 100%);
+            margin: 18px auto 0;
+        }
+
+        .load-more[hidden] {
+            display: none;
+        }
+
+        .floating-sticker {
+            position: fixed;
+            right: 7vw;
+            bottom: 8vh;
+            width: 92px;
+            border-radius: 18px;
+            transform: rotate(-10deg);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+            pointer-events: none;
+            opacity: 0.82;
+        }
+
+        @media (max-width: 760px) {
+            .page {
+                width: min(100% - 20px, 560px);
+                padding-top: calc(24px + env(safe-area-inset-top));
+            }
+
+            .topbar {
+                margin-bottom: 18px;
+            }
+
+            .glass-link {
+                min-height: 42px;
+                padding: 0 15px;
+            }
+
+            .hero {
+                min-height: 230px;
+                padding: 28px 22px;
+                border-radius: 22px;
+            }
+
+            .hero::after {
+                width: 180px;
+                height: 180px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+
+            .article-list {
+                padding: 12px;
+            }
+
+            .post-card {
+                grid-template-columns: 86px minmax(0, 1fr);
+                gap: 12px;
+                min-height: 112px;
+                padding: 12px;
+                border-radius: 18px;
+            }
+
+            .post-title {
+                font-size: 1.05rem;
+                margin-bottom: 5px;
+            }
+
+            .post-summary {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+
+            .detail {
+                padding: 20px;
+            }
+
+            .floating-sticker {
+                width: 70px;
+                right: 18px;
+                bottom: calc(18px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <nav class="topbar">
+            <a class="glass-link" href="/">主页</a>
+            <div class="nav-actions">
+                <a class="glass-link" href="https://mail.crazychaos.top/api/blog/rss" rel="noopener">RSS</a>
+                <a class="glass-link" href="https://mail.crazychaos.top" rel="noopener">mail</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div>
+                <h1>塔菲喵博客</h1>
+                <p>文章内容保存在 R2，元数据在 D1。这里会显示发布后的笔记、教程、更新记录和一点点粉色废话。</p>
+            </div>
+        </section>
+
+        <section class="panel search-panel">
+            <input class="search-input" id="searchInput" type="search" placeholder="搜索标题、摘要、分类或标签">
+            <button class="glass-link" type="button" id="searchButton">搜索</button>
+        </section>
+
+        <section class="content-grid">
+            <div>
+                <article class="panel detail" id="detailPanel">
+                    <button class="glass-link" type="button" id="backButton">返回列表</button>
+                    <h2 id="detailTitle"></h2>
+                    <div class="detail-meta" id="detailMeta"></div>
+                    <div class="detail-body" id="detailBody"></div>
+                </article>
+                <div class="panel article-list" id="articleList">
+                    <div class="state">正在读取博客...</div>
+                </div>
+                <button class="glass-link load-more" type="button" id="loadMoreButton" hidden>加载更多</button>
+            </div>
+            <aside class="panel sidebar">
+                <h2>分类 / 标签</h2>
+                <div class="tag-cloud" id="tagCloud">
+                    <button class="tag-button active" type="button" data-tag="">全部</button>
+                </div>
+            </aside>
+        </section>
+    </main>
+    <img class="floating-sticker" src="../123/emoji_20.avif" alt="">
+
+    <script>
+        const API_BASE = 'https://mail.crazychaos.top/api';
+        const FALLBACK_COVER = '../123/emoji_1.webp';
+        const articleList = document.getElementById('articleList');
+        const tagCloud = document.getElementById('tagCloud');
+        const detailPanel = document.getElementById('detailPanel');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailMeta = document.getElementById('detailMeta');
+        const detailBody = document.getElementById('detailBody');
+        const backButton = document.getElementById('backButton');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        let posts = [];
+        let currentTag = '';
+        let currentQuery = '';
+        let currentPage = 1;
+        let totalPosts = 0;
+        let isLoading = false;
+        const PAGE_SIZE = 10;
+        let initialPostSlug = new URLSearchParams(window.location.search).get('post') || '';
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function markdownToHtml(markdown = '') {
+            const escaped = escapeHtml(markdown);
+            return escaped
+                .replace(/!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g, '<img src="$2" alt="$1">')
+                .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n{2,}/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function normalizePost(post) {
+            return {
+                slug: post.slug,
+                title: post.title || '未命名文章',
+                summary: post.summary || '',
+                category: post.category || '',
+                tags: Array.isArray(post.tags) ? post.tags : [],
+                coverUrl: post.coverUrl || FALLBACK_COVER,
+                publishedAt: post.publishedAt || post.createdAt || '',
+                viewCount: post.viewCount || 0,
+            };
+        }
+
+        function formatDate(value) {
+            if (!value) return '未发布';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function setState(text) {
+            articleList.innerHTML = `<div class="state">${escapeHtml(text)}</div>`;
+            loadMoreButton.hidden = true;
+        }
+
+        function renderTags() {
+            const tags = new Set();
+            posts.forEach((post) => {
+                if (post.category) tags.add(post.category);
+                post.tags.forEach((tag) => tags.add(tag));
+            });
+            tagCloud.innerHTML = `<button class="tag-button ${currentTag ? '' : 'active'}" type="button" data-tag="">全部</button>`;
+            [...tags].forEach((tag) => {
+                const button = document.createElement('button');
+                button.className = `tag-button ${tag === currentTag ? 'active' : ''}`;
+                button.type = 'button';
+                button.dataset.tag = tag;
+                button.textContent = tag;
+                tagCloud.appendChild(button);
+            });
+        }
+
+        function updateLoadMore() {
+            const hasMore = posts.length < totalPosts && !detailPanel.classList.contains('open');
+            loadMoreButton.hidden = !hasMore;
+            loadMoreButton.textContent = isLoading ? '读取中...' : '加载更多';
+        }
+
+        function renderPosts() {
+            const filtered = currentTag
+                ? posts.filter((post) => post.category === currentTag || post.tags.includes(currentTag))
+                : posts;
+
+            detailPanel.classList.remove('open');
+            articleList.style.display = 'grid';
+
+            if (!filtered.length) {
+                setState(currentTag ? '这个分类暂时没有文章。' : '还没有发布文章。');
+                return;
+            }
+
+            articleList.innerHTML = '';
+            filtered.forEach((post) => {
+                const button = document.createElement('button');
+                button.className = 'post-card';
+                button.type = 'button';
+                button.innerHTML = `
+                    <img class="post-cover" src="${escapeHtml(post.coverUrl)}" alt="">
+                    <span>
+                        <strong class="post-title">${escapeHtml(post.title)}</strong>
+                        <p class="post-summary">${escapeHtml(post.summary || '点开看看这篇写了什么。')}</p>
+                        <span class="post-meta">
+                            <span>${escapeHtml(formatDate(post.publishedAt))}</span>
+                            ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                            <span>${post.viewCount} 阅读</span>
+                        </span>
+                    </span>
+                `;
+                button.addEventListener('click', () => openPost(post.slug));
+                articleList.appendChild(button);
+            });
+            updateLoadMore();
+        }
+
+        async function loadPosts(reset = true) {
+            if (isLoading) return;
+            isLoading = true;
+            if (reset) {
+                currentPage = 1;
+                totalPosts = 0;
+                posts = [];
+                setState('正在读取博客...');
+            }
+            updateLoadMore();
+            try {
+                const query = new URLSearchParams({ page: String(currentPage), pageSize: String(PAGE_SIZE) });
+                if (currentQuery) query.set('q', currentQuery);
+                if (currentTag) query.set('tag', currentTag);
+                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, { credentials: 'omit' });
+                const json = await response.json();
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '读取失败');
+                }
+                const nextPosts = (json.data?.list || []).map(normalizePost);
+                totalPosts = Number(json.data?.total || nextPosts.length);
+                posts = reset ? nextPosts : posts.concat(nextPosts);
+                currentPage += 1;
+                renderTags();
+                renderPosts();
+                if (initialPostSlug) {
+                    const slug = initialPostSlug;
+                    initialPostSlug = '';
+                    openPost(slug, false);
+                }
+            } catch (error) {
+                console.warn(error);
+                posts = [];
+                renderTags();
+                setState('博客 API 还没连上或暂无文章。');
+            } finally {
+                isLoading = false;
+                updateLoadMore();
+            }
+        }
+
+        async function openPost(slug, updateUrl = true) {
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('post', slug);
+                history.pushState(null, '', url);
+            }
+            detailTitle.textContent = '读取中...';
+            detailMeta.innerHTML = '';
+            detailBody.innerHTML = '';
+            articleList.style.display = 'none';
+            loadMoreButton.hidden = true;
+            detailPanel.classList.add('open');
+            try {
+                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, { credentials: 'omit' });
+                const json = await response.json();
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '读取失败');
+                }
+                const post = normalizePost(json.data);
+                detailTitle.textContent = post.title;
+                detailMeta.innerHTML = `
+                    <span>${escapeHtml(formatDate(post.publishedAt))}</span>
+                    ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                    <span>${post.viewCount} 阅读</span>
+                `;
+                detailBody.innerHTML = `<p>${markdownToHtml(json.data.content || post.summary || '这篇文章暂时没有正文。')}</p>`;
+            } catch (error) {
+                console.warn(error);
+                detailTitle.textContent = '文章读取失败';
+                detailBody.innerHTML = '<p>稍后再试，或者检查 Worker 的博客 API 是否已经部署。</p>';
+            }
+        }
+
+        tagCloud.addEventListener('click', (event) => {
+            const button = event.target.closest('.tag-button');
+            if (!button) return;
+            currentTag = button.dataset.tag || '';
+            tagCloud.querySelectorAll('.tag-button').forEach((item) => item.classList.toggle('active', item === button));
+            loadPosts(true);
+        });
+
+        searchButton.addEventListener('click', () => {
+            currentQuery = searchInput.value.trim();
+            loadPosts(true);
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                currentQuery = searchInput.value.trim();
+                loadPosts(true);
+            }
+        });
+
+        loadMoreButton.addEventListener('click', () => {
+            loadPosts(false);
+        });
+
+        backButton.addEventListener('click', () => {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('post');
+            history.pushState(null, '', url.pathname + url.search);
+            renderPosts();
+        });
+
+        window.addEventListener('popstate', () => {
+            const slug = new URLSearchParams(window.location.search).get('post');
+            if (slug) {
+                openPost(slug, false);
+            } else {
+                renderPosts();
+            }
+        });
+
+        loadPosts(true);
+    </script>
+</body>
+</html>
