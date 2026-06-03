@@ -8,13 +8,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="关注塔菲喵">
-    <title>你关注塔菲了嘛？！ (预览版)</title>
+    <title>你关注塔菲了嘛？！</title>
     
     <!-- 网页标签页的头像 (Favicon) -->
-    <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
-    <link rel="shortcut icon" href="../123/emoji_23.avif" type="image/avif">
-    <link rel="apple-touch-icon" href="../123/emoji_23.avif">
-    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="123/emoji_23.avif" type="image/avif">
+    <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="123/emoji_23.avif">
+    <link rel="manifest" href="manifest.webmanifest">
     <style>
         :root {
             --pink: #ff79c6;
@@ -761,8 +761,8 @@
 
             <!-- 电脑端左侧导航栏 (B站左上角布局风格) -->
             <nav class="nav-links">
-                <a href="../" class="nav-item">首页</a>
-                <a href="../blog/" class="nav-item">博客</a>
+                <a href="/" class="nav-item">首页</a>
+                <a href="/blog/" class="nav-item">博客</a>
                 <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
             </nav>
 
@@ -771,7 +771,7 @@
                 <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
                 
                 <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
-                    <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
+                    <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
                     <span class="auth-user-text">
                         <span class="auth-nickname" id="userNickname">未登录</span>
                         <span class="auth-email" id="userEmail"></span>
@@ -785,8 +785,8 @@
 
     <!-- 手机端侧边导航栏 -->
     <div class="glass-sidebar" id="sidebar">
-        <a href="../" class="sidebar-item">主页</a>
-        <a href="../blog/" class="sidebar-item">博客</a>
+        <a href="/" class="sidebar-item">主页</a>
+        <a href="/blog/" class="sidebar-item">博客</a>
         <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
     </div>
 
@@ -816,7 +816,7 @@
     <div class="auth-modal" id="profileModal">
         <form class="auth-card" id="profileForm">
             <div class="auth-profile-head">
-                <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
+                <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
                 <h2>个人设置</h2>
             </div>
             <label for="nicknameInput">昵称</label>
@@ -849,7 +849,7 @@
         x5-video-player-type="h5" 
         x5-video-player-fullscreen="false"
       >
-        <source src="https://mail.crazychaos.top/api/oss/video111/taffy.mp4" type="video/mp4">
+        <source src="taffy.mp4" type="video/mp4">
         您的浏览器不支持视频播放。
       </video>
     </div>
@@ -1154,7 +1154,7 @@
         function createFireworkEmoji() {
             const img = document.createElement('img');
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-            img.src = `../123/${randomEmoji}`; // 修复预览版相对路径
+            img.src = `123/${randomEmoji}`;
             
             const size = Math.random() * 50 + 60;
             const duration = Math.random() * 8 + 10; 
