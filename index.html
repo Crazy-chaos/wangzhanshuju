@@ -8,14 +8,25 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="关注塔菲喵">
-    <title>你关注塔菲了嘛？！</title>
+    <title>你关注塔菲了嘛？！ (预览版)</title>
     
     <!-- 网页标签页的头像 (Favicon) -->
-    <link rel="icon" href="123/emoji_23.avif" type="image/avif">
-    <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
-    <link rel="apple-touch-icon" href="123/emoji_23.avif">
-    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="shortcut icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="../123/emoji_23.avif">
+    <link rel="manifest" href="../manifest.webmanifest">
     <style>
+        :root {
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.78);
+            --glass: rgba(255, 255, 255, 0.22);
+            --glass-strong: rgba(255, 255, 255, 0.38);
+            --glass-border: rgba(255, 255, 255, 0.45);
+            --shadow: 0 18px 55px rgba(255, 121, 198, 0.25);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
@@ -25,7 +36,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 50px;
+            padding: 104px 50px 50px; /* 顶部留出导航栏空间 */
             margin: 0;
             min-height: 100vh;
             min-height: 100svh;
@@ -59,6 +70,7 @@
             color: #ff79c6;
             text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
             font-size: 2.5rem;
+            margin-top: 10px;
             margin-bottom: 10px;
             text-align: center;
         }
@@ -123,8 +135,8 @@
             pointer-events: auto;
             cursor: pointer;
             transition: transform 0.1s, filter 0.1s;
-            -webkit-user-drag: none; /* 禁止原生拖拽 */
-            user-select: none; /* 禁止选中文本/图片 */
+            -webkit-user-drag: none;
+            user-select: none;
         }
         
         .emoji-firework:hover {
@@ -181,230 +193,99 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
         }
 
-        /* 适配手机端小屏幕 */
-        @media (max-width: 600px) {
-            html,
-            body {
-                min-height: 100svh;
-                min-height: 100dvh;
-                overscroll-behavior-y: none;
-            }
-
-            body {
-                padding: 0 10px calc(28px + env(safe-area-inset-bottom));
-            }
-
-            body::before {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                background: inherit;
-                z-index: -1;
-            }
-
-            h1 {
-                margin-top: calc(112px + env(safe-area-inset-top));
-                font-size: clamp(1.7rem, 7vw, 2.1rem);
-                line-height: 1.18;
-                padding: 0 8px;
-            }
-
-            body.authenticated h1 {
-                margin-top: calc(118px + env(safe-area-inset-top));
-            }
-
-            .subtitle {
-                font-size: 1rem;
-                margin-bottom: 18px;
-                padding: 0 8px;
-            }
-
-            .glass-video-container {
-                width: min(100%, 520px);
-                margin: 28px auto 34px;
-                padding: 14px;
-                border-radius: 22px;
-            }
-
-            .glass-video-container video {
-                border-radius: 14px;
-            }
-
-            .glass-btn {
-                font-size: 1.08rem;
-                padding: 12px 30px;
-                margin-top: 0;
-                margin-bottom: 70px;
-                max-width: calc(100vw - 52px);
-                box-sizing: border-box;
-            }
-        }
-
-        /* 侧边导航栏相关样式 */
-        .hamburger-btn {
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .hamburger-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 121, 198, 0.5);
-        }
-
-        .hamburger-btn .bar {
-            width: 26px;
-            height: 3px;
-            background-color: #fff;
-            margin: 4px 0;
-            border-radius: 3px;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .hamburger-btn.active .bar:nth-child(1) {
-            transform: translateY(11px) rotate(45deg);
-        }
-        .hamburger-btn.active .bar:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger-btn.active .bar:nth-child(3) {
-            transform: translateY(-11px) rotate(-45deg);
-        }
-
-        .glass-sidebar {
+        /* 统一导航栏样式 */
+        .navbar {
             position: fixed;
             top: 0;
-            /* 初始隐藏在左侧，留出足够的隐藏宽度 */
-            left: -400px;
-            /* 宽度增加 100px 以便弥补弹性动画弹过头时的左侧空隙 */
-            width: 360px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-right: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            padding-top: 100px;
-            /* 使用 padding-left 将内容区推到原来的视觉中心（只用多出来的右边260px） */
-            padding-left: 100px;
-            box-sizing: border-box;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-container {
+            max-width: 1100px;
+            width: 95%;
+            height: 100%;
+            margin: 0 auto;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            /* 弹性非线性动画 */
-            transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            justify-content: space-between;
         }
 
-        .glass-sidebar.open {
-            /* 弹出的停靠位置设为 -100px，这样它往右弹过头时左边依然有 100px 的背景遮挡 */
-            left: -100px;
+        /* 电脑端导航链接 (B站左上角布局风格) */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
         }
 
-        .sidebar-item {
-            width: 75%;
-            margin: 15px 0;
-            padding: 15px 20px;
+        .nav-item {
             color: #fff;
-            font-family: inherit;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-decoration: none;
-            display: block;
-            box-sizing: border-box;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
         }
 
-        .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(255, 121, 198, 0.5);
-            color: #ff79c6;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        .nav-item:hover {
+            color: var(--pink);
+            transform: translateY(-2px);
+        }
+
+        /* 右侧登录/个人状态 */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .auth-login-btn,
         .auth-logout-btn,
         .auth-user-pill {
-            position: fixed;
-            top: 25px;
-            z-index: 1001;
-            min-height: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            min-height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
         }
 
         .auth-login-btn {
-            left: 88px;
-            padding: 0 24px;
+            padding: 0 22px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            cursor: pointer;
         }
 
         .auth-logout-btn {
-            right: 25px;
             display: none;
-            min-width: 50px;
             padding: 0 16px;
             border-radius: 999px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 800;
-            cursor: pointer;
         }
 
         .auth-logout-btn.show {
             display: block;
         }
 
-        .auth-login-btn:hover,
-        .auth-logout-btn:hover,
-        .auth-user-pill:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 10px 25px rgba(255, 121, 198, 0.5);
-            color: #ff79c6;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-        }
-
         .auth-user-pill {
-            right: 104px;
             display: none;
             align-items: center;
-            gap: 12px;
-            padding: 6px 16px 6px 8px;
+            gap: 10px;
+            padding: 4px 14px 4px 6px;
             border-radius: 999px;
-            cursor: pointer;
-            max-width: min(320px, calc(100vw - 40px));
+            max-width: 260px;
         }
 
         .auth-user-pill.show {
@@ -412,13 +293,12 @@
         }
 
         .auth-avatar {
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.75);
-            box-shadow: 0 0 14px rgba(255, 121, 198, 0.45);
-            flex: 0 0 auto;
+            box-shadow: 0 0 10px rgba(255, 121, 198, 0.35);
         }
 
         .auth-user-text {
@@ -429,24 +309,127 @@
         }
 
         .auth-nickname {
-            max-width: 190px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 800;
-            line-height: 1.15;
         }
 
         .auth-email {
-            max-width: 190px;
+            font-size: 0.7rem;
+            opacity: 0.8;
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 0.78rem;
-            opacity: 0.82;
-            line-height: 1.15;
         }
 
+        .auth-login-btn:hover,
+        .auth-logout-btn:hover,
+        .auth-user-pill:hover {
+            background: rgba(255, 255, 255, 0.38);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.5);
+            color: var(--pink);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 手机端汉堡菜单按钮 */
+        .hamburger-btn {
+            display: none;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .hamburger-btn .bar {
+            width: 22px;
+            height: 2.5px;
+            background-color: #fff;
+            margin: 3px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active .bar:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+        .hamburger-btn.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active .bar:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+        }
+
+        /* 手机端侧边导航栏 */
+        .glass-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            padding: 84px 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .glass-sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-item {
+            width: 100%;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease;
+            text-decoration: none;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.45);
+            color: var(--pink);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 登录/设置弹窗 */
         .auth-modal {
             position: fixed;
             inset: 0;
@@ -673,71 +656,68 @@
             height: 48px;
         }
 
-        @media (max-width: 600px) {
+        /* 适配手机端小屏幕 */
+        @media (max-width: 768px) {
+            html,
+            body {
+                min-height: 100svh;
+                min-height: 100dvh;
+                overscroll-behavior-y: none;
+            }
+
+            body {
+                padding: 100px 10px calc(28px + env(safe-area-inset-bottom));
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: inherit;
+                z-index: -1;
+            }
+
+            h1 {
+                margin-top: 10px;
+                font-size: clamp(1.7rem, 7vw, 2.1rem);
+                line-height: 1.18;
+                padding: 0 8px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 18px;
+                padding: 0 8px;
+            }
+
+            .glass-video-container {
+                width: min(100%, 520px);
+                margin: 28px auto 34px;
+                padding: 14px;
+                border-radius: 22px;
+            }
+
+            .glass-video-container video {
+                border-radius: 14px;
+            }
+
+            .glass-btn {
+                font-size: 1.08rem;
+                padding: 12px 30px;
+                margin-top: 0;
+                margin-bottom: 70px;
+                max-width: calc(100vw - 52px);
+                box-sizing: border-box;
+            }
+
+            /* 移动端下导航栏隐藏及布局微调 */
             .hamburger-btn {
-                top: calc(28px + env(safe-area-inset-top));
-                left: 20px;
-                width: 52px;
-                height: 52px;
-                z-index: 1005;
+                display: flex;
             }
 
-            .glass-sidebar {
-                top: 0;
-                left: -400px;
-                width: 360px;
-                height: 100vh;
-                height: 100dvh;
-                padding-top: calc(112px + env(safe-area-inset-top));
-                padding-left: 100px;
-                padding-right: 0;
-                padding-bottom: 28px;
-                align-items: center;
-                background: rgba(255, 255, 255, 0.2);
-                z-index: 1002;
-                opacity: 1;
-                pointer-events: auto;
-                transform: none;
-                transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            }
-
-            .glass-sidebar.open {
-                left: -100px;
-            }
-
-            .sidebar-item {
-                width: 75%;
-                margin: 12px 0;
-                padding: 15px 18px;
-                font-size: 1.16rem;
-            }
-
-            .auth-login-btn {
-                top: calc(28px + env(safe-area-inset-top));
-                left: 86px;
-                min-height: 52px;
-                padding: 0 24px;
-                z-index: 1005;
-            }
-
-            .auth-user-pill {
-                top: calc(28px + env(safe-area-inset-top));
-                right: 82px;
-                max-width: calc(100vw - 176px);
-                min-height: 52px;
-                padding: 6px 12px 6px 7px;
-            }
-
-            .auth-logout-btn {
-                top: calc(28px + env(safe-area-inset-top));
-                right: 14px;
-                min-height: 52px;
-                padding: 0 14px;
-            }
-
-            .auth-nickname,
-            .auth-email {
-                max-width: calc(100vw - 254px);
+            .nav-links {
+                display: none;
             }
 
             .auth-email-row {
@@ -762,44 +742,55 @@
             .auth-card {
                 width: min(390px, calc(100vw - 32px));
                 border-radius: 26px;
-                transform: translate(-86px, -28px) scale(0.34);
-                transform-origin: 88px 0;
-            }
-
-            .auth-modal.show .auth-card {
-                transform: translate(0, 0) scale(1);
+                transform: translateY(18px) scale(0.92);
             }
         }
-
     </style>
 </head>
 <body>
 
-    <!-- 侧边导航栏 -->
+    <!-- 统一导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- 手机端汉堡菜单按钮 -->
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" type="button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <!-- 电脑端左侧导航栏 (B站左上角布局风格) -->
+            <nav class="nav-links">
+                <a href="../" class="nav-item">首页</a>
+                <a href="../blog/" class="nav-item">博客</a>
+                <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
+            </nav>
+
+            <!-- 右侧登录/个人状态 -->
+            <div class="auth-section">
+                <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
+                
+                <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
+                    <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
+                    <span class="auth-user-text">
+                        <span class="auth-nickname" id="userNickname">未登录</span>
+                        <span class="auth-email" id="userEmail"></span>
+                    </span>
+                </button>
+                
+                <button class="auth-logout-btn" id="quickLogoutBtn" type="button">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 手机端侧边导航栏 -->
     <div class="glass-sidebar" id="sidebar">
-        <a href="/" class="sidebar-item">主页</a>
-        <a href="/blog/" class="sidebar-item">博客</a>
-        <button type="button" class="sidebar-item" id="mailNavLink">mail</button>
+        <a href="../" class="sidebar-item">主页</a>
+        <a href="../blog/" class="sidebar-item">博客</a>
+        <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
     </div>
 
-    <!-- 汉堡菜单按钮 -->
-    <div class="hamburger-btn" id="hamburgerBtn">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-
-    <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
-    <button class="auth-logout-btn" id="quickLogoutBtn" type="button">退出</button>
-
-    <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
-        <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
-        <span class="auth-user-text">
-            <span class="auth-nickname" id="userNickname">未登录</span>
-            <span class="auth-email" id="userEmail"></span>
-        </span>
-    </button>
-
+    <!-- 登录模态框 -->
     <div class="auth-modal" id="loginModal">
         <form class="auth-card" id="loginForm">
             <h2>登录邮箱账号</h2>
@@ -821,10 +812,11 @@
         </form>
     </div>
 
+    <!-- 个人设置模态框 -->
     <div class="auth-modal" id="profileModal">
         <form class="auth-card" id="profileForm">
             <div class="auth-profile-head">
-                <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
+                <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
                 <h2>个人设置</h2>
             </div>
             <label for="nicknameInput">昵称</label>
@@ -857,496 +849,467 @@
         x5-video-player-type="h5" 
         x5-video-player-fullscreen="false"
       >
-        <source src="taffy.mp4" type="video/mp4">
+        <source src="../taffy.mp4" type="video/mp4">
         您的浏览器不支持视频播放。
       </video>
     </div>
 
     <a href="https://space.bilibili.com/1265680561" target="_blank" class="glass-btn">🌟 关注taffy！ 🌟</a>
 
-</body>
-
-<script>
-    // ==========================================
-    // 0. 汉堡菜单逻辑
-    // ==========================================
-    document.getElementById('hamburgerBtn').addEventListener('click', function() {
-        this.classList.toggle('active');
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-
-    const API_BASE = 'https://mail.crazychaos.top/api';
-    const MAIL_URL = 'https://mail.crazychaos.top';
-    const sidebar = document.getElementById('sidebar');
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const mailNavLink = document.getElementById('mailNavLink');
-    const loginBtn = document.getElementById('loginBtn');
-    const quickLogoutBtn = document.getElementById('quickLogoutBtn');
-    const userPill = document.getElementById('userPill');
-    const userNickname = document.getElementById('userNickname');
-    const userEmail = document.getElementById('userEmail');
-    const loginModal = document.getElementById('loginModal');
-    const profileModal = document.getElementById('profileModal');
-    const loginForm = document.getElementById('loginForm');
-    const profileForm = document.getElementById('profileForm');
-    const loginMsg = document.getElementById('loginMsg');
-    const loginStatus = document.getElementById('loginStatus');
-    const profileMsg = document.getElementById('profileMsg');
-    const nicknameInput = document.getElementById('nicknameInput');
-    const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
-
-    mailNavLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        sidebar.classList.remove('open');
-        hamburgerBtn.classList.remove('active');
-        window.location.assign(MAIL_URL);
-    });
-
-    let currentUser = null;
-
-    function openModal(modal) {
-        modal.classList.add('open');
-        requestAnimationFrame(() => {
-            modal.classList.add('show');
+    <script>
+        // ==========================================
+        // 0. 汉堡菜单逻辑
+        // ==========================================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        hamburgerBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            sidebar.classList.toggle('open');
         });
-    }
 
-    function closeModal(modal) {
-        modal.classList.remove('show');
-        setTimeout(() => {
-            if (!modal.classList.contains('show')) {
-                modal.classList.remove('open');
+        // 点击空白处关闭侧边栏
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+                hamburgerBtn.classList.remove('active');
             }
-        }, 260);
-    }
+        });
 
-    function setLoginStatus(status) {
-        loginStatus.className = 'auth-status-strip';
-        if (status) {
+        const API_BASE = 'https://mail.crazychaos.top/api';
+        const MAIL_URL = 'https://mail.crazychaos.top';
+        const mailNavLink = document.getElementById('mailNavLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const quickLogoutBtn = document.getElementById('quickLogoutBtn');
+        const userPill = document.getElementById('userPill');
+        const userNickname = document.getElementById('userNickname');
+        const userEmail = document.getElementById('userEmail');
+        const loginModal = document.getElementById('loginModal');
+        const profileModal = document.getElementById('profileModal');
+        const loginForm = document.getElementById('loginForm');
+        const profileForm = document.getElementById('profileForm');
+        const loginMsg = document.getElementById('loginMsg');
+        const loginStatus = document.getElementById('loginStatus');
+        const profileMsg = document.getElementById('profileMsg');
+        const nicknameInput = document.getElementById('nicknameInput');
+        const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
+
+        mailNavLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            sidebar.classList.remove('open');
+            hamburgerBtn.classList.remove('active');
+            window.location.assign(MAIL_URL);
+        });
+
+        let currentUser = null;
+
+        function openModal(modal) {
+            modal.classList.add('open');
             requestAnimationFrame(() => {
-                loginStatus.classList.add('active', status);
+                modal.classList.add('show');
             });
         }
-    }
 
-    function getDisplayName(user) {
-        if (!user) return '未登录';
-        const fallback = user.email ? user.email.split('@')[0] : 'Taffy Fan';
-        return user.nickname || user.name || fallback;
-    }
-
-    function setMessage(target, message, isError = false) {
-        target.textContent = message;
-        target.style.color = isError ? '#ffedf6' : '#fff';
-    }
-
-    function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
-        const value = String(email || '').trim();
-        if (!value) return '';
-        return value.includes('@') ? value : `${value}${domain || DEFAULT_LOGIN_DOMAIN}`;
-    }
-
-    function renderUser(user) {
-        currentUser = user;
-
-        if (!user) {
-            document.body.classList.remove('authenticated');
-            loginBtn.style.display = 'block';
-            quickLogoutBtn.classList.remove('show');
-            userPill.classList.remove('show');
-            return;
-        }
-
-        loginBtn.style.display = 'none';
-        document.body.classList.add('authenticated');
-        quickLogoutBtn.classList.add('show');
-        userNickname.textContent = getDisplayName(user);
-        userEmail.textContent = user.email || '';
-        nicknameInput.value = user.nickname || '';
-        userPill.classList.add('show');
-    }
-
-    async function apiFetch(path, options = {}) {
-        const response = await fetch(`${API_BASE}${path}`, {
-            credentials: 'include',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...(options.headers || {})
-            }
-        });
-        const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
-        if (!response.ok || data.code !== 200) {
-            throw new Error(data.message || '请求失败');
-        }
-        return data.data;
-    }
-
-    async function loadLoginUser() {
-        try {
-            const user = await apiFetch('/my/loginUserInfo', { method: 'GET' });
-            renderUser(user);
-        } catch (error) {
-            renderUser(null);
-        }
-    }
-
-    loginBtn.addEventListener('click', () => {
-        setMessage(loginMsg, '');
-        setLoginStatus('');
-        openModal(loginModal);
-    });
-
-    userPill.addEventListener('click', () => {
-        if (!currentUser) return;
-        nicknameInput.value = currentUser.nickname || '';
-        setMessage(profileMsg, '');
-        openModal(profileModal);
-    });
-
-    document.getElementById('closeLoginBtn').addEventListener('click', () => closeModal(loginModal));
-    document.getElementById('closeProfileBtn').addEventListener('click', () => closeModal(profileModal));
-    document.getElementById('goMailBtn').addEventListener('click', () => {
-        window.location.href = MAIL_URL;
-    });
-
-    loginModal.addEventListener('click', (event) => {
-        if (event.target === loginModal) closeModal(loginModal);
-    });
-
-    profileModal.addEventListener('click', (event) => {
-        if (event.target === profileModal) closeModal(profileModal);
-    });
-
-    loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        setMessage(loginMsg, '登录中...');
-        setLoginStatus('loading');
-
-        try {
-            const form = new FormData(loginForm);
-            const data = await apiFetch('/login', {
-                method: 'POST',
-                body: JSON.stringify({
-                    email: normalizeLoginEmail(form.get('email'), form.get('domain')),
-                    password: form.get('password')
-                })
-            });
-
-            if (data?.token) {
-                localStorage.setItem('token', data.token);
-            }
-
-            await loadLoginUser();
-            loginForm.reset();
-            setLoginStatus('success');
-            setMessage(loginMsg, '登录成功');
-            setTimeout(() => closeModal(loginModal), 720);
-        } catch (error) {
-            setLoginStatus('error');
-            setMessage(loginMsg, error.message || '登录失败', true);
-        }
-    });
-
-    profileForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        setMessage(profileMsg, '保存中...');
-
-        try {
-            const profile = await apiFetch('/my/profile', {
-                method: 'PUT',
-                body: JSON.stringify({ nickname: nicknameInput.value })
-            });
-
-            currentUser = {
-                ...currentUser,
-                nickname: profile.nickname
-            };
-            renderUser(currentUser);
-            setMessage(profileMsg, '已保存');
-        } catch (error) {
-            setMessage(profileMsg, error.message || '保存失败', true);
-        }
-    });
-
-    async function logoutCurrentUser(messageTarget = profileMsg) {
-        setMessage(messageTarget, '退出中...');
-
-        try {
-            await apiFetch('/logout', { method: 'DELETE' });
-        } catch (error) {
-            console.warn(error);
-        }
-
-        localStorage.removeItem('token');
-        renderUser(null);
-        closeModal(profileModal);
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', () => logoutCurrentUser(profileMsg));
-    quickLogoutBtn.addEventListener('click', () => logoutCurrentUser(profileMsg));
-
-    loadLoginUser();
-
-    // ==========================================
-    // 1. 烟花表情包效果、点击消失及粒子爆炸交互
-    // ==========================================
-    const emojis = [
-        "emoji_1.webp",
-        "emoji_2.webp",
-        "emoji_3.webp",
-        "emoji_4.avif",
-        "emoji_5.avif",
-        "emoji_6.avif",
-        "emoji_7.webp",
-        "emoji_8.webp",
-        "emoji_9.avif",
-        "emoji_10.webp",
-        "emoji_11.webp",
-        "emoji_12.webp",
-        "emoji_13.webp",
-        "emoji_14.webp",
-        "emoji_15.webp",
-        "emoji_16.webp",
-        "emoji_17.avif",
-        "emoji_18.avif",
-        "emoji_19.avif",
-        "emoji_20.avif",
-        "emoji_21.webp",
-        "emoji_22.avif",
-        "emoji_23.avif",
-        "emoji_24.avif"
-    ];
-
-    function createExplosion(x, y) {
-        const particleCount = 15; 
-        const colors = ['#ff9a9e', '#fecfef', '#bd93f9', '#ffb199', '#ffffff'];
-
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const size = Math.random() * 8 + 4; 
-            
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * 80 + 40; 
-            const dx = Math.cos(angle) * distance;
-            const dy = Math.sin(angle) * distance;
-
-            particle.style.backgroundColor = color;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${x}px`;
-            particle.style.top = `${y}px`;
-            particle.style.boxShadow = `0 0 6px ${color}`;
-            
-            particle.style.setProperty('--dx', `${dx}px`);
-            particle.style.setProperty('--dy', `${dy}px`);
-
-            document.body.appendChild(particle);
-
+        function closeModal(modal) {
+            modal.classList.remove('show');
             setTimeout(() => {
-                particle.remove();
-            }, 600);
+                if (!modal.classList.contains('show')) {
+                    modal.classList.remove('open');
+                }
+            }, 260);
         }
-    }
 
-    function createFireworkEmoji() {
-        const img = document.createElement('img');
-        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-        img.src = `123/${randomEmoji}`;
-        
-        const size = Math.random() * 50 + 60; // 稍微变大一点 60px 到 110px
-        const duration = Math.random() * 8 + 10; 
-        const direction = Math.random() > 0.5 ? 1 : -1;
-        const tx = direction * (Math.random() * 40 + 20); 
-        const ty = -(Math.random() * 60 + 40); 
-        const rot = (Math.random() - 0.5) * 360; 
+        function setLoginStatus(status) {
+            loginStatus.className = 'auth-status-strip';
+            if (status) {
+                requestAnimationFrame(() => {
+                    loginStatus.classList.add('active', status);
+                });
+            }
+        }
 
-        img.className = 'emoji-firework';
-        img.draggable = false; // 进一步防止被拖拽
-        img.style.setProperty('--size', `${size}px`);
-        img.style.setProperty('--duration', `${duration}s`);
-        img.style.setProperty('--tx', `${tx}vw`);
-        img.style.setProperty('--ty', `${ty}vh`);
-        img.style.setProperty('--rot', `${rot}deg`);
-        
-        const startXOffset = (Math.random() - 0.5) * 40; // 扩大发射范围
-        img.style.left = `calc(50% + ${startXOffset}vw)`;
+        function getDisplayName(user) {
+            if (!user) return '未登录';
+            const fallback = user.email ? user.email.split('@')[0] : 'Taffy Fan';
+            return user.nickname || user.name || fallback;
+        }
 
-        img.addEventListener('click', (e) => {
-            const rect = img.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+        function setMessage(target, message, isError = false) {
+            target.textContent = message;
+            target.style.color = isError ? '#ffedf6' : '#fff';
+        }
+
+        function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
+            const value = String(email || '').trim();
+            if (!value) return '';
+            return value.includes('@') ? value : `${value}${domain || DEFAULT_LOGIN_DOMAIN}`;
+        }
+
+        function renderUser(user) {
+            currentUser = user;
+
+            if (!user) {
+                document.body.classList.remove('authenticated');
+                loginBtn.style.display = 'block';
+                quickLogoutBtn.classList.remove('show');
+                userPill.classList.remove('show');
+                return;
+            }
+
+            loginBtn.style.display = 'none';
+            document.body.classList.add('authenticated');
+            quickLogoutBtn.classList.add('show');
+            userNickname.textContent = getDisplayName(user);
+            userEmail.textContent = user.email || '';
+            nicknameInput.value = user.nickname || '';
+            userPill.classList.add('show');
+        }
+
+        async function apiFetch(path, options = {}) {
+            const response = await fetch(`${API_BASE}${path}`, {
+                credentials: 'include',
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(options.headers || {})
+                }
+            });
+            const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
+            if (!response.ok || data.code !== 200) {
+                throw new Error(data.message || '请求失败');
+            }
+            return data.data;
+        }
+
+        async function loadLoginUser() {
+            try {
+                const user = await apiFetch('/my/loginUserInfo', { method: 'GET' });
+                renderUser(user);
+            } catch (error) {
+                renderUser(null);
+            }
+        }
+
+        loginBtn.addEventListener('click', () => {
+            setMessage(loginMsg, '');
+            setLoginStatus('');
+            openModal(loginModal);
+        });
+
+        userPill.addEventListener('click', () => {
+            if (!currentUser) return;
+            nicknameInput.value = currentUser.nickname || '';
+            setMessage(profileMsg, '');
+            openModal(profileModal);
+        });
+
+        document.getElementById('closeLoginBtn').addEventListener('click', () => closeModal(loginModal));
+        document.getElementById('closeProfileBtn').addEventListener('click', () => closeModal(profileModal));
+        document.getElementById('goMailBtn').addEventListener('click', () => {
+            window.location.href = MAIL_URL;
+        });
+
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) closeModal(loginModal);
+        });
+
+        profileModal.addEventListener('click', (event) => {
+            if (event.target === profileModal) closeModal(profileModal);
+        });
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setMessage(loginMsg, '登录中...');
+            setLoginStatus('loading');
+
+            try {
+                const form = new FormData(loginForm);
+                const data = await apiFetch('/login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: normalizeLoginEmail(form.get('email'), form.get('domain')),
+                        password: form.get('password')
+                    })
+                });
+
+                if (data?.token) {
+                    localStorage.setItem('token', data.token);
+                }
+
+                await loadLoginUser();
+                loginForm.reset();
+                setLoginStatus('success');
+                setMessage(loginMsg, '登录成功');
+                setTimeout(() => closeModal(loginModal), 720);
+            } catch (error) {
+                setLoginStatus('error');
+                setMessage(loginMsg, error.message || '登录失败', true);
+            }
+        });
+
+        profileForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setMessage(profileMsg, '保存中...');
+
+            try {
+                const profile = await apiFetch('/my/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify({ nickname: nicknameInput.value })
+                });
+
+                currentUser = {
+                    ...currentUser,
+                    nickname: profile.nickname
+                };
+                renderUser(currentUser);
+                setMessage(profileMsg, '已保存');
+            } catch (error) {
+                setMessage(profileMsg, error.message || '保存失败', true);
+            }
+        });
+
+        async function logoutCurrentUser(messageTarget = profileMsg) {
+            setMessage(messageTarget, '退出中...');
+
+            try {
+                await apiFetch('/logout', { method: 'DELETE' });
+            } catch (error) {
+                console.warn(error);
+            }
+
+            localStorage.removeItem('token');
+            renderUser(null);
+            closeModal(profileModal);
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => logoutCurrentUser(profileMsg));
+        quickLogoutBtn.addEventListener('click', () => logoutCurrentUser(profileMsg));
+
+        loadLoginUser();
+
+        // ==========================================
+        // 1. 烟花表情包效果、点击消失及粒子爆炸交互
+        // ==========================================
+        const emojis = [
+            "emoji_1.webp",
+            "emoji_2.webp",
+            "emoji_3.webp",
+            "emoji_4.avif",
+            "emoji_5.avif",
+            "emoji_6.avif",
+            "emoji_7.webp",
+            "emoji_8.webp",
+            "emoji_9.avif",
+            "emoji_10.webp",
+            "emoji_11.webp",
+            "emoji_12.webp",
+            "emoji_13.webp",
+            "emoji_14.webp",
+            "emoji_15.webp",
+            "emoji_16.webp",
+            "emoji_17.avif",
+            "emoji_18.avif",
+            "emoji_19.avif",
+            "emoji_20.avif",
+            "emoji_21.webp",
+            "emoji_22.avif",
+            "emoji_23.avif",
+            "emoji_24.avif"
+        ];
+
+        function createExplosion(x, y) {
+            const particleCount = 15; 
+            const colors = ['#ff9a9e', '#fecfef', '#bd93f9', '#ffb199', '#ffffff'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 8 + 4; 
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 80 + 40; 
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+
+                particle.style.backgroundColor = color;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.boxShadow = `0 0 6px ${color}`;
+                
+                particle.style.setProperty('--dx', `${dx}px`);
+                particle.style.setProperty('--dy', `${dy}px`);
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 600);
+            }
+        }
+
+        function createFireworkEmoji() {
+            const img = document.createElement('img');
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            img.src = `../123/${randomEmoji}`; // 修复预览版相对路径
             
-            createExplosion(centerX, centerY);
-            img.remove();
-        });
+            const size = Math.random() * 50 + 60;
+            const duration = Math.random() * 8 + 10; 
+            const direction = Math.random() > 0.5 ? 1 : -1;
+            const tx = direction * (Math.random() * 40 + 20); 
+            const ty = -(Math.random() * 60 + 40); 
+            const rot = (Math.random() - 0.5) * 360; 
 
-        document.body.appendChild(img);
+            img.className = 'emoji-firework';
+            img.draggable = false;
+            img.style.setProperty('--size', `${size}px`);
+            img.style.setProperty('--duration', `${duration}s`);
+            img.style.setProperty('--tx', `${tx}vw`);
+            img.style.setProperty('--ty', `${ty}vh`);
+            img.style.setProperty('--rot', `${rot}deg`);
+            
+            const startXOffset = (Math.random() - 0.5) * 40;
+            img.style.left = `calc(50% + ${startXOffset}vw)`;
 
-        img.addEventListener('animationend', () => {
-            img.remove();
-        });
-    }
+            img.addEventListener('click', (e) => {
+                const rect = img.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                createExplosion(centerX, centerY);
+                img.remove();
+            });
 
-    setInterval(createFireworkEmoji, 3000); // 频率调慢一点防止手机卡顿
-    setTimeout(createFireworkEmoji, 500);
-    setTimeout(createFireworkEmoji, 1500);
+            document.body.appendChild(img);
 
-
-    // ==========================================
-    // 2. 改进版 Canvas 横线音乐频谱与环境粒子
-    // ==========================================
-    const videoElement = document.getElementById('taffy-video');
-    const canvas = document.getElementById('visualizer');
-    const ctx = canvas.getContext('2d');
-    
-    let audioCtx, analyser, dataArray, bufferLength;
-    let isAudioInitialized = false;
-    let visualizerOpacity = 0; // 用于实现频谱平滑过渡的透明度
-    let bassAvg = 0; // 将 bassAvg 提取为全局变量以便做过渡效果
-
-    // 存储环境发光粒子
-    let ambientParticles = [];
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        initParticles();
-    }
-    
-    // 初始化背景发光粒子
-    function initParticles() {
-        ambientParticles = [];
-        const particleCount = canvas.width < 600 ? 30 : 60; // 手机端少一点，PC端多一点
-        for (let i = 0; i < particleCount; i++) {
-            ambientParticles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 3 + 1,
-                speedY: Math.random() * 1.5 + 0.5,
-                opacity: Math.random() * 0.5 + 0.2
+            img.addEventListener('animationend', () => {
+                img.remove();
             });
         }
-    }
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    
-    // 提前启动绘制循环，使得背景光粒子常驻，不受音乐播放状态限制
-    drawVisualizer();
+        setInterval(createFireworkEmoji, 3000);
+        setTimeout(createFireworkEmoji, 500);
+        setTimeout(createFireworkEmoji, 1500);
 
-    videoElement.addEventListener('play', () => {
-        if (!isAudioInitialized) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            
-            // 降低 fftSize 让柱子少一点宽一点，更好看
-            analyser.fftSize = 128; 
-            analyser.smoothingTimeConstant = 0.7; 
+        // ==========================================
+        // 2. 改进版 Canvas 横线音乐频谱与环境粒子
+        // ==========================================
+        const videoElement = document.getElementById('taffy-video');
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+        
+        let audioCtx, analyser, dataArray, bufferLength;
+        let isAudioInitialized = false;
+        let visualizerOpacity = 0;
+        let bassAvg = 0;
+        let ambientParticles = [];
 
-            const source = audioCtx.createMediaElementSource(videoElement);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination); 
-
-            bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            
-            isAudioInitialized = true;
-            // 绘制循环已经在外部启动了，这里不需要再次调用 drawVisualizer()
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
         }
-    });
-
-    function drawVisualizer() {
-        requestAnimationFrame(drawVisualizer);
         
-        // 每次清空画布
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // 如果音乐在播放且音频已初始化，提取数据并平滑显示
-        if (isAudioInitialized && !videoElement.paused) {
-            visualizerOpacity += (1 - visualizerOpacity) * 0.1; // 缓动显示
-            analyser.getByteFrequencyData(dataArray);
-            let bassSum = 0;
-            for (let i = 0; i < 5; i++) {
-                bassSum += dataArray[i];
+        function initParticles() {
+            ambientParticles = [];
+            const particleCount = canvas.width < 600 ? 30 : 60;
+            for (let i = 0; i < particleCount; i++) {
+                ambientParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedY: Math.random() * 1.5 + 0.5,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
             }
-            // 平滑过渡 bassAvg（背景粒子发光强度）
-            bassAvg += (bassSum / 5 - bassAvg) * 0.2; 
-        } else if (isAudioInitialized) {
-            visualizerOpacity += (0 - visualizerOpacity) * 0.1; // 缓动消失
-            bassAvg += (0 - bassAvg) * 0.1; // 缓动平息粒子
         }
 
-        // ============================
-        // 渲染背景发光粒子（常驻）
-        // ============================
-        ambientParticles.forEach(p => {
-            p.y -= p.speedY;
-            if (p.y < -10) {
-                p.y = canvas.height + 10;
-                p.x = Math.random() * canvas.width;
-            }
-            
-            // 鼓点越强，粒子越亮越大
-            const pulseSize = p.size + (bassAvg / 255) * 3;
-            const pulseOpacity = Math.min(1, p.opacity + (bassAvg / 255));
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        drawVisualizer();
 
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 182, 193, ${pulseOpacity})`; // 浅粉色
-            ctx.shadowBlur = (bassAvg / 255) * 15;
-            ctx.shadowColor = '#ff79c6';
-            ctx.fill();
+        videoElement.addEventListener('play', () => {
+            if (!isAudioInitialized) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 128; 
+                analyser.smoothingTimeConstant = 0.7; 
+
+                const source = audioCtx.createMediaElementSource(videoElement);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination); 
+
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                isAudioInitialized = true;
+            }
         });
 
-        // ============================
-        // 渲染横线上下对称柱状图 (带平滑消失过渡)
-        // ============================
-        
-        if (isAudioInitialized && visualizerOpacity > 0.01) {
-            // 设置全局透明度，实现平滑淡入淡出
-            ctx.globalAlpha = visualizerOpacity;
-
-            // 我们只取前一半的频谱，因为高频通常没有太多数据
-            const barsToDraw = Math.floor(bufferLength * 0.7); 
-        
-            // 设置绘制区域，避免靠边太近
-            const visualizerWidth = canvas.width;
-            const barWidth = (visualizerWidth / barsToDraw) * 0.7; // 柱子宽度，留出 30% 间隙
-            const step = visualizerWidth / barsToDraw; // 步长
-            const centerY = canvas.height / 2; // 中心横线
-
-            for (let i = 0; i < barsToDraw; i++) {
-                // 将音量数据映射到屏幕高度，根据屏幕大小自适应
-                // 结合透明度让它不仅淡出，还可以有一点缩小的效果
-                const value = dataArray[i];
-                const maxBarHeight = canvas.height * 0.25; 
-                const barHeight = (value / 255) * maxBarHeight * visualizerOpacity;
-                
-                // 计算每个柱子的X坐标
-                const x = i * step + (step - barWidth) / 2;
-
-                // 色彩：以粉色为主 (hue: 310 到 340 左右)
-                const hue = 310 + (i / barsToDraw) * 30; 
-                const lightness = 60 + (value / 255) * 20; // 声音越大越亮
-                
-                ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
-                
-                // 发光效果也随之减弱
-                ctx.shadowBlur = (value > 100 ? 15 : 5) * visualizerOpacity; 
-                ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
-                
-                // 为了视觉柔和，给一点最小高度，保证中心有一条线
-                const finalHeight = barHeight < 2 ? 2 * visualizerOpacity : barHeight;
-                ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
-            }
+        function drawVisualizer() {
+            requestAnimationFrame(drawVisualizer);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 恢复全局透明度
-            ctx.globalAlpha = 1.0;
+            if (isAudioInitialized && !videoElement.paused) {
+                visualizerOpacity += (1 - visualizerOpacity) * 0.1;
+                analyser.getByteFrequencyData(dataArray);
+                let bassSum = 0;
+                for (let i = 0; i < 5; i++) {
+                    bassSum += dataArray[i];
+                }
+                bassAvg += (bassSum / 5 - bassAvg) * 0.2; 
+            } else if (isAudioInitialized) {
+                visualizerOpacity += (0 - visualizerOpacity) * 0.1;
+                bassAvg += (0 - bassAvg) * 0.1;
+            }
+
+            ambientParticles.forEach(p => {
+                p.y -= p.speedY;
+                if (p.y < -10) {
+                    p.y = canvas.height + 10;
+                    p.x = Math.random() * canvas.width;
+                }
+                
+                const pulseSize = p.size + (bassAvg / 255) * 3;
+                const pulseOpacity = Math.min(1, p.opacity + (bassAvg / 255));
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 182, 193, ${pulseOpacity})`;
+                ctx.shadowBlur = (bassAvg / 255) * 15;
+                ctx.shadowColor = '#ff79c6';
+                ctx.fill();
+            });
+
+            if (isAudioInitialized && visualizerOpacity > 0.01) {
+                ctx.globalAlpha = visualizerOpacity;
+                const barsToDraw = Math.floor(bufferLength * 0.7); 
+                const visualizerWidth = canvas.width;
+                const barWidth = (visualizerWidth / barsToDraw) * 0.7;
+                const step = visualizerWidth / barsToDraw;
+                const centerY = canvas.height / 2;
+
+                for (let i = 0; i < barsToDraw; i++) {
+                    const value = dataArray[i];
+                    const maxBarHeight = canvas.height * 0.25; 
+                    const barHeight = (value / 255) * maxBarHeight * visualizerOpacity;
+                    const x = i * step + (step - barWidth) / 2;
+                    const hue = 310 + (i / barsToDraw) * 30; 
+                    const lightness = 60 + (value / 255) * 20;
+                    
+                    ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;
+                    ctx.shadowBlur = (value > 100 ? 15 : 5) * visualizerOpacity; 
+                    ctx.shadowColor = `hsl(${hue}, 100%, 70%)`;
+                    
+                    const finalHeight = barHeight < 2 ? 2 * visualizerOpacity : barHeight;
+                    ctx.fillRect(x, centerY - finalHeight, barWidth, finalHeight * 2);
+                }
+                ctx.globalAlpha = 1.0;
+            }
         }
-    }
-</script>
+    </script>
+</body>
 </html>
