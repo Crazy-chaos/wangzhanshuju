@@ -21,9 +21,6 @@
 
 本项目抄袭了以下优秀开源项目：
 
-* DjangoBlog
-  https://github.com/liangliangyy/DjangoBlog
-
 * cloud-mail
   https://github.com/maillab/cloud-mail
 
