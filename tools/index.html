@@ -1317,6 +1317,11 @@
             font-size: 0.95rem;
         }
 
+        select option {
+            background-color: #2d1c30;
+            color: #fff;
+        }
+
         .form-group textarea {
             height: 100px;
             padding: 10px 12px;
@@ -1345,6 +1350,24 @@
         .upload-indicator {
             font-size: 0.8rem;
             color: var(--pink);
+        }
+
+        .upload-progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+            border-radius: 99px;
+            transition: width 0.1s ease;
         }
 
         .modal-footer {
@@ -1657,7 +1680,7 @@
                         <label for="formStatus">状态 *</label>
                         <select id="formStatus" required>
                             <option value="published">已发布</option>
-                            <option value="draft">草稿</option>
+                            <option value="draft" selected>草稿</option>
                             <option value="hidden">隐藏</option>
                             <option value="archived">归档 (不可下载)</option>
                         </select>
@@ -1673,6 +1696,9 @@
                             <button type="button" class="glass-btn" style="height:40px; padding: 0 14px; border-radius:10px;" id="uploadCoverBtn">上传图片</button>
                             <span class="upload-indicator" id="coverUploadIndicator"></span>
                         </div>
+                        <div class="upload-progress-container" id="coverProgressContainer">
+                            <div class="upload-progress-bar" id="coverProgressBar"></div>
+                        </div>
                     </div>
                     <div class="form-group form-span-2" id="formDownloadUrlRow">
                         <label id="downloadUrlLabel">资源文件 / 下载链接 *</label>
@@ -1680,6 +1706,9 @@
                             <input type="text" id="formDownloadUrl" placeholder="输入下载外链，或选择文件直接上传至R2">
                             <button type="button" class="glass-btn" style="height:40px; padding: 0 14px; border-radius:10px;" id="uploadFileBtn">上传文件</button>
                             <span class="upload-indicator" id="fileUploadIndicator"></span>
+                        </div>
+                        <div class="upload-progress-container" id="fileProgressContainer">
+                            <div class="upload-progress-bar" id="fileProgressBar"></div>
                         </div>
                     </div>
                     <div class="form-group form-span-2">
@@ -2455,23 +2484,93 @@
             });
         }
 
-        async function uploadR2File(file, indicatorElement) {
-            indicatorElement.textContent = '正在上传...';
+        async function uploadR2File(file, indicatorElement, progressBarElement, progressContainerElement) {
+            indicatorElement.textContent = '准备上传...';
+            if (progressContainerElement) {
+                progressContainerElement.style.display = 'block';
+            }
+            if (progressBarElement) {
+                progressBarElement.style.width = '0%';
+            }
             try {
                 const content = await fileToBase64(file);
-                const result = await apiFetch('/admin/tools/upload', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        content: content,
-                        filename: file.name,
-                        contentType: file.type
-                    })
+                const payload = JSON.stringify({
+                    content: content,
+                    filename: file.name,
+                    contentType: file.type
                 });
-                indicatorElement.textContent = '上传成功 ✓';
-                return result.key; // 资源相对路径 Key
+
+                return new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', `${API_BASE}/admin/tools/upload`, true);
+                    
+                    // Add auth headers
+                    const headers = authHeaders({
+                        'Content-Type': 'application/json'
+                    });
+                    for (const [key, val] of Object.entries(headers)) {
+                        xhr.setRequestHeader(key, val);
+                    }
+
+                    // Credentials
+                    xhr.withCredentials = true;
+
+                    // Track upload progress
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            if (progressBarElement) {
+                                progressBarElement.style.width = `${percent}%`;
+                            }
+                            indicatorElement.textContent = `正在上传 ${percent}%...`;
+                        }
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.code === 200 && response.data) {
+                                    indicatorElement.textContent = '上传成功 ✓';
+                                    if (progressBarElement) {
+                                        progressBarElement.style.width = '100%';
+                                    }
+                                    setTimeout(() => {
+                                        if (progressContainerElement) {
+                                            progressContainerElement.style.display = 'none';
+                                        }
+                                    }, 2000);
+                                    resolve(response.data.key);
+                                } else {
+                                    throw new Error(response.message || '请求失败');
+                                }
+                            } catch (err) {
+                                indicatorElement.textContent = '上传失败 ✕';
+                                if (progressContainerElement) progressContainerElement.style.display = 'none';
+                                alert('文件上传失败: ' + err.message);
+                                reject(err);
+                            }
+                        } else {
+                            indicatorElement.textContent = '上传失败 ✕';
+                            if (progressContainerElement) progressContainerElement.style.display = 'none';
+                            alert('文件上传失败: 状态码 ' + xhr.status);
+                            reject(new Error('上传失败'));
+                        }
+                    };
+
+                    xhr.onerror = (err) => {
+                        indicatorElement.textContent = '上传失败 ✕';
+                        if (progressContainerElement) progressContainerElement.style.display = 'none';
+                        alert('网络上传错误');
+                        reject(err);
+                    };
+
+                    xhr.send(payload);
+                });
             } catch (err) {
                 indicatorElement.textContent = '上传失败 ✕';
-                alert('文件上传失败: ' + err.message);
+                if (progressContainerElement) progressContainerElement.style.display = 'none';
+                alert('读取文件失败: ' + err.message);
                 throw err;
             }
         }
@@ -2483,7 +2582,12 @@
             input.accept = 'image/*';
             input.onchange = async () => {
                 if (input.files && input.files[0]) {
-                    const key = await uploadR2File(input.files[0], coverUploadIndicator);
+                    const key = await uploadR2File(
+                        input.files[0], 
+                        coverUploadIndicator,
+                        document.getElementById('coverProgressBar'),
+                        document.getElementById('coverProgressContainer')
+                    );
                     document.getElementById('formCoverUrl').value = key;
                 }
             };
@@ -2505,7 +2609,12 @@
             
             input.onchange = async () => {
                 if (input.files && input.files[0]) {
-                    const key = await uploadR2File(input.files[0], fileUploadIndicator);
+                    const key = await uploadR2File(
+                        input.files[0], 
+                        fileUploadIndicator,
+                        document.getElementById('fileProgressBar'),
+                        document.getElementById('fileProgressContainer')
+                    );
                     document.getElementById('formDownloadUrl').value = key;
                 }
             };
@@ -2597,6 +2706,7 @@
             toolForm.reset();
             document.getElementById('formId').value = '';
             document.getElementById('toolModalTitle').textContent = '添加新资源';
+            document.getElementById('formStatus').value = 'draft'; // 默认状态为草稿
             coverUploadIndicator.textContent = '';
             fileUploadIndicator.textContent = '';
             toolModal.classList.add('open');
@@ -2634,7 +2744,7 @@
 
         closeToolModal.addEventListener('click', () => toolModal.classList.remove('open'));
         cancelToolModal.addEventListener('click', () => toolModal.classList.remove('open'));
-        toolModal.addEventListener('click', (e) => { if (e.target === toolModal) toolModal.classList.remove('open'); });
+        // 移除点击背景自动关闭，防止误触导致输入内容丢失
 
         manageMetaBtn.addEventListener('click', () => {
             metaModal.classList.add('open');
@@ -2839,15 +2949,6 @@
                 root.removeAttribute('data-theme-to');
             });
         });
-
-        // 初始化载入
-        loadMeta();
-        apiFetch('/my/loginUserInfo', { method: 'GET' })
-            .then(renderUser)
-            .catch(() => renderUser(null))
-            .finally(() => {
-                checkRoute();
-            });
 
         // ==========================================
         // 个人简介卡片与自定义逻辑

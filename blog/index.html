@@ -1147,6 +1147,59 @@
             word-break: break-word;
         }
 
+        /* 联动推荐工具卡片 */
+        .related-section {
+            margin-top: 38px;
+        }
+        .related-section h3 {
+            margin: 0 0 18px;
+            color: var(--pink);
+            font-size: 1.4rem;
+        }
+        .related-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+        }
+        .tool-link-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: block;
+        }
+        html.dark .tool-link-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 121, 198, 0.2);
+        }
+        .tool-link-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: var(--shadow);
+            border-color: var(--pink);
+        }
+        .tool-link-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--pink);
+        }
+        .tool-link-desc {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .comments-panel {
             margin-top: 28px;
             padding-top: 22px;
@@ -1850,6 +1903,13 @@
                     <h2 id="detailTitle"></h2>
                     <div class="detail-meta" id="detailMeta"></div>
                     <div class="detail-body" id="detailBody"></div>
+                    <!-- 联动工具推荐 -->
+                    <div class="related-section" id="relatedToolsSection" style="display: none; margin-top: 38px; border-top: 1px solid var(--glass-border); padding-top: 22px;">
+                        <h3 style="color: var(--pink); margin: 0 0 18px; font-size: 1.4rem;">相关小工具与资源：</h3>
+                        <div class="related-tools-grid" id="relatedToolsGrid">
+                            <!-- 联动推荐工具 -->
+                        </div>
+                    </div>
                     <section class="comments-panel" id="commentsPanel">
                         <h3>评论</h3>
                         <div class="comment-list" id="commentList">
@@ -2566,6 +2626,38 @@
 
                 renderCommentForm();
                 loadComments(slug);
+
+                // 联动相关工具推荐
+                const relatedToolsSection = document.getElementById('relatedToolsSection');
+                const relatedToolsGrid = document.getElementById('relatedToolsGrid');
+                if (relatedToolsSection && relatedToolsGrid) {
+                    relatedToolsSection.style.display = 'none';
+                    relatedToolsGrid.innerHTML = '';
+                    try {
+                        const toolsData = await apiFetch('/tools?pageSize=100').catch(() => null);
+                        if (toolsData && toolsData.list) {
+                            const matchedTools = toolsData.list.filter(tool => {
+                                return (tool.relatedBlogs || []).some(blog => blog.slug === slug);
+                            });
+                            
+                            if (matchedTools.length > 0) {
+                                relatedToolsSection.style.display = 'block';
+                                matchedTools.forEach(tool => {
+                                    const card = document.createElement('a');
+                                    card.className = 'tool-link-card';
+                                    card.href = `/tools/${encodeURIComponent(tool.slug)}`;
+                                    card.innerHTML = `
+                                        <div class="tool-link-title">⚙️ ${escapeHtml(tool.title)}</div>
+                                        <div class="tool-link-desc">${escapeHtml(tool.description || '查看工具详情 ↗')}</div>
+                                    `;
+                                    relatedToolsGrid.appendChild(card);
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('Failed to load related tools:', err);
+                    }
+                }
             } catch (error) {
                 console.warn(error);
                 detailTitle.textContent = '文章读取失败';
