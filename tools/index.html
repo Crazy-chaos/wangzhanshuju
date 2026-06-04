@@ -452,6 +452,232 @@
             justify-content: space-between;
         }
 
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* 个人简介按钮与卡片定位 */
+        .header-profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .header-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.45);
+            color: var(--pink);
+        }
+
+        .header-profile-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 6px rgba(255, 121, 198, 0.2);
+        }
+
+        /* 悬浮个人卡片 */
+        .profile-popover {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 270px;
+            background: rgba(255, 255, 255, 0.93); /* Opaque premium light glass */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(255, 121, 198, 0.18), 0 5px 15px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            padding: 24px 16px 16px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.3s;
+            z-index: 1001;
+            text-align: center;
+        }
+
+        html.dark .profile-popover {
+            background: rgba(26, 12, 36, 0.94); /* Opaque premium dark glass */
+            border: 1px solid rgba(255, 121, 198, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        /* 移出桥接区域 */
+        .profile-popover::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: transparent;
+        }
+
+        .profile-popover.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .profile-edit-trigger {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #5a4b63; /* dark text color */
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        html.dark .profile-edit-trigger {
+            color: rgba(248, 248, 242, 0.6);
+        }
+
+        .profile-edit-trigger:hover {
+            color: var(--pink);
+            background: rgba(255, 121, 198, 0.15);
+            transform: rotate(45deg);
+        }
+
+        .profile-edit-trigger svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .profile-card-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2.5px solid var(--pink);
+            box-shadow: 0 0 15px rgba(255, 121, 198, 0.3);
+            margin: 0 auto 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-card-avatar:hover {
+            transform: scale(1.08) rotate(5deg);
+        }
+
+        .profile-card-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1f0c2b !important; /* dark deep purple for high contrast in light mode */
+            margin-bottom: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        html.dark .profile-card-name {
+            color: #f8f8f2 !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-card-bio {
+            font-size: 0.85rem;
+            color: #5b4a68 !important; /* readable dark purple in light mode */
+            margin-bottom: 16px;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        html.dark .profile-card-bio {
+            color: rgba(248, 248, 242, 0.8) !important;
+        }
+
+        .profile-card-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .profile-link-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 121, 198, 0.1);
+            border: 1px solid rgba(255, 121, 198, 0.25);
+            color: #5b4a68;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+        }
+
+        html.dark .profile-link-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 121, 198, 0.2);
+            color: #f8f8f2;
+        }
+
+        .profile-link-item:hover {
+            background: var(--pink);
+            border-color: var(--pink);
+            color: #fff;
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 6px 15px rgba(255, 121, 198, 0.4);
+        }
+
+        html.dark .profile-link-item:hover {
+            color: #fff;
+        }
+
+        .profile-link-item svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .edit-link-row {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .edit-link-row label {
+            margin: 0 !important;
+            font-size: 0.85rem;
+            color: var(--pink);
+        }
+
         .nav-links,
         .auth-section {
             display: flex;
@@ -1164,6 +1390,23 @@
                 display: none;
             }
 
+            /* 移动端个人简介小窗及按钮微调 */
+            .profile-popover {
+                left: -20px;
+                transform: translateY(10px);
+            }
+            .profile-popover.show {
+                transform: translateY(0);
+            }
+            @media (max-width: 480px) {
+                .header-profile-btn span {
+                    display: none;
+                }
+                .header-profile-btn {
+                    padding: 8px;
+                }
+            }
+
             .page {
                 width: min(100% - 20px, 560px);
                 padding-top: calc(92px + env(safe-area-inset-top));
@@ -1195,17 +1438,38 @@
 <body>
     <header class="navbar">
         <div class="navbar-container">
-            <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" type="button">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-            <nav class="nav-links">
-                <a href="/" class="nav-item">首页</a>
-                <a href="/blog/" class="nav-item">博客</a>
-                <a href="/tools/" class="nav-item">小工具</a>
-                <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
-            </nav>
+            <div class="navbar-left">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" type="button">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <!-- 个人简介悬浮入口 -->
+                <div class="header-profile-container" id="profileContainer">
+                    <button class="header-profile-btn" id="headerProfileBtn" type="button">
+                        <img class="header-profile-avatar" id="headerProfileAvatar" src="../my/my.jpg" alt="头像">
+                        <span>个人简介</span>
+                    </button>
+                    <!-- 悬浮小窗 -->
+                    <div class="profile-popover" id="profilePopover">
+                        <button class="profile-edit-trigger" id="profileEditTrigger" type="button" title="自定义个人简介">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                        <div class="profile-card-content">
+                            <img class="profile-card-avatar" id="profileCardAvatar" src="../my/my.jpg" alt="头像">
+                            <div class="profile-card-name" id="profileCardName">疯狂混沌</div>
+                            <div class="profile-card-bio" id="profileCardBio">欢迎访问我的主页！</div>
+                            <div class="profile-card-links" id="profileCardLinks"></div>
+                        </div>
+                    </div>
+                </div>
+                <nav class="nav-links">
+                    <a href="/" class="nav-item">首页</a>
+                    <a href="/blog/" class="nav-item">博客</a>
+                    <a href="/tools/" class="nav-item">小工具</a>
+                    <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
+                </nav>
+            </div>
             <div class="auth-section">
                 <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
                 <button class="auth-user-pill" id="userPill" type="button">
@@ -1481,6 +1745,31 @@
                 <button type="button" id="goMailBtn">进入邮箱</button>
             </div>
             <div class="auth-msg" id="profileMsg"></div>
+        </form>
+    </div>
+
+    <!-- 个人简介自定义模态框 -->
+    <div class="auth-modal" id="profileEditModal">
+        <form class="auth-card" id="profileEditForm" style="width: min(440px, 95vw);">
+            <h2>自定义个人简介</h2>
+            <label for="editProfileName">昵称 / ID</label>
+            <input id="editProfileName" type="text" maxlength="20" placeholder="例如：疯狂混沌" required>
+            
+            <label for="editProfileBio">一句话简介</label>
+            <input id="editProfileBio" type="text" maxlength="60" placeholder="例如：欢迎访问我的主页！">
+            
+            <label for="editProfileAvatar">头像相对路径 / URL</label>
+            <input id="editProfileAvatar" type="text" placeholder="例如：my/my.jpg">
+            
+            <div style="margin-top: 18px; font-weight: 800; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; font-size: 0.95rem; color: var(--pink); text-align: left;">社交链接 (可填 1-5 个)</div>
+            <div style="max-height: 200px; overflow-y: auto; padding-right: 4px; margin-top: 8px; display: flex; flex-direction: column; gap: 10px; text-align: left;" id="editLinksContainer">
+                <!-- 动态生成5个链接编辑框 -->
+            </div>
+
+            <div class="auth-actions" style="margin-top: 20px;">
+                <button type="button" id="closeProfileEditBtn">取消</button>
+                <button type="submit">保存</button>
+            </div>
         </form>
     </div>
 
@@ -2551,6 +2840,230 @@
             });
         });
 
+        // 初始化载入
+        loadMeta();
+        apiFetch('/my/loginUserInfo', { method: 'GET' })
+            .then(renderUser)
+            .catch(() => renderUser(null))
+            .finally(() => {
+                checkRoute();
+            });
+
+        // ==========================================
+        // 个人简介卡片与自定义逻辑
+        // ==========================================
+        (function() {
+            const DEFAULT_PROFILE = {
+                name: "疯狂混沌",
+                bio: "欢迎访问我的主页！",
+                avatar: "my/my.jpg",
+                links: [
+                    { name: "Bilibili", url: "https://space.bilibili.com/1265680561" },
+                    { name: "GitHub", url: "https://github.com/CrazyChaos" },
+                    { name: "", url: "" },
+                    { name: "", url: "" },
+                    { name: "", url: "" }
+                ]
+            };
+
+            function getRelativeAvatarPath(avatarPath) {
+                if (!avatarPath) return '';
+                if (avatarPath.startsWith('http') || avatarPath.startsWith('//') || avatarPath.startsWith('/')) {
+                    return avatarPath;
+                }
+                const path = window.location.pathname;
+                if (path.includes('/blog/') || path.includes('/tools/')) {
+                    return '../' + avatarPath;
+                }
+                return avatarPath;
+            }
+
+            function getLinkIconSVG(name) {
+                const lowercaseName = (name || '').toLowerCase();
+                if (lowercaseName.includes('bilibili') || lowercaseName.includes('b站')) {
+                    return `<svg viewBox="0 0 24 24"><path d="M17.87 2.93a1 1 0 0 1 1.37.28 1 1 0 0 1-.28 1.37l-2.6 1.83H18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3h1.64l-2.6-1.83A1 1 0 0 1 4.76 3.2a1 1 0 0 1 1.37.28L9.27 7h5.46l3.14-4.07zM18 9H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1zm-8.5 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>`;
+                }
+                if (lowercaseName.includes('github')) {
+                    return `<svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.162 22 16.418 22 12c0-5.523-4.478-10-10-10z"/></svg>`;
+                }
+                return `<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71a1 1 0 1 0 1.42 1.42l1.72-1.72a3 3 0 0 1 4.24 4.24l-3 3a3 3 0 0 1-4.24 0 1 1 0 0 0-1.42 1.42zM14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71a1 1 0 1 0-1.42-1.42l-1.71 1.71a3 3 0 0 1-4.24-4.24l3-3a3 3 0 0 1 4.24 0 1 1 0 0 0 1.42-1.42z"/></svg>`;
+            }
+
+            function loadProfileData() {
+                const stored = localStorage.getItem('custom_profile_data');
+                if (stored) {
+                    try {
+                        return JSON.parse(stored);
+                    } catch (e) {
+                        return DEFAULT_PROFILE;
+                    }
+                }
+                return DEFAULT_PROFILE;
+            }
+
+            function renderProfile() {
+                const data = loadProfileData();
+                const resolvedAvatar = getRelativeAvatarPath(data.avatar || DEFAULT_PROFILE.avatar);
+                
+                // Update header button avatar
+                const headerAvatarEl = document.getElementById('headerProfileAvatar');
+                if (headerAvatarEl) headerAvatarEl.src = resolvedAvatar;
+
+                // Update card contents
+                const cardAvatarEl = document.getElementById('profileCardAvatar');
+                if (cardAvatarEl) cardAvatarEl.src = resolvedAvatar;
+
+                const cardNameEl = document.getElementById('profileCardName');
+                if (cardNameEl) cardNameEl.textContent = data.name || DEFAULT_PROFILE.name;
+
+                const cardBioEl = document.getElementById('profileCardBio');
+                if (cardBioEl) cardBioEl.textContent = data.bio || DEFAULT_PROFILE.bio;
+
+                // Render links
+                const linksContainer = document.getElementById('profileCardLinks');
+                if (linksContainer) {
+                    linksContainer.innerHTML = '';
+                    const activeLinks = (data.links || []).filter(link => link.name && link.url);
+                    activeLinks.forEach(link => {
+                        const a = document.createElement('a');
+                        a.className = 'profile-link-item';
+                        a.href = link.url;
+                        a.target = '_blank';
+                        a.title = link.name;
+                        a.innerHTML = getLinkIconSVG(link.name);
+                        linksContainer.appendChild(a);
+                    });
+                }
+            }
+
+            // Events setup
+            const container = document.getElementById('profileContainer');
+            const popover = document.getElementById('profilePopover');
+            const profileBtn = document.getElementById('headerProfileBtn');
+            const editTrigger = document.getElementById('profileEditTrigger');
+            
+            const editModal = document.getElementById('profileEditModal');
+            const editForm = document.getElementById('profileEditForm');
+            const closeEditBtn = document.getElementById('closeProfileEditBtn');
+            const editLinksContainer = document.getElementById('editLinksContainer');
+
+            let hoverTimeout = null;
+
+            function showPopover() {
+                clearTimeout(hoverTimeout);
+                popover.classList.add('show');
+            }
+
+            function hidePopover() {
+                clearTimeout(hoverTimeout);
+                hoverTimeout = setTimeout(() => {
+                    popover.classList.remove('show');
+                }, 200); // 200ms smooth delay
+            }
+
+            // PC hover triggers
+            container.addEventListener('mouseenter', () => {
+                if (window.innerWidth > 768) {
+                    showPopover();
+                }
+            });
+
+            container.addEventListener('mouseleave', () => {
+                if (window.innerWidth > 768) {
+                    hidePopover();
+                }
+            });
+
+            // Click toggle for PC & Mobile
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = popover.classList.contains('show');
+                if (isOpen) {
+                    popover.classList.remove('show');
+                } else {
+                    showPopover();
+                }
+            });
+
+            popover.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            document.addEventListener('click', () => {
+                popover.classList.remove('show');
+            });
+
+            // Edit trigger
+            editTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close popover
+                popover.classList.remove('show');
+                
+                // Populate edit inputs
+                const data = loadProfileData();
+                document.getElementById('editProfileName').value = data.name || '';
+                document.getElementById('editProfileBio').value = data.bio || '';
+                document.getElementById('editProfileAvatar').value = data.avatar || '';
+                
+                // Render link inputs
+                editLinksContainer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const link = (data.links && data.links[i]) || { name: '', url: '' };
+                    const div = document.createElement('div');
+                    div.className = 'edit-link-row';
+                    div.innerHTML = `
+                        <label>链接 ${i + 1}${i === 0 ? ' (默认B站)' : i === 1 ? ' (默认GitHub)' : ''}</label>
+                        <input type="text" id="editLinkName_${i}" placeholder="显示名称 (如: Bilibili)" value="${link.name || ''}" style="margin-bottom:4px;">
+                        <input type="url" id="editLinkUrl_${i}" placeholder="链接地址 (https://...)" value="${link.url || ''}">
+                    `;
+                    editLinksContainer.appendChild(div);
+                }
+
+                // Open modal
+                editModal.classList.add('open');
+                requestAnimationFrame(() => {
+                    editModal.classList.add('show');
+                });
+            });
+
+            function closeEditModal() {
+                editModal.classList.remove('show');
+                setTimeout(() => {
+                    if (!editModal.classList.contains('show')) {
+                        editModal.classList.remove('open');
+                    }
+                }, 260);
+            }
+
+            closeEditBtn.addEventListener('click', closeEditModal);
+            
+            editModal.addEventListener('click', (e) => {
+                if (e.target === editModal) closeEditModal();
+            });
+
+            editForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('editProfileName').value.trim();
+                const bio = document.getElementById('editProfileBio').value.trim();
+                const avatar = document.getElementById('editProfileAvatar').value.trim();
+                
+                const links = [];
+                for (let i = 0; i < 5; i++) {
+                    const linkName = document.getElementById(`editLinkName_${i}`).value.trim();
+                    const linkUrl = document.getElementById(`editLinkUrl_${i}`).value.trim();
+                    links.push({ name: linkName, url: linkUrl });
+                }
+
+                const updatedData = { name, bio, avatar, links };
+                localStorage.setItem('custom_profile_data', JSON.stringify(updatedData));
+                
+                renderProfile();
+                closeEditModal();
+            });
+
+            // Initial render
+            renderProfile();
+        })();
         // 初始化载入
         loadMeta();
         apiFetch('/my/loginUserInfo', { method: 'GET' })
