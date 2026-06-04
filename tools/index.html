@@ -735,6 +735,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .hamburger-btn:hover {
+            background: var(--glass-strong);
+            transform: scale(1.05);
         }
 
         .hamburger-btn .bar {
@@ -742,7 +748,18 @@
             height: 2.5px;
             margin: 3px 0;
             border-radius: 3px;
-            background-color: #fff;
+            background-color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active .bar:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+        .hamburger-btn.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active .bar:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
         }
 
         .auth-login-btn,
@@ -819,12 +836,12 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            background: var(--navbar-bg);
+            border-right: 1px solid var(--navbar-border);
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            transition: left 0.35s ease;
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease;
         }
 
         .glass-sidebar.open {
@@ -834,14 +851,27 @@
         .sidebar-item {
             width: 100%;
             padding: 14px 20px;
-            color: #fff;
+            color: var(--text);
             font-size: 1.1rem;
             font-weight: bold;
             text-align: center;
-            text-decoration: none;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease, background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            text-decoration: none;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        .sidebar-item:hover {
+            background: var(--glass-strong);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            color: var(--pink);
+            text-shadow: none;
         }
 
         .page {
@@ -1924,11 +1954,13 @@
         // 菜单切换
         hamburgerBtn.addEventListener('click', () => {
             sidebar.classList.toggle('open');
+            hamburgerBtn.classList.toggle('active');
         });
 
         document.addEventListener('click', (event) => {
             if (sidebar.classList.contains('open') && !sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
                 sidebar.classList.remove('open');
+                hamburgerBtn.classList.remove('active');
             }
         });
 
