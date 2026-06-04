@@ -2826,6 +2826,7 @@
                     { name: "", url: "" }
                 ]
             };
+            let currentProfileData = DEFAULT_PROFILE;
 
             function getRelativeAvatarPath(avatarPath) {
                 if (!avatarPath) return '';
@@ -2866,6 +2867,7 @@
                 if (!data) {
                     data = loadProfileData();
                 }
+                currentProfileData = data;
                 const resolvedAvatar = getRelativeAvatarPath(data.avatar || DEFAULT_PROFILE.avatar);
                 
                 // Update header button avatar
@@ -2963,7 +2965,7 @@
                 popover.classList.remove('show');
                 
                 // Populate edit inputs
-                const data = loadProfileData();
+                const data = currentProfileData;
                 document.getElementById('editProfileName').value = data.name || '';
                 document.getElementById('editProfileBio').value = data.bio || '';
                 document.getElementById('editProfileAvatar').value = data.avatar || '';
