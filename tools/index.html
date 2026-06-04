@@ -2161,7 +2161,10 @@
                 slug = path.substring(7);
             } else if (path.startsWith('/tools.html/')) {
                 slug = path.substring(12);
-            } else {
+            }
+            
+            // 如果路径中未包含具体的 slug（例如仅仅是 /tools/ 或 /tools/index.html），则尝试读取查询参数 ?tool=
+            if (!slug || slug === 'index.html') {
                 slug = new URLSearchParams(window.location.search).get('tool') || '';
             }
 
@@ -2447,9 +2450,9 @@
                         // 使用 SPA url 导航
                         const url = new URL(window.location.href);
                         if (url.pathname.includes('tools.html')) {
-                            history.pushState(null, '', `/tools.html/${tool.slug}`);
+                            history.pushState(null, '', `/tools.html?tool=${tool.slug}`);
                         } else {
-                            history.pushState(null, '', `/tools/${tool.slug}`);
+                            history.pushState(null, '', `/tools/?tool=${tool.slug}`);
                         }
                         loadDetail(tool.slug);
                     });

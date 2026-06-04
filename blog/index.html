@@ -2645,7 +2645,7 @@
                                 matchedTools.forEach(tool => {
                                     const card = document.createElement('a');
                                     card.className = 'tool-link-card';
-                                    card.href = `/tools/${encodeURIComponent(tool.slug)}`;
+                                    card.href = `/tools/?tool=${encodeURIComponent(tool.slug)}`;
                                     card.innerHTML = `
                                         <div class="tool-link-title">⚙️ ${escapeHtml(tool.title)}</div>
                                         <div class="tool-link-desc">${escapeHtml(tool.description || '查看工具详情 ↗')}</div>
