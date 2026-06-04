@@ -1214,7 +1214,7 @@
             </div>
             <label for="loginPassword">密码</label>
             <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="输入邮箱密码" required>
-            <div class="cf-turnstile auth-turnstile" data-sitekey="0x4AAAAAADefAszieEgiXaDX"></div>
+            <div class="auth-turnstile" id="loginTurnstile"></div>
             <div class="auth-actions">
                 <button type="button" id="closeLoginBtn">取消</button>
                 <button type="submit">登录</button>
@@ -1508,10 +1508,35 @@
             }
         }
 
+        let turnstileWidgetId = null;
+        async function initTurnstileWidget() {
+            try {
+                if (turnstileWidgetId !== null && window.turnstile) {
+                    window.turnstile.reset(turnstileWidgetId);
+                    return;
+                }
+                const config = await apiFetch('/setting/websiteConfig');
+                const siteKey = config.siteKey;
+                if (siteKey && window.turnstile) {
+                    const el = document.getElementById('loginTurnstile');
+                    if (el) {
+                        el.innerHTML = '';
+                        turnstileWidgetId = window.turnstile.render(el, {
+                            sitekey: siteKey,
+                            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to load Turnstile config:', error);
+            }
+        }
+
         loginBtn.addEventListener('click', () => {
             setMessage(loginMsg, '');
             setLoginStatus('');
             openModal(loginModal);
+            initTurnstileWidget();
         });
 
         userPill.addEventListener('click', () => {
