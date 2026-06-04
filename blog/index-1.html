@@ -1,0 +1,1863 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffb6cf">
+    <meta name="description" content="CrazyChaos 的博客，文章元数据保存在 D1，正文保存在 R2，对外展示在 www.crazychaos.top。">
+    <meta property="og:title" content="塔菲喵博客">
+    <meta property="og:description" content="笔记、教程、更新记录和一点点粉色废话。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.crazychaos.top/blog/">
+    <meta property="og:image" content="https://www.crazychaos.top/123/emoji_23.avif">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="塔菲喵博客">
+    <title>塔菲喵博客</title>
+    
+    <!-- 网页标签页的头像 (Favicon) 相对路径指向 SubscribeTaFFyNya -->
+    <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="shortcut icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="../123/emoji_23.avif">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="canonical" href="https://www.crazychaos.top/blog/">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
+    <style>
+        :root {
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.78);
+            --glass: rgba(255, 255, 255, 0.22);
+            --glass-strong: rgba(255, 255, 255, 0.38);
+            --glass-border: rgba(255, 255, 255, 0.45);
+            --shadow: 0 18px 55px rgba(255, 121, 198, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: #ffb6cf;
+            overscroll-behavior: contain;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100svh;
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: calc(96px + env(safe-area-inset-top)) 0 calc(36px + env(safe-area-inset-bottom));
+        }
+
+        /* 统一导航栏样式 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(64px + env(safe-area-inset-top));
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .navbar-container {
+            max-width: 1100px;
+            width: 95%;
+            height: 64px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 电脑端导航链接 (B站左上角布局风格) */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-item {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-item:hover {
+            color: var(--pink);
+            transform: translateY(-2px);
+        }
+
+        /* 右侧登录/个人状态 */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auth-login-btn,
+        .auth-logout-btn,
+        .auth-user-pill {
+            min-height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+
+        .auth-login-btn {
+            padding: 0 22px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .auth-logout-btn {
+            display: none;
+            padding: 0 16px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .auth-logout-btn.show {
+            display: block;
+        }
+
+        .auth-user-pill {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 14px 4px 6px;
+            border-radius: 999px;
+            max-width: 260px;
+        }
+
+        .auth-user-pill.show {
+            display: flex;
+        }
+
+        .auth-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 0 10px rgba(255, 121, 198, 0.35);
+        }
+
+        .auth-user-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+        }
+
+        .auth-nickname {
+            font-size: 0.9rem;
+            font-weight: 800;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .auth-email {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .auth-login-btn:hover,
+        .auth-logout-btn:hover,
+        .auth-user-pill:hover {
+            background: rgba(255, 255, 255, 0.38);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.5);
+            color: var(--pink);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 手机端汉堡菜单按钮 */
+        .hamburger-btn {
+            display: none;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .hamburger-btn .bar {
+            width: 22px;
+            height: 2.5px;
+            background-color: #fff;
+            margin: 3px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active .bar:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+        .hamburger-btn.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active .bar:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+        }
+
+        /* 手机端侧边导航栏 */
+        .glass-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            padding: calc(84px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .glass-sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-item {
+            width: 100%;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease;
+            text-decoration: none;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.45);
+            color: var(--pink);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 登录/设置弹窗 */
+        .auth-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(24, 12, 32, 0.28);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 11000;
+            opacity: 0;
+            transition: opacity 260ms ease;
+        }
+
+        .auth-modal.open {
+            display: flex;
+        }
+
+        .auth-modal.show {
+            opacity: 1;
+        }
+
+        .auth-card {
+            width: min(420px, 92vw);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 24px;
+            box-shadow: 0 18px 55px rgba(31, 38, 135, 0.25);
+            padding: 26px;
+            box-sizing: border-box;
+            color: #fff;
+            transform: translateY(18px) scale(0.92);
+            opacity: 0;
+            transition:
+                transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 260ms ease;
+        }
+
+        .auth-modal.show .auth-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .auth-card h2 {
+            margin: 0 0 18px;
+            color: #ff79c6;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 121, 198, 0.45);
+        }
+
+        .auth-card label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: 700;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+        }
+
+        .auth-card input {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            outline: none;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 12px rgba(255, 255, 255, 0.08);
+            font-size: 1rem;
+        }
+
+        .auth-email-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: stretch;
+        }
+
+        .auth-email-row input {
+            border-radius: 15px 0 0 15px;
+            border-right: 0;
+        }
+
+        .auth-email-row select {
+            height: 46px;
+            padding: 0 12px;
+            border-radius: 0 15px 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            outline: none;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 12px rgba(255, 255, 255, 0.08);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .auth-email-row option {
+            color: #222;
+        }
+
+        .auth-card input::placeholder {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .auth-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .auth-turnstile {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .auth-actions button {
+            flex: 1;
+            min-height: 44px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 999px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.23);
+            transition: all 0.25s ease;
+        }
+
+        .auth-actions button:hover {
+            background: rgba(255, 255, 255, 0.42);
+            color: #ff79c6;
+            box-shadow: 0 8px 24px rgba(255, 121, 198, 0.38);
+        }
+
+        .auth-msg {
+            min-height: 20px;
+            margin-top: 14px;
+            text-align: center;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-status-strip {
+            position: relative;
+            width: 76px;
+            height: 7px;
+            margin: 16px auto 0;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transform: translateY(-8px) scaleX(0.55);
+            transform-origin: center;
+            transition:
+                opacity 180ms ease,
+                transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-radius 360ms cubic-bezier(0.22, 1, 0.36, 1),
+                background 220ms ease;
+        }
+
+        .auth-status-strip.active {
+            opacity: 1;
+            transform: translateY(0) scaleX(1);
+        }
+
+        .auth-status-strip.loading::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            width: 45%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, rgba(255,255,255,0.35), #ff79c6, rgba(255,255,255,0.35));
+            animation: auth-strip-loading 900ms ease-in-out infinite;
+        }
+
+        .auth-status-strip.success,
+        .auth-status-strip.error {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 8px 24px rgba(255, 121, 198, 0.3);
+        }
+
+        .auth-status-strip.success::after,
+        .auth-status-strip.error::after {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .auth-status-strip.success::after {
+            content: "✓";
+            color: #28d17c;
+        }
+
+        .auth-status-strip.error::after {
+            content: "×";
+            color: #ff4d8d;
+        }
+
+        @keyframes auth-strip-loading {
+            0% {
+                transform: translateX(-110%);
+            }
+            100% {
+                transform: translateX(230%);
+            }
+        }
+
+        .auth-profile-head {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .auth-profile-head img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .glass-link,
+        .tag-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            box-shadow: 0 8px 28px rgba(31, 38, 135, 0.14);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            cursor: pointer;
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+        }
+
+        .glass-link:hover,
+        .tag-button:hover,
+        .tag-button.active {
+            transform: translateY(-2px);
+            background: var(--glass-strong);
+            color: var(--pink);
+        }
+
+        .hero {
+            position: relative;
+            min-height: 290px;
+            display: grid;
+            align-items: end;
+            padding: 42px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.14));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -40px;
+            width: 260px;
+            height: 260px;
+            background: url("../123/emoji_1.webp") center / contain no-repeat;
+            opacity: 0.28;
+            transform: rotate(13deg);
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 10px;
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
+            line-height: 1;
+            color: var(--pink);
+            text-shadow: 0 0 16px rgba(255, 121, 198, 0.48);
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            max-width: 620px;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 280px;
+            gap: 22px;
+            margin-top: 24px;
+            align-items: start;
+            min-width: 0;
+        }
+
+        .search-panel {
+            margin-top: 24px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 0;
+            height: 46px;
+            padding: 0 18px;
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .panel {
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.21);
+            box-shadow: 0 12px 36px rgba(31, 38, 135, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            min-width: 0;
+        }
+
+        .article-list {
+            display: grid;
+            gap: 16px;
+            padding: 18px;
+        }
+
+        .post-card {
+            display: grid;
+            grid-template-columns: 140px minmax(0, 1fr);
+            gap: 18px;
+            padding: 16px;
+            min-height: 142px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.36);
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+            min-width: 0;
+        }
+
+        .post-card > span {
+            min-width: 0;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 34px rgba(255, 121, 198, 0.28);
+        }
+
+        .post-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .post-title {
+            margin: 3px 0 8px;
+            font-size: 1.35rem;
+            color: #fff;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .post-summary {
+            margin: 0 0 12px;
+            color: var(--muted);
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .post-meta,
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .sidebar {
+            padding: 18px;
+            position: sticky;
+            top: 18px;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 14px;
+            font-size: 1.1rem;
+            color: var(--pink);
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-button {
+            min-height: 36px;
+            padding: 0 14px;
+            font-size: 0.92rem;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail {
+            display: none;
+            padding: 26px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .detail.open {
+            display: block;
+        }
+
+        .detail h2 {
+            margin: 0 0 12px;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: #fff;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-body {
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.02rem;
+            line-height: 1.9;
+            max-width: 100%;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-body p,
+        .detail-body li,
+        .detail-body blockquote,
+        .detail-body strong {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-body h1,
+        .detail-body h2,
+        .detail-body h3 {
+            color: var(--pink);
+        }
+
+        .detail-body pre {
+            overflow-x: auto;
+            max-width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(25, 15, 28, 0.55);
+        }
+
+        .detail-body code {
+            font-family: Consolas, "SFMono-Regular", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-body img {
+            max-width: 100%;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 12px 34px rgba(31, 38, 135, 0.15);
+        }
+
+        .detail-body a {
+            color: #fff;
+            font-weight: 800;
+            text-decoration-color: rgba(255, 255, 255, 0.55);
+            text-underline-offset: 4px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .comments-panel {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .comments-panel h3 {
+            margin: 0 0 14px;
+            color: #fff;
+        }
+
+        .comment-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .comment-item,
+        .comment-form,
+        .comment-login-tip {
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .comment-item {
+            padding: 14px 16px;
+        }
+
+        .comment-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.85rem;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .comment-author {
+            color: #fff;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .comment-item p {
+            margin: 8px 0 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            line-height: 1.7;
+        }
+
+        .comment-form {
+            margin-top: 14px;
+            padding: 14px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 96px;
+            resize: vertical;
+            padding: 12px 14px;
+            color: #fff;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            background: rgba(255, 255, 255, 0.16);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .comment-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .comment-actions {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .comment-login-tip {
+            margin-top: 14px;
+            padding: 16px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .state {
+            padding: 46px 22px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.8;
+        }
+
+        .load-more {
+            width: min(240px, 100%);
+            margin: 18px auto 0;
+        }
+
+        .load-more[hidden] {
+            display: none;
+        }
+
+        .floating-sticker {
+            position: fixed;
+            right: 7vw;
+            bottom: 8vh;
+            width: 92px;
+            border-radius: 18px;
+            transform: rotate(-10deg);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+            pointer-events: none;
+            opacity: 0.82;
+        }
+
+        /* 适配手机端与小屏幕 */
+        @media (max-width: 768px) {
+            html,
+            body {
+                min-height: 100svh;
+                min-height: 100dvh;
+                overscroll-behavior-y: none;
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: inherit;
+                z-index: -1;
+            }
+
+            .page {
+                width: min(100% - 20px, 560px);
+                padding-top: calc(84px + env(safe-area-inset-top));
+            }
+
+            /* 移动端导航栏及侧边栏显示控制 */
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .auth-email-row {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-email-row input {
+                border-radius: 15px 15px 0 0;
+                border-right: 1px solid rgba(255, 255, 255, 0.55);
+            }
+
+            .auth-email-row select {
+                border-radius: 0 0 15px 15px;
+                border-top: 0;
+            }
+
+            .auth-modal {
+                align-items: flex-start;
+                padding-top: calc(92px + env(safe-area-inset-top));
+            }
+
+            .auth-card {
+                width: min(390px, calc(100vw - 32px));
+                border-radius: 26px;
+                transform: translateY(18px) scale(0.92);
+            }
+
+            .hero {
+                min-height: 230px;
+                padding: 28px 22px;
+                border-radius: 22px;
+            }
+
+            .hero::after {
+                width: 180px;
+                height: 180px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                min-width: 0;
+            }
+
+            .search-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+
+            .article-list {
+                padding: 12px;
+            }
+
+            .post-card {
+                grid-template-columns: 86px minmax(0, 1fr);
+                gap: 12px;
+                min-height: 112px;
+                padding: 12px;
+                border-radius: 18px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .post-title {
+                font-size: 1.05rem;
+                margin-bottom: 5px;
+            }
+
+            .post-summary {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-bottom: 8px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .detail {
+                padding: 18px;
+                max-width: 100%;
+            }
+
+            .detail-body {
+                font-size: 0.98rem;
+                line-height: 1.85;
+            }
+
+            .detail-body pre {
+                padding: 12px;
+            }
+
+            .floating-sticker {
+                width: 70px;
+                right: 18px;
+                bottom: calc(18px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 统一导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- 手机端汉堡菜单按钮 -->
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" type="button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <!-- 电脑端左侧导航栏 (B站左上角布局风格) -->
+            <nav class="nav-links">
+                <a href="/" class="nav-item">首页</a>
+                <a href="/blog/" class="nav-item">博客</a>
+                <a href="/tools.html" class="nav-item">小工具</a>
+                <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
+            </nav>
+
+            <!-- 右侧登录/个人状态 -->
+            <div class="auth-section">
+                <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
+                
+                <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
+                    <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
+                    <span class="auth-user-text">
+                        <span class="auth-nickname" id="userNickname">未登录</span>
+                        <span class="auth-email" id="userEmail"></span>
+                    </span>
+                </button>
+                
+                <button class="auth-logout-btn" id="quickLogoutBtn" type="button">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 手机端侧边导航栏 -->
+    <div class="glass-sidebar" id="sidebar">
+        <a href="/" class="sidebar-item">主页</a>
+        <a href="/blog/" class="sidebar-item">博客</a>
+        <a href="/tools.html" class="sidebar-item">小工具</a>
+        <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div class="auth-modal" id="loginModal">
+        <form class="auth-card" id="loginForm">
+            <h2>登录邮箱账号</h2>
+            <label for="loginEmail">邮箱</label>
+            <div class="auth-email-row">
+                <input id="loginEmail" name="email" type="text" inputmode="email" autocomplete="username" placeholder="name" required>
+                <select id="loginDomain" name="domain" aria-label="邮箱域名">
+                    <option value="@crazychaos.top" selected>@crazychaos.top</option>
+                </select>
+            </div>
+            <label for="loginPassword">密码</label>
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="输入邮箱密码" required>
+            <div class="cf-turnstile auth-turnstile" data-sitekey="0x4AAAAAADefAszieEgiXaDX"></div>
+            <div class="auth-actions">
+                <button type="button" id="closeLoginBtn">取消</button>
+                <button type="submit">登录</button>
+            </div>
+            <div class="auth-status-strip" id="loginStatus" aria-hidden="true"></div>
+            <div class="auth-msg" id="loginMsg"></div>
+        </form>
+    </div>
+
+    <!-- 个人设置模态框 -->
+    <div class="auth-modal" id="profileModal">
+        <form class="auth-card" id="profileForm">
+            <div class="auth-profile-head">
+                <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
+                <h2>个人设置</h2>
+            </div>
+            <label for="nicknameInput">昵称</label>
+            <input id="nicknameInput" name="nickname" type="text" maxlength="24" autocomplete="nickname" placeholder="给自己起个名字">
+            <div class="auth-actions">
+                <button type="button" id="logoutBtn">退出</button>
+                <button type="submit">保存</button>
+            </div>
+            <div class="auth-actions">
+                <button type="button" id="closeProfileBtn">关闭</button>
+                <button type="button" id="goMailBtn">进入邮箱</button>
+            </div>
+            <div class="auth-msg" id="profileMsg"></div>
+        </form>
+    </div>
+
+    <!-- 博客主页面内容 -->
+    <main class="page">
+        <section class="hero">
+            <div>
+                <h1>塔菲喵博客</h1>
+                <p>这里会显示发布后的笔记、教程、更新记录和一点点粉色废话。</p>
+            </div>
+        </section>
+
+        <section class="panel search-panel">
+            <input class="search-input" id="searchInput" type="search" placeholder="搜索标题、摘要、分类或标签">
+            <button class="glass-link" type="button" id="searchButton">搜索</button>
+        </section>
+
+        <section class="content-grid">
+            <div>
+                <article class="panel detail" id="detailPanel">
+                    <button class="glass-link" type="button" id="backButton">返回列表</button>
+                    <h2 id="detailTitle"></h2>
+                    <div class="detail-meta" id="detailMeta"></div>
+                    <div class="detail-body" id="detailBody"></div>
+                    <section class="comments-panel" id="commentsPanel">
+                        <h3>评论</h3>
+                        <div class="comment-list" id="commentList">
+                            <div class="state">正在读取评论...</div>
+                        </div>
+                        <div class="comment-login-tip" id="commentLoginTip">登录后发表评论</div>
+                        <form class="comment-form" id="commentForm" hidden>
+                            <textarea id="commentContent" maxlength="1000" placeholder="写下你的评论"></textarea>
+                            <div class="comment-actions">
+                                <span id="commentMsg"></span>
+                                <button class="glass-link" type="submit">发表</button>
+                            </div>
+                        </form>
+                    </section>
+                </article>
+                <div class="panel article-list" id="articleList">
+                    <div class="state">正在读取博客...</div>
+                </div>
+                <button class="glass-link load-more" type="button" id="loadMoreButton" hidden>加载更多</button>
+            </div>
+            <aside class="panel sidebar">
+                <h2>分类 / 标签</h2>
+                <div class="tag-cloud" id="tagCloud">
+                    <button class="tag-button active" type="button" data-tag="">全部</button>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <!-- 底部贴纸 -->
+    <img class="floating-sticker" src="../123/emoji_20.avif" alt="">
+
+    <script>
+        // ==========================================
+        // 0. 汉堡菜单逻辑
+        // ==========================================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        hamburgerBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            sidebar.classList.toggle('open');
+        });
+
+        // 点击空白处关闭侧边栏
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+                hamburgerBtn.classList.remove('active');
+            }
+        });
+
+        // ==========================================
+        // 1. 统一的身份验证与个人设置逻辑
+        // ==========================================
+        const API_BASE = 'https://mail.crazychaos.top/api';
+        const MAIL_URL = 'https://mail.crazychaos.top';
+        const mailNavLink = document.getElementById('mailNavLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const quickLogoutBtn = document.getElementById('quickLogoutBtn');
+        const userPill = document.getElementById('userPill');
+        const userNickname = document.getElementById('userNickname');
+        const userEmail = document.getElementById('userEmail');
+        const loginModal = document.getElementById('loginModal');
+        const profileModal = document.getElementById('profileModal');
+        const loginForm = document.getElementById('loginForm');
+        const profileForm = document.getElementById('profileForm');
+        const loginMsg = document.getElementById('loginMsg');
+        const loginStatus = document.getElementById('loginStatus');
+        const profileMsg = document.getElementById('profileMsg');
+        const nicknameInput = document.getElementById('nicknameInput');
+        const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
+
+        if (mailNavLink) {
+            mailNavLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                sidebar.classList.remove('open');
+                hamburgerBtn.classList.remove('active');
+                window.location.assign(MAIL_URL);
+            });
+        }
+
+        let currentUser = null;
+
+        function openModal(modal) {
+            modal.classList.add('open');
+            requestAnimationFrame(() => {
+                modal.classList.add('show');
+            });
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                if (!modal.classList.contains('show')) {
+                    modal.classList.remove('open');
+                }
+            }, 260);
+        }
+
+        function setLoginStatus(status) {
+            loginStatus.className = 'auth-status-strip';
+            if (status) {
+                requestAnimationFrame(() => {
+                    loginStatus.classList.add('active', status);
+                });
+            }
+        }
+
+        function getDisplayName(user) {
+            if (!user) return '未登录';
+            const fallback = user.email ? user.email.split('@')[0] : 'Taffy Fan';
+            return user.nickname || user.name || fallback;
+        }
+
+        function setMessage(target, message, isError = false) {
+            target.textContent = message;
+            target.style.color = isError ? '#ffedf6' : '#fff';
+        }
+
+        function authHeaders(extra = {}) {
+            const token = localStorage.getItem('token');
+            return {
+                ...(token ? { Authorization: token } : {}),
+                ...extra
+            };
+        }
+
+        function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
+            const value = String(email || '').trim();
+            if (!value) return '';
+            return value.includes('@') ? value : `${value}${domain || DEFAULT_LOGIN_DOMAIN}`;
+        }
+
+        function renderUser(user) {
+            currentUser = user;
+
+            if (!user) {
+                document.body.classList.remove('authenticated');
+                loginBtn.style.display = 'block';
+                quickLogoutBtn.classList.remove('show');
+                userPill.classList.remove('show');
+                if (detailPanel.classList.contains('open')) {
+                    renderCommentForm();
+                }
+                return;
+            }
+
+            loginBtn.style.display = 'none';
+            document.body.classList.add('authenticated');
+            quickLogoutBtn.classList.add('show');
+            userNickname.textContent = getDisplayName(user);
+            userEmail.textContent = user.email || '';
+            nicknameInput.value = user.nickname || '';
+            userPill.classList.add('show');
+            if (detailPanel.classList.contains('open')) {
+                renderCommentForm();
+            }
+        }
+
+        async function apiFetch(path, options = {}) {
+            const response = await fetch(`${API_BASE}${path}`, {
+                credentials: 'include',
+                ...options,
+                headers: {
+                    ...authHeaders({
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    })
+                }
+            });
+            const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
+            if (!response.ok || data.code !== 200) {
+                throw new Error(data.message || '请求失败');
+            }
+            return data.data;
+        }
+
+        async function readApiJson(response, fallbackMessage = '请求失败') {
+            const text = await response.text();
+            const body = text.trim();
+            const candidates = [body];
+            if (body.startsWith('null')) {
+                const rest = body.slice(4).trim();
+                if (rest.startsWith('{') || rest.startsWith('[')) candidates.push(rest);
+            }
+            for (const candidate of candidates) {
+                if (!candidate) return { code: response.status, message: fallbackMessage };
+                try {
+                    return JSON.parse(candidate);
+                } catch {
+                    // try next candidate
+                }
+            }
+            return { code: response.status, message: fallbackMessage };
+        }
+
+        async function loadLoginUser() {
+            try {
+                const user = await apiFetch('/my/loginUserInfo', { method: 'GET' });
+                renderUser(user);
+            } catch (error) {
+                renderUser(null);
+            }
+        }
+
+        loginBtn.addEventListener('click', () => {
+            setMessage(loginMsg, '');
+            setLoginStatus('');
+            openModal(loginModal);
+        });
+
+        userPill.addEventListener('click', () => {
+            if (!currentUser) return;
+            nicknameInput.value = currentUser.nickname || '';
+            setMessage(profileMsg, '');
+            openModal(profileModal);
+        });
+
+        document.getElementById('closeLoginBtn').addEventListener('click', () => closeModal(loginModal));
+        document.getElementById('closeProfileBtn').addEventListener('click', () => closeModal(profileModal));
+        document.getElementById('goMailBtn').addEventListener('click', () => {
+            window.location.href = MAIL_URL;
+        });
+
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) closeModal(loginModal);
+        });
+
+        profileModal.addEventListener('click', (event) => {
+            if (event.target === profileModal) closeModal(profileModal);
+        });
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setMessage(loginMsg, '登录中...');
+            setLoginStatus('loading');
+
+            try {
+                const form = new FormData(loginForm);
+                const turnstileToken = form.get('cf-turnstile-response');
+                if (!turnstileToken) {
+                    throw new Error('请先完成人机验证');
+                }
+                const data = await apiFetch('/login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: normalizeLoginEmail(form.get('email'), form.get('domain')),
+                        password: form.get('password'),
+                        token: turnstileToken
+                    })
+                });
+
+                if (data?.token) {
+                    localStorage.setItem('token', data.token);
+                }
+
+                await loadLoginUser();
+                loginForm.reset();
+                window.turnstile?.reset();
+                setLoginStatus('success');
+                setMessage(loginMsg, '登录成功');
+                setTimeout(() => closeModal(loginModal), 720);
+            } catch (error) {
+                window.turnstile?.reset();
+                setLoginStatus('error');
+                setMessage(loginMsg, error.message || '登录失败', true);
+            }
+        });
+
+        profileForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setMessage(profileMsg, '保存中...');
+
+            try {
+                const profile = await apiFetch('/my/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify({ nickname: nicknameInput.value })
+                });
+
+                currentUser = {
+                    ...currentUser,
+                    nickname: profile.nickname
+                };
+                renderUser(currentUser);
+                setMessage(profileMsg, '已保存');
+            } catch (error) {
+                setMessage(profileMsg, error.message || '保存失败', true);
+            }
+        });
+
+        async function logoutCurrentUser(messageTarget = profileMsg) {
+            setMessage(messageTarget, '退出中...');
+
+            try {
+                await apiFetch('/logout', { method: 'DELETE' });
+            } catch (error) {
+                console.warn(error);
+            }
+
+            localStorage.removeItem('token');
+            renderUser(null);
+            closeModal(profileModal);
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => logoutCurrentUser(profileMsg));
+        quickLogoutBtn.addEventListener('click', () => logoutCurrentUser(profileMsg));
+
+        loadLoginUser();
+
+        // ==========================================
+        // 2. 博客读取、展示及交互逻辑
+        // ==========================================
+        const FALLBACK_COVER = '../123/emoji_1.webp';
+        const articleList = document.getElementById('articleList');
+        const tagCloud = document.getElementById('tagCloud');
+        const detailPanel = document.getElementById('detailPanel');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailMeta = document.getElementById('detailMeta');
+        const detailBody = document.getElementById('detailBody');
+        const commentList = document.getElementById('commentList');
+        const commentLoginTip = document.getElementById('commentLoginTip');
+        const commentForm = document.getElementById('commentForm');
+        const commentContent = document.getElementById('commentContent');
+        const commentMsg = document.getElementById('commentMsg');
+        const backButton = document.getElementById('backButton');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        let posts = [];
+        let currentTag = '';
+        let currentQuery = '';
+        let currentPage = 1;
+        let totalPosts = 0;
+        let isLoading = false;
+        let activePostSlug = '';
+        const PAGE_SIZE = 10;
+        let initialPostSlug = new URLSearchParams(window.location.search).get('post') || '';
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function safeMarkdownUrl(url = '') {
+            const value = String(url).trim();
+            if (/^(https?:)?\/\//i.test(value) || value.startsWith('/') || value.startsWith('../') || value.startsWith('./')) {
+                return value;
+            }
+            return '';
+        }
+
+        function markdownToHtml(markdown = '') {
+            const escaped = escapeHtml(markdown);
+            return escaped
+                .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (match, alt, url) => {
+                    const safeUrl = safeMarkdownUrl(url);
+                    return safeUrl ? `<img src="${safeUrl}" alt="${alt}">` : match;
+                })
+                .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (match, text, url) => {
+                    const safeUrl = safeMarkdownUrl(url);
+                    return safeUrl ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${text}</a>` : match;
+                })
+                .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n{2,}/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function normalizePost(post) {
+            return {
+                slug: post.slug,
+                title: post.title || '未命名文章',
+                summary: post.summary || '',
+                category: post.category || '',
+                tags: Array.isArray(post.tags) ? post.tags : [],
+                coverUrl: post.coverUrl || FALLBACK_COVER,
+                publishedAt: post.publishedAt || post.createdAt || '',
+                viewCount: post.viewCount || 0,
+                visibility: post.visibility || 'public',
+                author: post.author || {},
+                locked: Boolean(post.locked)
+            };
+        }
+
+        function formatDate(value) {
+            if (!value) return '未发布';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function formatAuthor(post) {
+            const email = post.author?.email || '';
+            const nickname = post.author?.nickname || (email ? email.split('@')[0] : 'CrazyChaos');
+            return email ? `${nickname} · ${email}` : nickname;
+        }
+
+        function setState(text) {
+            articleList.innerHTML = `<div class="state">${escapeHtml(text)}</div>`;
+            loadMoreButton.hidden = true;
+        }
+
+        function renderTags() {
+            const tags = new Set();
+            posts.forEach((post) => {
+                if (post.category) tags.add(post.category);
+                post.tags.forEach((tag) => tags.add(tag));
+            });
+            tagCloud.innerHTML = `<button class="tag-button ${currentTag ? '' : 'active'}" type="button" data-tag="">全部</button>`;
+            [...tags].forEach((tag) => {
+                const button = document.createElement('button');
+                button.className = `tag-button ${tag === currentTag ? 'active' : ''}`;
+                button.type = 'button';
+                button.dataset.tag = tag;
+                button.textContent = tag;
+                tagCloud.appendChild(button);
+            });
+        }
+
+        function updateLoadMore() {
+            const hasMore = posts.length < totalPosts && !detailPanel.classList.contains('open');
+            loadMoreButton.hidden = !hasMore;
+            loadMoreButton.textContent = isLoading ? '读取中...' : '加载更多';
+        }
+
+        function renderPosts() {
+            const filtered = currentTag
+                ? posts.filter((post) => post.category === currentTag || post.tags.includes(currentTag))
+                : posts;
+
+            detailPanel.classList.remove('open');
+            articleList.style.display = 'grid';
+
+            if (!filtered.length) {
+                setState(currentTag ? '这个分类暂时没有文章。' : '还没有发布文章。');
+                return;
+            }
+
+            articleList.innerHTML = '';
+            filtered.forEach((post) => {
+                const button = document.createElement('button');
+                button.className = 'post-card';
+                button.type = 'button';
+                button.innerHTML = `
+                    <img class="post-cover" src="${escapeHtml(post.coverUrl)}" alt="">
+                    <span>
+                        <strong class="post-title">${escapeHtml(post.title)}</strong>
+                        <p class="post-summary">${escapeHtml(post.summary || '点开看看这篇写了什么。')}</p>
+                        <span class="post-meta">
+                            <span>${escapeHtml(formatDate(post.publishedAt))}</span>
+                            ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                            <span>${escapeHtml(formatAuthor(post))}</span>
+                            <span>${post.viewCount} 阅读</span>
+                        </span>
+                    </span>
+                `;
+                button.addEventListener('click', () => openPost(post.slug));
+                articleList.appendChild(button);
+            });
+            updateLoadMore();
+        }
+
+        async function loadPosts(reset = true) {
+            if (isLoading) return;
+            isLoading = true;
+            if (reset) {
+                currentPage = 1;
+                totalPosts = 0;
+                posts = [];
+                setState('正在读取博客...');
+            }
+            updateLoadMore();
+            try {
+                const query = new URLSearchParams({ page: String(currentPage), pageSize: String(PAGE_SIZE) });
+                if (currentQuery) query.set('q', currentQuery);
+                if (currentTag) query.set('tag', currentTag);
+                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, {
+                    credentials: 'include',
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '读取失败');
+                }
+                const nextPosts = (json.data?.list || []).map(normalizePost);
+                totalPosts = Number(json.data?.total || nextPosts.length);
+                posts = reset ? nextPosts : posts.concat(nextPosts);
+                currentPage += 1;
+                renderTags();
+                renderPosts();
+                if (initialPostSlug) {
+                    const slug = initialPostSlug;
+                    initialPostSlug = '';
+                    openPost(slug, false);
+                }
+            } catch (error) {
+                console.warn(error);
+                posts = [];
+                renderTags();
+                setState('博客 API 还没连上或暂无文章。');
+            } finally {
+                isLoading = false;
+                updateLoadMore();
+            }
+        }
+
+        async function openPost(slug, updateUrl = true) {
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('post', slug);
+                history.pushState(null, '', url);
+            }
+            detailTitle.textContent = '读取中...';
+            detailMeta.innerHTML = '';
+            detailBody.innerHTML = '';
+            commentList.innerHTML = '<div class="state">正在读取评论...</div>';
+            commentMsg.textContent = '';
+            activePostSlug = slug;
+            articleList.style.display = 'none';
+            loadMoreButton.hidden = true;
+            detailPanel.classList.add('open');
+            try {
+                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, {
+                    credentials: 'include',
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '读取失败');
+                }
+                const post = normalizePost(json.data);
+                detailTitle.textContent = post.title;
+                detailMeta.innerHTML = `
+                    <span>${escapeHtml(formatDate(post.publishedAt))}</span>
+                    ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                    <span>${escapeHtml(formatAuthor(post))}</span>
+                    <span>${post.viewCount} 阅读</span>
+                `;
+                detailBody.innerHTML = `<p>${markdownToHtml(json.data.content || post.summary || '这篇文章暂时没有正文。')}</p>`;
+                renderCommentForm();
+                loadComments(slug);
+            } catch (error) {
+                console.warn(error);
+                detailTitle.textContent = '文章读取失败';
+                detailBody.innerHTML = '<p>稍后再试，或者检查 Worker 的博客 API 是否已经部署。</p>';
+                commentList.innerHTML = '';
+            }
+        }
+
+        function renderCommentForm() {
+            const loggedIn = Boolean(currentUser);
+            commentLoginTip.hidden = loggedIn;
+            commentForm.hidden = !loggedIn;
+        }
+
+        async function loadComments(slug) {
+            try {
+                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(slug)}`, {
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '评论读取失败');
+                }
+                const comments = json.data || [];
+                if (!comments.length) {
+                    commentList.innerHTML = '<div class="state">还没有评论。</div>';
+                    return;
+                }
+                commentList.innerHTML = comments.map(comment => `
+                    <article class="comment-item">
+                        <div class="comment-head">
+                            <span class="comment-author">${escapeHtml(comment.nickname || comment.email)}</span>
+                            <span>${escapeHtml(formatDate(comment.createdAt))}</span>
+                        </div>
+                        <p>${escapeHtml(comment.content)}</p>
+                    </article>
+                `).join('');
+            } catch (error) {
+                console.warn(error);
+                commentList.innerHTML = '<div class="state">评论暂时读取失败。</div>';
+            }
+        }
+
+        tagCloud.addEventListener('click', (event) => {
+            const button = event.target.closest('.tag-button');
+            if (!button) return;
+            currentTag = button.dataset.tag || '';
+            tagCloud.querySelectorAll('.tag-button').forEach((item) => item.classList.toggle('active', item === button));
+            loadPosts(true);
+        });
+
+        searchButton.addEventListener('click', () => {
+            currentQuery = searchInput.value.trim();
+            loadPosts(true);
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                currentQuery = searchInput.value.trim();
+                loadPosts(true);
+            }
+        });
+
+        loadMoreButton.addEventListener('click', () => {
+            loadPosts(false);
+        });
+
+        commentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const content = commentContent.value.trim();
+            if (!activePostSlug || !content) {
+                commentMsg.textContent = content ? '' : '请先填写评论';
+                return;
+            }
+            commentMsg.textContent = '发表中...';
+            try {
+                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(activePostSlug)}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ content })
+                });
+                const json = await readApiJson(response);
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '发表失败');
+                }
+                commentContent.value = '';
+                commentMsg.textContent = '已发表';
+                await loadComments(activePostSlug);
+            } catch (error) {
+                commentMsg.textContent = error.message || '发表失败，请重新登录后再试';
+            }
+        });
+
+        backButton.addEventListener('click', () => {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('post');
+            history.pushState(null, '', url.pathname + url.search);
+            renderPosts();
+        });
+
+        window.addEventListener('popstate', () => {
+            const slug = new URLSearchParams(window.location.search).get('post');
+            if (slug) {
+                openPost(slug, false);
+            } else {
+                renderPosts();
+            }
+        });
+
+        loadPosts(true);
+    </script>
+</body>
+</html>
+
