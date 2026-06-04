@@ -485,6 +485,14 @@
             return user.nickname || user.name || (user.email ? user.email.split('@')[0] : 'Taffy Fan');
         }
 
+        function authHeaders(extra = {}) {
+            const token = localStorage.getItem('token');
+            return {
+                ...(token ? { Authorization: token } : {}),
+                ...extra
+            };
+        }
+
         function renderUser(user) {
             const isAdmin = user && (user.type === 0 || (Array.isArray(user.permKeys) && user.permKeys.includes('*')));
             document.body.classList.toggle('admin', Boolean(isAdmin));
@@ -506,8 +514,10 @@
                 credentials: 'include',
                 ...options,
                 headers: {
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
+                    ...authHeaders({
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    })
                 }
             });
             const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));

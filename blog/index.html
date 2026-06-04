@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -623,6 +623,7 @@
             gap: 22px;
             margin-top: 24px;
             align-items: start;
+            min-width: 0;
         }
 
         .search-panel {
@@ -660,6 +661,7 @@
             box-shadow: 0 12px 36px rgba(31, 38, 135, 0.12);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+            min-width: 0;
         }
 
         .article-list {
@@ -681,6 +683,11 @@
             cursor: pointer;
             text-align: left;
             transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+            min-width: 0;
+        }
+
+        .post-card > span {
+            min-width: 0;
         }
 
         .post-card:hover {
@@ -701,12 +708,16 @@
             margin: 3px 0 8px;
             font-size: 1.35rem;
             color: #fff;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .post-summary {
             margin: 0 0 12px;
             color: var(--muted);
             line-height: 1.7;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .post-meta,
@@ -716,6 +727,9 @@
             gap: 8px;
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .sidebar {
@@ -740,11 +754,16 @@
             min-height: 36px;
             padding: 0 14px;
             font-size: 0.92rem;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .detail {
             display: none;
             padding: 26px;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .detail.open {
@@ -755,6 +774,8 @@
             margin: 0 0 12px;
             font-size: clamp(1.8rem, 5vw, 3rem);
             color: #fff;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .detail-body {
@@ -762,6 +783,18 @@
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.02rem;
             line-height: 1.9;
+            max-width: 100%;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-body p,
+        .detail-body li,
+        .detail-body blockquote,
+        .detail-body strong {
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .detail-body h1,
@@ -772,6 +805,7 @@
 
         .detail-body pre {
             overflow-x: auto;
+            max-width: 100%;
             padding: 16px;
             border-radius: 16px;
             background: rgba(25, 15, 28, 0.55);
@@ -779,6 +813,8 @@
 
         .detail-body code {
             font-family: Consolas, "SFMono-Regular", monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
         }
 
         .detail-body img {
@@ -793,6 +829,8 @@
             font-weight: 800;
             text-decoration-color: rgba(255, 255, 255, 0.55);
             text-underline-offset: 4px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .comments-panel {
@@ -831,17 +869,22 @@
             gap: 12px;
             color: rgba(255, 255, 255, 0.72);
             font-size: 0.85rem;
+            min-width: 0;
+            flex-wrap: wrap;
         }
 
         .comment-author {
             color: #fff;
             font-weight: 800;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .comment-item p {
             margin: 8px 0 0;
             white-space: pre-wrap;
             word-break: break-word;
+            overflow-wrap: anywhere;
             line-height: 1.7;
         }
 
@@ -979,6 +1022,7 @@
 
             .content-grid {
                 grid-template-columns: 1fr;
+                min-width: 0;
             }
 
             .search-panel {
@@ -1001,6 +1045,8 @@
                 min-height: 112px;
                 padding: 12px;
                 border-radius: 18px;
+                width: 100%;
+                max-width: 100%;
             }
 
             .post-title {
@@ -1014,10 +1060,22 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 margin-bottom: 8px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
             }
 
             .detail {
-                padding: 20px;
+                padding: 18px;
+                max-width: 100%;
+            }
+
+            .detail-body {
+                font-size: 0.98rem;
+                line-height: 1.85;
+            }
+
+            .detail-body pre {
+                padding: 12px;
             }
 
             .floating-sticker {
@@ -1258,6 +1316,14 @@
             target.style.color = isError ? '#ffedf6' : '#fff';
         }
 
+        function authHeaders(extra = {}) {
+            const token = localStorage.getItem('token');
+            return {
+                ...(token ? { Authorization: token } : {}),
+                ...extra
+            };
+        }
+
         function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
             const value = String(email || '').trim();
             if (!value) return '';
@@ -1295,8 +1361,10 @@
                 credentials: 'include',
                 ...options,
                 headers: {
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
+                    ...authHeaders({
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    })
                 }
             });
             const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
@@ -1304,6 +1372,25 @@
                 throw new Error(data.message || '请求失败');
             }
             return data.data;
+        }
+
+        async function readApiJson(response, fallbackMessage = '请求失败') {
+            const text = await response.text();
+            const body = text.trim();
+            const candidates = [body];
+            if (body.startsWith('null')) {
+                const rest = body.slice(4).trim();
+                if (rest.startsWith('{') || rest.startsWith('[')) candidates.push(rest);
+            }
+            for (const candidate of candidates) {
+                if (!candidate) return { code: response.status, message: fallbackMessage };
+                try {
+                    return JSON.parse(candidate);
+                } catch {
+                    // try next candidate
+                }
+            }
+            return { code: response.status, message: fallbackMessage };
         }
 
         async function loadLoginUser() {
@@ -1457,11 +1544,25 @@
                 .replaceAll("'", '&#039;');
         }
 
+        function safeMarkdownUrl(url = '') {
+            const value = String(url).trim();
+            if (/^(https?:)?\/\//i.test(value) || value.startsWith('/') || value.startsWith('../') || value.startsWith('./')) {
+                return value;
+            }
+            return '';
+        }
+
         function markdownToHtml(markdown = '') {
             const escaped = escapeHtml(markdown);
             return escaped
-                .replace(/!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g, '<img src="$2" alt="$1">')
-                .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (match, alt, url) => {
+                    const safeUrl = safeMarkdownUrl(url);
+                    return safeUrl ? `<img src="${safeUrl}" alt="${alt}">` : match;
+                })
+                .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (match, text, url) => {
+                    const safeUrl = safeMarkdownUrl(url);
+                    return safeUrl ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${text}</a>` : match;
+                })
                 .replace(/^### (.*)$/gm, '<h3>$1</h3>')
                 .replace(/^## (.*)$/gm, '<h2>$1</h2>')
                 .replace(/^# (.*)$/gm, '<h1>$1</h1>')
@@ -1580,8 +1681,11 @@
                 const query = new URLSearchParams({ page: String(currentPage), pageSize: String(PAGE_SIZE) });
                 if (currentQuery) query.set('q', currentQuery);
                 if (currentTag) query.set('tag', currentTag);
-                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, { credentials: 'include' });
-                const json = await response.json();
+                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, {
+                    credentials: 'include',
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '读取失败');
                 }
@@ -1623,8 +1727,11 @@
             loadMoreButton.hidden = true;
             detailPanel.classList.add('open');
             try {
-                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, { credentials: 'include' });
-                const json = await response.json();
+                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, {
+                    credentials: 'include',
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '读取失败');
                 }
@@ -1655,8 +1762,10 @@
 
         async function loadComments(slug) {
             try {
-                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(slug)}`);
-                const json = await response.json();
+                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(slug)}`, {
+                    headers: authHeaders()
+                });
+                const json = await readApiJson(response);
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '评论读取失败');
                 }
@@ -1716,10 +1825,10 @@
                 const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(activePostSlug)}`, {
                     method: 'POST',
                     credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify({ content })
                 });
-                const json = await response.json();
+                const json = await readApiJson(response);
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '发表失败');
                 }
@@ -1751,3 +1860,4 @@
     </script>
 </body>
 </html>
+

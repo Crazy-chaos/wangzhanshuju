@@ -955,6 +955,14 @@
             target.style.color = isError ? '#ffedf6' : '#fff';
         }
 
+        function authHeaders(extra = {}) {
+            const token = localStorage.getItem('token');
+            return {
+                ...(token ? { Authorization: token } : {}),
+                ...extra
+            };
+        }
+
         function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
             const value = String(email || '').trim();
             if (!value) return '';
@@ -986,8 +994,10 @@
                 credentials: 'include',
                 ...options,
                 headers: {
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
+                    ...authHeaders({
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    })
                 }
             });
             const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
