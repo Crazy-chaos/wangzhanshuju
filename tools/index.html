@@ -1430,6 +1430,10 @@
                 }
             }
 
+            .auth-card {
+                padding: 18px;
+            }
+
             .page {
                 width: min(100% - 20px, 560px);
                 padding-top: calc(92px + env(safe-area-inset-top));
@@ -2017,10 +2021,6 @@
         let turnstileWidgetId = null;
         async function initTurnstileWidget() {
             try {
-                if (turnstileWidgetId !== null && window.turnstile) {
-                    window.turnstile.reset(turnstileWidgetId);
-                    return;
-                }
                 let siteKey = window.turnstileSiteKey;
                 if (!siteKey) {
                     const config = await apiFetch('/setting/websiteConfig');
@@ -2030,6 +2030,18 @@
                         window.renderProfile(config.profileData);
                     }
                 }
+
+                // 针对移动端网络延迟的防抖轮询逻辑：若 Turnstile 脚本尚未加载完成，等待 200ms 后重试
+                if (!window.turnstile) {
+                    setTimeout(initTurnstileWidget, 200);
+                    return;
+                }
+
+                if (turnstileWidgetId !== null) {
+                    window.turnstile.reset(turnstileWidgetId);
+                    return;
+                }
+
                 if (siteKey && window.turnstile) {
                     const el = document.getElementById('loginTurnstile');
                     if (el) {
