@@ -2114,68 +2114,36 @@
             return width && width < 380 ? 'compact' : 'flexible';
         }
 
-                async function initTurnstileWidget() {
-            const el = document.getElementById('loginTurnstile');
+        async function initTurnstileWidget() {
             try {
-                if (!el) return;
-                
-                // 强制初始化：清空容器并重置旧的组件状态，防止单页切换导致无法触发
-                el.innerHTML = '正在加载 Cloudflare 验证...';
                 if (turnstileWidgetId !== null && window.turnstile) {
-                    try { window.turnstile.remove(turnstileWidgetId); } catch(e){}
-                    turnstileWidgetId = null;
+                    window.turnstile.reset(turnstileWidgetId);
+                    return;
                 }
-                setTurnstileToken('');
-                setMessage(loginMsg, '');
-
                 let siteKey = window.turnstileSiteKey;
                 if (!siteKey) {
                     const config = await loadWebsiteConfig();
                     siteKey = config.siteKey;
-                }
-                if (!siteKey) {
-                    throw new Error('Cloudflare 验证站点 Key 未配置');
-                }
-
-                const turnstile = await waitForTurnstile();
-                const widgetSize = getTurnstileSize();
-                el.classList.toggle('is-compact', widgetSize === 'compact');
-
-                el.innerHTML = '';
-                turnstileWidgetId = turnstile.render(el, {
-                    sitekey: siteKey,
-                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-                    size: widgetSize,
-                    appearance: 'always',
-                    retry: 'auto',
-                    'refresh-expired': 'auto',
-                    'refresh-timeout': 'auto',
-                    'response-field': true,
-                    'response-field-name': 'cf-turnstile-response',
-                    callback: (token) => {
-                        setTurnstileToken(token);
-                        setLoginStatus('');
-                        setMessage(loginMsg, '');
-                    },
-                    'expired-callback': () => {
-                        setTurnstileToken('');
-                        setMessage(loginMsg, '验证已过期，请重新完成 Cloudflare 验证', true);
-                    },
-                    'error-callback': () => {
-                        setTurnstileToken('');
-                        setLoginStatus('error');
-                        setMessage(loginMsg, 'Cloudflare 验证失败，请刷新后重试', true);
+                    window.turnstileSiteKey = siteKey;
+                    if (config.profileData && window.renderProfile) {
+                        window.renderProfile(config.profileData);
                     }
-                });
+                }
+                if (siteKey && window.turnstile) {
+                    const el = document.getElementById('loginTurnstile');
+                    if (el) {
+                        el.innerHTML = '';
+                        turnstileWidgetId = window.turnstile.render(el, {
+                            sitekey: siteKey,
+                            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                        });
+                    }
+                }
             } catch (error) {
                 console.warn('Failed to load Turnstile config:', error);
-                if (el) {
-                    el.textContent = '';
-                }
-                setLoginStatus('error');
-                setMessage(loginMsg, error.message || 'Cloudflare 验证加载失败', true);
             }
         }
+
 
 
         loginBtn.addEventListener('click', () => {
