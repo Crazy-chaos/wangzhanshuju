@@ -2114,11 +2114,18 @@
             return width && width < 380 ? 'compact' : 'flexible';
         }
 
-        async function initTurnstileWidget() {
+                async function initTurnstileWidget() {
             const el = document.getElementById('loginTurnstile');
             try {
                 if (!el) return;
-                el.textContent = '正在加载 Cloudflare 验证...';
+                
+                // 强制初始化：清空容器并重置旧的组件状态，防止单页切换导致无法触发
+                el.innerHTML = '正在加载 Cloudflare 验证...';
+                if (turnstileWidgetId !== null && window.turnstile) {
+                    try { window.turnstile.remove(turnstileWidgetId); } catch(e){}
+                    turnstileWidgetId = null;
+                }
+                setTurnstileToken('');
                 setMessage(loginMsg, '');
 
                 let siteKey = window.turnstileSiteKey;
@@ -2133,12 +2140,6 @@
                 const turnstile = await waitForTurnstile();
                 const widgetSize = getTurnstileSize();
                 el.classList.toggle('is-compact', widgetSize === 'compact');
-                if (turnstileWidgetId !== null) {
-                    setTurnstileToken('');
-                    turnstile.reset(turnstileWidgetId);
-                    el.textContent = '';
-                    return;
-                }
 
                 el.innerHTML = '';
                 turnstileWidgetId = turnstile.render(el, {
@@ -2175,6 +2176,7 @@
                 setMessage(loginMsg, error.message || 'Cloudflare 验证加载失败', true);
             }
         }
+
 
         loginBtn.addEventListener('click', () => {
             setMessage(loginMsg, '');
