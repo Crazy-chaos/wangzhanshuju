@@ -1583,6 +1583,7 @@
                         <span>浏览量: <strong id="detailViews">0</strong></span>
                         <span>下载/访问量: <strong id="detailDownloads">0</strong></span>
                         <span id="detailPublishDate">发布日期</span>
+                        <span id="detailCreator">发布人: -</span>
                     </div>
                     <div class="detail-desc" id="detailDescription">描述文字</div>
                     <div id="detailActionBox">
@@ -1872,6 +1873,7 @@
         const detailViews = document.getElementById('detailViews');
         const detailDownloads = document.getElementById('detailDownloads');
         const detailPublishDate = document.getElementById('detailPublishDate');
+        const detailCreator = document.getElementById('detailCreator');
         const detailDescription = document.getElementById('detailDescription');
         const detailActionBox = document.getElementById('detailActionBox');
         const htmlPreviewBox = document.getElementById('htmlPreviewBox');
@@ -2163,12 +2165,17 @@
 
         function renderUser(user) {
             currentUser = user;
-            const isAdmin = user && (user.type === 0 || (Array.isArray(user.permKeys) && (user.permKeys.includes('*') || user.permKeys.includes('tools:manage'))));
+            const isAdmin = user && (user.type === 0 || (Array.isArray(user.permKeys) && (user.permKeys.includes('*') || user.permKeys.includes('tools:manage') || user.permKeys.includes('tools:manage_own'))));
             document.body.classList.toggle('admin', Boolean(isAdmin));
             
             const editTrigger = document.getElementById('profileEditTrigger');
             if (editTrigger) {
                 editTrigger.style.display = isAdmin ? 'flex' : 'none';
+            }
+
+            const isSuperAdmin = user && (user.type === 0 || (Array.isArray(user.permKeys) && (user.permKeys.includes('*') || user.permKeys.includes('tools:manage'))));
+            if (manageMetaBtn) {
+                manageMetaBtn.style.display = isSuperAdmin ? 'inline-flex' : 'none';
             }
             
             if (!user) {
@@ -2250,6 +2257,14 @@
             
             const date = new Date(tool.createdAt);
             detailPublishDate.textContent = isNaN(date.getTime()) ? '未知日期' : `发布时间: ${date.toLocaleDateString()}`;
+
+            if (tool.creator && tool.creator.email) {
+                detailCreator.textContent = `发布人: ${tool.creator.nickname || tool.creator.email.split('@')[0]} (${tool.creator.email})`;
+            } else if (tool.createdBy) {
+                detailCreator.textContent = `发布人: ${tool.createdBy}`;
+            } else {
+                detailCreator.textContent = `发布人: 未知`;
+            }
 
             // 渲染可见性徽章
             detailBadges.innerHTML = '';
@@ -2342,6 +2357,18 @@
                     `;
                     relatedBlogsGrid.appendChild(card);
                 });
+            }
+
+            // 控制编辑与删除按钮的可见性（有 tools:manage / * 权限的管理员，或者有 tools:manage_own 且为发布者的作者）
+            const canManageAll = currentUser && (currentUser.type === 0 || (Array.isArray(currentUser.permKeys) && (currentUser.permKeys.includes('*') || currentUser.permKeys.includes('tools:manage'))));
+            const canManageOwn = currentUser && Array.isArray(currentUser.permKeys) && currentUser.permKeys.includes('tools:manage_own');
+            const isAuthor = tool.createdBy && currentUser && tool.createdBy === currentUser.email;
+            if (canManageAll || (canManageOwn && isAuthor)) {
+                editToolBtn.style.setProperty('display', 'inline-flex', 'important');
+                deleteToolBtn.style.setProperty('display', 'inline-flex', 'important');
+            } else {
+                editToolBtn.style.setProperty('display', 'none', 'important');
+                deleteToolBtn.style.setProperty('display', 'none', 'important');
             }
         }
 
