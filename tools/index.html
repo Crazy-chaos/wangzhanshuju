@@ -2019,8 +2019,15 @@
                     window.turnstile.reset(turnstileWidgetId);
                     return;
                 }
-                const config = await apiFetch('/setting/websiteConfig');
-                const siteKey = config.siteKey;
+                let siteKey = window.turnstileSiteKey;
+                if (!siteKey) {
+                    const config = await apiFetch('/setting/websiteConfig');
+                    siteKey = config.siteKey;
+                    window.turnstileSiteKey = siteKey;
+                    if (config.profileData && window.renderProfile) {
+                        window.renderProfile(config.profileData);
+                    }
+                }
                 if (siteKey && window.turnstile) {
                     const el = document.getElementById('loginTurnstile');
                     if (el) {
@@ -3035,8 +3042,10 @@
                 return DEFAULT_PROFILE;
             }
 
-            function renderProfile() {
-                const data = loadProfileData();
+            function renderProfile(data) {
+                if (!data) {
+                    data = loadProfileData();
+                }
                 const resolvedAvatar = getRelativeAvatarPath(data.avatar || DEFAULT_PROFILE.avatar);
                 
                 // Update header button avatar
@@ -3175,7 +3184,7 @@
                 if (e.target === editModal) closeEditModal();
             });
 
-            editForm.addEventListener('submit', (e) => {
+            editForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const name = document.getElementById('editProfileName').value.trim();
                 const bio = document.getElementById('editProfileBio').value.trim();
@@ -3189,17 +3198,43 @@
                 }
 
                 const updatedData = { name, bio, avatar, links };
-                localStorage.setItem('custom_profile_data', JSON.stringify(updatedData));
                 
-                renderProfile();
-                closeEditModal();
+                try {
+                    await apiFetch('/setting/saveProfile', {
+                        method: 'POST',
+                        body: JSON.stringify(updatedData)
+                    });
+                    localStorage.setItem('custom_profile_data', JSON.stringify(updatedData));
+                    renderProfile(updatedData);
+                    closeEditModal();
+                    alert('保存成功！');
+                } catch (err) {
+                    alert('保存失败: ' + err.message);
+                }
             });
 
             // Initial render
             renderProfile();
+            window.renderProfile = renderProfile;
         })();
         // 初始化载入
         loadMeta();
+        
+        // Fetch website config on page load to initialize Turnstile sitekey and profile card
+        apiFetch('/setting/websiteConfig')
+            .then(config => {
+                window.turnstileSiteKey = config.siteKey;
+                if (window.renderProfile) {
+                    window.renderProfile(config.profileData);
+                }
+            })
+            .catch(err => {
+                console.warn('Failed to load website config:', err);
+                if (window.renderProfile) {
+                    window.renderProfile(null);
+                }
+            });
+
         apiFetch('/my/loginUserInfo', { method: 'GET' })
             .then(renderUser)
             .catch(() => renderUser(null))
