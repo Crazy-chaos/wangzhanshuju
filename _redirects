@@ -1,1 +1,3 @@
-/tools/* /tools.html 200
+/tools/* /tools/index.html 200
+/tools.html/* /tools/:splat 301
+/tools.html /tools/ 301
