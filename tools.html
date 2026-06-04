@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffb6cf">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="小工具">
+    <title>小工具</title>
+    <link rel="icon" href="123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="123/emoji_23.avif">
+    <link rel="manifest" href="manifest.webmanifest">
+    <style>
+        :root {
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.78);
+            --glass: rgba(255, 255, 255, 0.22);
+            --glass-strong: rgba(255, 255, 255, 0.38);
+            --glass-border: rgba(255, 255, 255, 0.45);
+            --shadow: 0 18px 55px rgba(255, 121, 198, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            overscroll-behavior: contain;
+            background: #ffb6cf;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100svh;
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(64px + env(safe-area-inset-top));
+            z-index: 1000;
+            padding-top: env(safe-area-inset-top);
+            background: rgba(255, 255, 255, 0.18);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .navbar-container {
+            max-width: 1100px;
+            width: 95%;
+            height: 64px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-links,
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .auth-section {
+            gap: 12px;
+        }
+
+        .nav-item {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            color: var(--pink);
+            transform: translateY(-2px);
+        }
+
+        .hamburger-btn,
+        .auth-login-btn,
+        .auth-logout-btn,
+        .auth-user-pill,
+        .glass-link,
+        .tool-upload {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .hamburger-btn {
+            display: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hamburger-btn .bar {
+            width: 22px;
+            height: 2.5px;
+            margin: 3px 0;
+            border-radius: 3px;
+            background-color: #fff;
+        }
+
+        .auth-login-btn,
+        .auth-logout-btn {
+            min-height: 40px;
+            padding: 0 18px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        .auth-logout-btn,
+        .auth-user-pill {
+            display: none;
+        }
+
+        .auth-logout-btn.show {
+            display: block;
+        }
+
+        .auth-user-pill {
+            align-items: center;
+            gap: 10px;
+            min-height: 40px;
+            padding: 4px 14px 4px 6px;
+            border-radius: 999px;
+        }
+
+        .auth-user-pill.show {
+            display: flex;
+        }
+
+        .auth-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+        }
+
+        .auth-user-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            text-align: left;
+        }
+
+        .auth-nickname,
+        .auth-email {
+            max-width: 130px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .auth-nickname {
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .auth-email {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .glass-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 999;
+            padding: calc(84px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            transition: left 0.35s ease;
+        }
+
+        .glass-sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-item {
+            width: 100%;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .page {
+            width: min(1080px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: calc(104px + env(safe-area-inset-top)) 0 calc(38px + env(safe-area-inset-bottom));
+        }
+
+        .panel {
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            box-shadow: var(--shadow);
+            border-radius: 28px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .hero {
+            min-height: 220px;
+            padding: 38px;
+            display: grid;
+            align-items: end;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -38px;
+            top: -42px;
+            width: 220px;
+            height: 220px;
+            background: url("123/emoji_23.avif") center / contain no-repeat;
+            opacity: 0.28;
+            transform: rotate(12deg);
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0 0 10px;
+            color: var(--pink);
+            font-size: clamp(2.2rem, 6vw, 4.2rem);
+            line-height: 1;
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .tool-board {
+            margin-top: 24px;
+            padding: 28px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .permission-state {
+            min-height: 260px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.84);
+            line-height: 1.8;
+        }
+
+        .admin-tools {
+            display: none;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        body.admin .admin-tools {
+            display: grid;
+        }
+
+        body.admin .permission-state {
+            display: none;
+        }
+
+        .tool-card {
+            min-height: 190px;
+            padding: 22px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.36);
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .tool-card h2 {
+            margin: 0 0 8px;
+        }
+
+        .tool-card p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .tool-upload {
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page {
+                width: min(100% - 20px, 560px);
+                padding-top: calc(92px + env(safe-area-inset-top));
+            }
+
+            .hero,
+            .tool-board {
+                border-radius: 22px;
+                padding: 24px;
+            }
+
+            .admin-tools {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-user-pill {
+                max-width: min(52vw, 230px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" type="button">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="/" class="nav-item">首页</a>
+                <a href="/blog/" class="nav-item">博客</a>
+                <a href="/tools.html" class="nav-item">小工具</a>
+                <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
+            </nav>
+            <div class="auth-section">
+                <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
+                <button class="auth-user-pill" id="userPill" type="button">
+                    <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
+                    <span class="auth-user-text">
+                        <span class="auth-nickname" id="userNickname">未登录</span>
+                        <span class="auth-email" id="userEmail"></span>
+                    </span>
+                </button>
+                <button class="auth-logout-btn" id="quickLogoutBtn" type="button">退出</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="glass-sidebar" id="sidebar">
+        <a href="/" class="sidebar-item">主页</a>
+        <a href="/blog/" class="sidebar-item">博客</a>
+        <a href="/tools.html" class="sidebar-item">小工具</a>
+        <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
+    </div>
+
+    <main class="page">
+        <section class="panel hero">
+            <div>
+                <h1>小工具</h1>
+                <p>这里预留给文件下载、独立网页和动态工具。当前只有管理员可见。</p>
+            </div>
+        </section>
+
+        <section class="panel tool-board">
+            <div class="permission-state" id="permissionState">
+                <div>
+                    <strong>没有权限</strong>
+                    <p>请使用管理员账号登录后管理小工具。</p>
+                </div>
+            </div>
+            <div class="admin-tools">
+                <article class="tool-card">
+                    <h2>上传网页</h2>
+                    <p>选择一个 HTML 页面，后续可接入 R2 存储并发布为独立工具。</p>
+                    <button class="tool-upload" type="button" data-picker="text/html">选择网页</button>
+                    <label class="switch-row">
+                        <input type="checkbox">
+                        <span>公开展示</span>
+                    </label>
+                </article>
+                <article class="tool-card">
+                    <h2>上传文件</h2>
+                    <p>选择单独文件，后续可作为下载项或工具资源展示。</p>
+                    <button class="tool-upload" type="button" data-picker="*/*">选择文件</button>
+                    <label class="switch-row">
+                        <input type="checkbox">
+                        <span>公开展示</span>
+                    </label>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = 'https://mail.crazychaos.top/api';
+        const MAIL_URL = 'https://mail.crazychaos.top';
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mailNavLink = document.getElementById('mailNavLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const quickLogoutBtn = document.getElementById('quickLogoutBtn');
+        const userPill = document.getElementById('userPill');
+        const userNickname = document.getElementById('userNickname');
+        const userEmail = document.getElementById('userEmail');
+
+        hamburgerBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (sidebar.classList.contains('open') && !sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        mailNavLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.location.assign(MAIL_URL);
+        });
+
+        function getDisplayName(user) {
+            if (!user) return '未登录';
+            return user.nickname || user.name || (user.email ? user.email.split('@')[0] : 'Taffy Fan');
+        }
+
+        function renderUser(user) {
+            const isAdmin = user && (user.type === 0 || (Array.isArray(user.permKeys) && user.permKeys.includes('*')));
+            document.body.classList.toggle('admin', Boolean(isAdmin));
+            if (!user) {
+                loginBtn.style.display = 'block';
+                quickLogoutBtn.classList.remove('show');
+                userPill.classList.remove('show');
+                return;
+            }
+            loginBtn.style.display = 'none';
+            quickLogoutBtn.classList.add('show');
+            userNickname.textContent = getDisplayName(user);
+            userEmail.textContent = user.email || '';
+            userPill.classList.add('show');
+        }
+
+        async function apiFetch(path, options = {}) {
+            const response = await fetch(`${API_BASE}${path}`, {
+                credentials: 'include',
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(options.headers || {})
+                }
+            });
+            const data = await response.json().catch(() => ({ code: response.status, message: '请求失败' }));
+            if (!response.ok || data.code !== 200) {
+                throw new Error(data.message || '请求失败');
+            }
+            return data.data;
+        }
+
+        loginBtn.addEventListener('click', () => {
+            window.location.href = MAIL_URL;
+        });
+
+        quickLogoutBtn.addEventListener('click', async () => {
+            try {
+                await apiFetch('/logout', { method: 'DELETE' });
+            } catch (error) {
+                console.warn(error);
+            }
+            renderUser(null);
+        });
+
+        document.querySelectorAll('.tool-upload').forEach((button) => {
+            button.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = button.dataset.picker || '*/*';
+                input.click();
+            });
+        });
+
+        apiFetch('/my/loginUserInfo', { method: 'GET' })
+            .then(renderUser)
+            .catch(() => renderUser(null));
+    </script>
+</body>
+</html>

@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" href="../123/emoji_23.avif">
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="canonical" href="https://www.crazychaos.top/blog/">
-    <link rel="alternate" type="application/rss+xml" title="CrazyChaos Blog RSS" href="https://mail.crazychaos.top/api/blog/rss">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     
     <style>
         :root {
@@ -43,6 +43,7 @@
         html {
             min-height: 100%;
             background: #ffb6cf;
+            overscroll-behavior: contain;
         }
 
         body {
@@ -55,6 +56,7 @@
             background-size: 400% 400%;
             animation: gradientBG 10s ease infinite;
             overflow-x: hidden;
+            overscroll-behavior: contain;
         }
 
         @keyframes gradientBG {
@@ -417,6 +419,12 @@
             display: flex;
             gap: 12px;
             margin-top: 22px;
+        }
+
+        .auth-turnstile {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
         }
 
         .auth-actions button {
@@ -787,6 +795,92 @@
             text-underline-offset: 4px;
         }
 
+        .comments-panel {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .comments-panel h3 {
+            margin: 0 0 14px;
+            color: #fff;
+        }
+
+        .comment-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .comment-item,
+        .comment-form,
+        .comment-login-tip {
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .comment-item {
+            padding: 14px 16px;
+        }
+
+        .comment-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.85rem;
+        }
+
+        .comment-author {
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .comment-item p {
+            margin: 8px 0 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.7;
+        }
+
+        .comment-form {
+            margin-top: 14px;
+            padding: 14px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 96px;
+            resize: vertical;
+            padding: 12px 14px;
+            color: #fff;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            background: rgba(255, 255, 255, 0.16);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .comment-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .comment-actions {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .comment-login-tip {
+            margin-top: 14px;
+            padding: 16px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
         .state {
             padding: 46px 22px;
             text-align: center;
@@ -950,8 +1044,8 @@
             <nav class="nav-links">
                 <a href="/" class="nav-item">首页</a>
                 <a href="/blog/" class="nav-item">博客</a>
+                <a href="/tools.html" class="nav-item">小工具</a>
                 <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
-                <a href="https://mail.crazychaos.top/api/blog/rss" target="_blank" class="nav-item">RSS</a>
             </nav>
 
             <!-- 右侧登录/个人状态 -->
@@ -975,8 +1069,8 @@
     <div class="glass-sidebar" id="sidebar">
         <a href="/" class="sidebar-item">主页</a>
         <a href="/blog/" class="sidebar-item">博客</a>
+        <a href="/tools.html" class="sidebar-item">小工具</a>
         <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
-        <a href="https://mail.crazychaos.top/api/blog/rss" class="sidebar-item" id="rssNavLink">RSS</a>
     </div>
 
     <!-- 登录模态框 -->
@@ -992,6 +1086,7 @@
             </div>
             <label for="loginPassword">密码</label>
             <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="输入邮箱密码" required>
+            <div class="cf-turnstile auth-turnstile" data-sitekey="0x4AAAAAADefAszieEgiXaDX"></div>
             <div class="auth-actions">
                 <button type="button" id="closeLoginBtn">取消</button>
                 <button type="submit">登录</button>
@@ -1027,7 +1122,7 @@
         <section class="hero">
             <div>
                 <h1>塔菲喵博客</h1>
-                <p>文章内容保存在 R2，元数据在 D1。这里会显示发布后的笔记、教程、更新记录和一点点粉色废话。</p>
+                <p>这里会显示发布后的笔记、教程、更新记录和一点点粉色废话。</p>
             </div>
         </section>
 
@@ -1043,6 +1138,20 @@
                     <h2 id="detailTitle"></h2>
                     <div class="detail-meta" id="detailMeta"></div>
                     <div class="detail-body" id="detailBody"></div>
+                    <section class="comments-panel" id="commentsPanel">
+                        <h3>评论</h3>
+                        <div class="comment-list" id="commentList">
+                            <div class="state">正在读取评论...</div>
+                        </div>
+                        <div class="comment-login-tip" id="commentLoginTip">登录后发表评论</div>
+                        <form class="comment-form" id="commentForm" hidden>
+                            <textarea id="commentContent" maxlength="1000" placeholder="写下你的评论"></textarea>
+                            <div class="comment-actions">
+                                <span id="commentMsg"></span>
+                                <button class="glass-link" type="submit">发表</button>
+                            </div>
+                        </form>
+                    </section>
                 </article>
                 <div class="panel article-list" id="articleList">
                     <div class="state">正在读取博客...</div>
@@ -1163,6 +1272,9 @@
                 loginBtn.style.display = 'block';
                 quickLogoutBtn.classList.remove('show');
                 userPill.classList.remove('show');
+                if (detailPanel.classList.contains('open')) {
+                    renderCommentForm();
+                }
                 return;
             }
 
@@ -1173,6 +1285,9 @@
             userEmail.textContent = user.email || '';
             nicknameInput.value = user.nickname || '';
             userPill.classList.add('show');
+            if (detailPanel.classList.contains('open')) {
+                renderCommentForm();
+            }
         }
 
         async function apiFetch(path, options = {}) {
@@ -1234,11 +1349,16 @@
 
             try {
                 const form = new FormData(loginForm);
+                const turnstileToken = form.get('cf-turnstile-response');
+                if (!turnstileToken) {
+                    throw new Error('请先完成人机验证');
+                }
                 const data = await apiFetch('/login', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: normalizeLoginEmail(form.get('email'), form.get('domain')),
-                        password: form.get('password')
+                        password: form.get('password'),
+                        token: turnstileToken
                     })
                 });
 
@@ -1248,10 +1368,12 @@
 
                 await loadLoginUser();
                 loginForm.reset();
+                window.turnstile?.reset();
                 setLoginStatus('success');
                 setMessage(loginMsg, '登录成功');
                 setTimeout(() => closeModal(loginModal), 720);
             } catch (error) {
+                window.turnstile?.reset();
                 setLoginStatus('error');
                 setMessage(loginMsg, error.message || '登录失败', true);
             }
@@ -1307,6 +1429,11 @@
         const detailTitle = document.getElementById('detailTitle');
         const detailMeta = document.getElementById('detailMeta');
         const detailBody = document.getElementById('detailBody');
+        const commentList = document.getElementById('commentList');
+        const commentLoginTip = document.getElementById('commentLoginTip');
+        const commentForm = document.getElementById('commentForm');
+        const commentContent = document.getElementById('commentContent');
+        const commentMsg = document.getElementById('commentMsg');
         const backButton = document.getElementById('backButton');
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
@@ -1317,6 +1444,7 @@
         let currentPage = 1;
         let totalPosts = 0;
         let isLoading = false;
+        let activePostSlug = '';
         const PAGE_SIZE = 10;
         let initialPostSlug = new URLSearchParams(window.location.search).get('post') || '';
 
@@ -1354,6 +1482,9 @@
                 coverUrl: post.coverUrl || FALLBACK_COVER,
                 publishedAt: post.publishedAt || post.createdAt || '',
                 viewCount: post.viewCount || 0,
+                visibility: post.visibility || 'public',
+                author: post.author || {},
+                locked: Boolean(post.locked)
             };
         }
 
@@ -1362,6 +1493,12 @@
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return value;
             return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function formatAuthor(post) {
+            const email = post.author?.email || '';
+            const nickname = post.author?.nickname || (email ? email.split('@')[0] : 'CrazyChaos');
+            return email ? `${nickname} · ${email}` : nickname;
         }
 
         function setState(text) {
@@ -1418,6 +1555,7 @@
                         <span class="post-meta">
                             <span>${escapeHtml(formatDate(post.publishedAt))}</span>
                             ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                            <span>${escapeHtml(formatAuthor(post))}</span>
                             <span>${post.viewCount} 阅读</span>
                         </span>
                     </span>
@@ -1442,7 +1580,7 @@
                 const query = new URLSearchParams({ page: String(currentPage), pageSize: String(PAGE_SIZE) });
                 if (currentQuery) query.set('q', currentQuery);
                 if (currentTag) query.set('tag', currentTag);
-                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, { credentials: 'omit' });
+                const response = await fetch(`${API_BASE}/blog/list?${query.toString()}`, { credentials: 'include' });
                 const json = await response.json();
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '读取失败');
@@ -1478,11 +1616,14 @@
             detailTitle.textContent = '读取中...';
             detailMeta.innerHTML = '';
             detailBody.innerHTML = '';
+            commentList.innerHTML = '<div class="state">正在读取评论...</div>';
+            commentMsg.textContent = '';
+            activePostSlug = slug;
             articleList.style.display = 'none';
             loadMoreButton.hidden = true;
             detailPanel.classList.add('open');
             try {
-                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, { credentials: 'omit' });
+                const response = await fetch(`${API_BASE}/blog/detail/${encodeURIComponent(slug)}`, { credentials: 'include' });
                 const json = await response.json();
                 if (!response.ok || json.code !== 200) {
                     throw new Error(json.message || '读取失败');
@@ -1492,13 +1633,50 @@
                 detailMeta.innerHTML = `
                     <span>${escapeHtml(formatDate(post.publishedAt))}</span>
                     ${post.category ? `<span>${escapeHtml(post.category)}</span>` : ''}
+                    <span>${escapeHtml(formatAuthor(post))}</span>
                     <span>${post.viewCount} 阅读</span>
                 `;
                 detailBody.innerHTML = `<p>${markdownToHtml(json.data.content || post.summary || '这篇文章暂时没有正文。')}</p>`;
+                renderCommentForm();
+                loadComments(slug);
             } catch (error) {
                 console.warn(error);
                 detailTitle.textContent = '文章读取失败';
                 detailBody.innerHTML = '<p>稍后再试，或者检查 Worker 的博客 API 是否已经部署。</p>';
+                commentList.innerHTML = '';
+            }
+        }
+
+        function renderCommentForm() {
+            const loggedIn = Boolean(currentUser);
+            commentLoginTip.hidden = loggedIn;
+            commentForm.hidden = !loggedIn;
+        }
+
+        async function loadComments(slug) {
+            try {
+                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(slug)}`);
+                const json = await response.json();
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '评论读取失败');
+                }
+                const comments = json.data || [];
+                if (!comments.length) {
+                    commentList.innerHTML = '<div class="state">还没有评论。</div>';
+                    return;
+                }
+                commentList.innerHTML = comments.map(comment => `
+                    <article class="comment-item">
+                        <div class="comment-head">
+                            <span class="comment-author">${escapeHtml(comment.nickname || comment.email)}</span>
+                            <span>${escapeHtml(formatDate(comment.createdAt))}</span>
+                        </div>
+                        <p>${escapeHtml(comment.content)}</p>
+                    </article>
+                `).join('');
+            } catch (error) {
+                console.warn(error);
+                commentList.innerHTML = '<div class="state">评论暂时读取失败。</div>';
             }
         }
 
@@ -1524,6 +1702,33 @@
 
         loadMoreButton.addEventListener('click', () => {
             loadPosts(false);
+        });
+
+        commentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const content = commentContent.value.trim();
+            if (!activePostSlug || !content) {
+                commentMsg.textContent = content ? '' : '请先填写评论';
+                return;
+            }
+            commentMsg.textContent = '发表中...';
+            try {
+                const response = await fetch(`${API_BASE}/blog/comment/${encodeURIComponent(activePostSlug)}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                const json = await response.json();
+                if (!response.ok || json.code !== 200) {
+                    throw new Error(json.message || '发表失败');
+                }
+                commentContent.value = '';
+                commentMsg.textContent = '已发表';
+                await loadComments(activePostSlug);
+            } catch (error) {
+                commentMsg.textContent = error.message || '发表失败，请重新登录后再试';
+            }
         });
 
         backButton.addEventListener('click', () => {

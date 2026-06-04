@@ -15,6 +15,7 @@
     <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
     <link rel="apple-touch-icon" href="123/emoji_23.avif">
     <link rel="manifest" href="manifest.webmanifest">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         :root {
             --pink: #ff79c6;
@@ -41,6 +42,11 @@
             min-height: 100vh;
             min-height: 100svh;
             overflow-x: hidden;
+            overscroll-behavior: contain;
+        }
+
+        html {
+            overscroll-behavior: contain;
         }
 
         @keyframes gradientBG {
@@ -543,6 +549,12 @@
             margin-top: 22px;
         }
 
+        .auth-turnstile {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
         .auth-actions button {
             flex: 1;
             min-height: 44px;
@@ -764,6 +776,7 @@
             <nav class="nav-links">
                 <a href="/" class="nav-item">首页</a>
                 <a href="/blog/" class="nav-item">博客</a>
+                <a href="/tools.html" class="nav-item">小工具</a>
                 <a href="https://mail.crazychaos.top" target="_blank" class="nav-item">mail</a>
             </nav>
 
@@ -788,6 +801,7 @@
     <div class="glass-sidebar" id="sidebar">
         <a href="/" class="sidebar-item">主页</a>
         <a href="/blog/" class="sidebar-item">博客</a>
+        <a href="/tools.html" class="sidebar-item">小工具</a>
         <a href="https://mail.crazychaos.top" class="sidebar-item" id="mailNavLink">mail</a>
     </div>
 
@@ -804,6 +818,7 @@
             </div>
             <label for="loginPassword">密码</label>
             <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="输入邮箱密码" required>
+            <div class="cf-turnstile auth-turnstile" data-sitekey="0x4AAAAAADefAszieEgiXaDX"></div>
             <div class="auth-actions">
                 <button type="button" id="closeLoginBtn">取消</button>
                 <button type="submit">登录</button>
@@ -1025,11 +1040,16 @@
 
             try {
                 const form = new FormData(loginForm);
+                const turnstileToken = form.get('cf-turnstile-response');
+                if (!turnstileToken) {
+                    throw new Error('请先完成人机验证');
+                }
                 const data = await apiFetch('/login', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: normalizeLoginEmail(form.get('email'), form.get('domain')),
-                        password: form.get('password')
+                        password: form.get('password'),
+                        token: turnstileToken
                     })
                 });
 
@@ -1039,10 +1059,12 @@
 
                 await loadLoginUser();
                 loginForm.reset();
+                window.turnstile?.reset();
                 setLoginStatus('success');
                 setMessage(loginMsg, '登录成功');
                 setTimeout(() => closeModal(loginModal), 720);
             } catch (error) {
+                window.turnstile?.reset();
                 setLoginStatus('error');
                 setMessage(loginMsg, error.message || '登录失败', true);
             }
