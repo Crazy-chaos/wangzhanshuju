@@ -2351,7 +2351,7 @@
                         </div>
                     </div>
                     <div class="form-group form-span-2">
-                        <label>文章正文 (Markdown 支持) *</label>
+                        <label>文章正文 *</label>
                         <textarea id="blogEditorTextarea" placeholder="在这里写下你的奇思妙想..."></textarea>
                     </div>
                 </div>
@@ -3643,6 +3643,31 @@
             }
         };
 
+        function extractBvid(urlOrId) {
+            if (!urlOrId) return null;
+            const match = urlOrId.match(/(BV[a-zA-Z0-9]{10})/i);
+            return match ? match[1] : null;
+        }
+
+        function makeBilibiliIframe(bvid) {
+            return `<iframe style="width: 100%; aspect-ratio: 16/9;" src="https://player.bilibili.com/player.html?bvid=${bvid}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>`;
+        }
+
+        function insertBilibiliVideo(editor) {
+            const urlOrId = prompt("请输入 B 站视频链接或 BV 号：\n例如：https://www.bilibili.com/video/BV1GPGR6GEa6");
+            if (!urlOrId) return;
+            const bvid = extractBvid(urlOrId);
+            if (!bvid) {
+                alert("未识别到有效的 B 站 BV 号，请检查输入的链接！");
+                return;
+            }
+            const iframe = makeBilibiliIframe(bvid);
+            const cm = editor.codemirror;
+            const doc = cm.getDoc();
+            const cursor = doc.getCursor();
+            doc.replaceRange(iframe, cursor);
+        }
+
         function initEasyMDE(initialValue = '') {
             if (easyMDEInstance) {
                 easyMDEInstance.value(initialValue);
@@ -3663,12 +3688,39 @@
                     codeSyntaxHighlighting: true
                 },
                 toolbar: [
-                    "bold", "italic", "heading", "|",
-                    "quote", "unordered-list", "ordered-list", "|",
-                    "link", "image", "table", "|",
-                    "preview", "side-by-side", "fullscreen", "|",
-                    "guide"
+                    { name: "bold", action: EasyMDE.toggleBold, className: "fa fa-bold", title: "加粗 (Ctrl-B)" },
+                    { name: "italic", action: EasyMDE.toggleItalic, className: "fa fa-italic", title: "斜体 (Ctrl-I)" },
+                    { name: "heading", action: EasyMDE.toggleHeadingSmaller, className: "fa fa-header", title: "标题 (Ctrl-H)" },
+                    "|",
+                    { name: "quote", action: EasyMDE.toggleBlockquote, className: "fa fa-quote-left", title: "引用 (Ctrl-')" },
+                    { name: "unordered-list", action: EasyMDE.toggleUnorderedList, className: "fa fa-list-ul", title: "无序列表 (Ctrl-L)" },
+                    { name: "ordered-list", action: EasyMDE.toggleOrderedList, className: "fa fa-list-ol", title: "有序列表 (Ctrl-Alt-L)" },
+                    "|",
+                    { name: "link", action: EasyMDE.drawLink, className: "fa fa-link", title: "插入链接 (Ctrl-K)" },
+                    { name: "image", action: EasyMDE.drawImage, className: "fa fa-picture-o", title: "插入图片 (Ctrl-Alt-I)" },
+                    { name: "table", action: EasyMDE.drawTable, className: "fa fa-table", title: "插入表格" },
+                    { name: "bilibili", action: insertBilibiliVideo, className: "fa fa-play-circle", title: "插入B站视频" },
+                    "|",
+                    { name: "preview", action: EasyMDE.togglePreview, className: "fa fa-eye no-disable", title: "预览 (Ctrl-P)" },
+                    { name: "side-by-side", action: EasyMDE.toggleSideBySide, className: "fa fa-columns no-disable no-mobile", title: "分栏预览 (F9)" },
+                    { name: "fullscreen", action: EasyMDE.toggleFullScreen, className: "fa fa-arrows-alt no-disable no-mobile", title: "全屏 (F11)" },
+                    "|",
+                    { name: "guide", action: () => window.open("https://www.markdownguide.org/basic-syntax/", "_blank"), className: "fa fa-question-circle", title: "Markdown 使用指南" }
                 ]
+            });
+
+            easyMDEInstance.codemirror.on('paste', (cm, e) => {
+                const text = e.clipboardData?.getData('text/plain');
+                if (text) {
+                    const bvid = extractBvid(text);
+                    if (bvid && (text.includes('bilibili.com') || text.startsWith('BV'))) {
+                        e.preventDefault();
+                        const iframe = makeBilibiliIframe(bvid);
+                        const doc = cm.getDoc();
+                        const cursor = doc.getCursor();
+                        doc.replaceRange(iframe, cursor);
+                    }
+                }
             });
         }
 
