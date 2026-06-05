@@ -3697,6 +3697,9 @@
         function initEasyMDE(initialValue = '') {
             if (easyMDEInstance) {
                 easyMDEInstance.value(initialValue);
+                setTimeout(() => {
+                    easyMDEInstance.codemirror.refresh();
+                }, 100);
                 return;
             }
             
@@ -3748,6 +3751,10 @@
                     }
                 }
             });
+
+            setTimeout(() => {
+                easyMDEInstance.codemirror.refresh();
+            }, 150);
         }
 
         function fileToBase64(file) {
