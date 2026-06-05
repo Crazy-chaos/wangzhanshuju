@@ -551,6 +551,7 @@
 
         /* 手机端侧边导航栏 */
         .glass-sidebar {
+            box-sizing: border-box;
             position: fixed;
             top: 0;
             left: -320px;
@@ -1374,20 +1375,6 @@
                 .header-profile-btn {
                     padding: 8px;
                 }
-            }
-
-            .auth-email-row {
-                grid-template-columns: 1fr;
-            }
-
-            .auth-email-row input {
-                border-radius: 15px 15px 0 0;
-                border-right: 1px solid var(--input-border);
-            }
-
-            .auth-email-row select {
-                border-radius: 0 0 15px 15px;
-                border-top: 0;
             }
 
             .auth-modal {

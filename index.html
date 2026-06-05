@@ -699,28 +699,28 @@
             display: none;
             width: 44px;
             height: 44px;
-            background: rgba(255, 255, 255, 0.25);
+            background: var(--glass);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .hamburger-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
+            background: var(--glass-strong);
             transform: scale(1.05);
         }
 
         .hamburger-btn .bar {
             width: 22px;
             height: 2.5px;
-            background-color: #fff;
+            background-color: var(--text);
             margin: 3px 0;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -738,6 +738,7 @@
 
         /* 手机端侧边导航栏 */
         .glass-sidebar {
+            box-sizing: border-box;
             position: fixed;
             top: 0;
             left: -320px;
@@ -1105,20 +1106,6 @@
                 .header-profile-btn {
                     padding: 8px;
                 }
-            }
-
-            .auth-email-row {
-                grid-template-columns: 1fr;
-            }
-
-            .auth-email-row input {
-                border-radius: 15px 15px 0 0;
-                border-right: 1px solid rgba(255, 255, 255, 0.55);
-            }
-
-            .auth-email-row select {
-                border-radius: 0 0 15px 15px;
-                border-top: 0;
             }
 
             .auth-modal {
