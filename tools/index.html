@@ -2135,13 +2135,7 @@
         const API_BASE = 'https://mail.crazychaos.top/api';
         const MAIL_URL = 'https://mail.crazychaos.top';
 
-        // 调试监听器：捕获全局JS错误与Promise Reject并弹窗提示
-        window.addEventListener('error', (event) => {
-            alert('JS Error: ' + event.message + '\nFile: ' + event.filename + '\nLine: ' + event.lineno);
-        });
-        window.addEventListener('unhandledrejection', (event) => {
-            alert('Unhandled Promise Rejection: ' + event.reason);
-        });
+
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const mailNavLink = document.getElementById('mailNavLink');
