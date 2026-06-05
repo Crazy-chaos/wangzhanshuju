@@ -2074,6 +2074,22 @@
             padding: 0 !important;
         }
 
+        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-header,
+        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-footer,
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:not(:last-child),
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:last-child > label {
+            display: none !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid {
+            display: block !important;
+            height: 100% !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) form {
+            height: 100% !important;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
