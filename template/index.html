@@ -7,14 +7,19 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="关注塔菲喵">
-    <title>你关注塔菲了嘛？！</title>
+    <meta name="description" content="页面描述占位符">
+    <title>页面标题模板</title>
     
     <!-- 网页标签页的头像 (Favicon) -->
-    <link rel="icon" href="123/emoji_23.avif" type="image/avif">
-    <link rel="shortcut icon" href="123/emoji_23.avif" type="image/avif">
-    <link rel="apple-touch-icon" href="123/emoji_23.avif">
-    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="shortcut icon" href="../123/emoji_23.avif" type="image/avif">
+    <link rel="apple-touch-icon" href="../123/emoji_23.avif">
+    <link rel="manifest" href="../manifest.webmanifest">
+    
+    <!-- Cloudflare Turnstile 人机验证必备外部脚本 -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
+    <!-- 防闪烁脚本，读取本地 theme 设定 -->
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -27,9 +32,7 @@
         })();
     </script>
 
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
-        
         :root {
             --pink: #ff79c6;
             --purple: #bd93f9;
@@ -41,6 +44,8 @@
             --shadow: 0 18px 55px rgba(255, 121, 198, 0.25);
             --body-bg: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffb199, #ffc3a0);
             --html-bg: #ffb6cf;
+            --card-bg: rgba(255, 255, 255, 0.21);
+            --card-bg-hover: rgba(255, 255, 255, 0.3);
             --navbar-bg: rgba(255, 255, 255, 0.18);
             --navbar-border: rgba(255, 255, 255, 0.35);
             --modal-bg: rgba(24, 12, 32, 0.28);
@@ -64,6 +69,8 @@
             --shadow: 0 18px 55px rgba(255, 121, 198, 0.15);
             --body-bg: linear-gradient(-45deg, #1e0f25, #35153f, #1f0b2a, #281035);
             --html-bg: #180c20;
+            --card-bg: rgba(40, 20, 50, 0.45);
+            --card-bg-hover: rgba(60, 30, 80, 0.55);
             --navbar-bg: rgba(30, 15, 40, 0.5);
             --navbar-border: rgba(255, 121, 198, 0.3);
             --modal-bg: rgba(10, 5, 15, 0.65);
@@ -74,100 +81,29 @@
             --nav-link-color: #f8f8f2;
         }
 
-
-        /* View Transition Animation */
-        html.dark,
-        html:not(.dark) {
-            view-transition-name: root;
-        }
-
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation: none;
-            mix-blend-mode: normal;
-        }
-
-        html[data-theme-to="dark"]::view-transition-new(root) { z-index: 2; }
-        html[data-theme-to="dark"]::view-transition-old(root) { z-index: 1; }
-        html[data-theme-to="light"]::view-transition-old(root) { z-index: 2; }
-        html[data-theme-to="light"]::view-transition-new(root) { z-index: 1; }
-
-        html[data-theme-to="dark"]::view-transition-new(root) {
-            clip-path: circle(0px at var(--vt-x) var(--vt-y));
-            animation: vt-radial-in var(--vt-duration, 520ms) ease-out forwards;
-        }
-
-        html[data-theme-to="light"]::view-transition-old(root) {
-            clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y));
-            animation: vt-radial-out var(--vt-duration, 520ms) ease-out forwards;
-        }
-
-        @keyframes vt-radial-in {
-            from { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
-            to   { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
-        }
-
-        @keyframes vt-radial-out {
-            from { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
-            to   { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
-        }
-
-        /* Theme toggle button */
-        .theme-toggle-btn {
-            position: fixed;
-            right: 24px;
-            bottom: 24px;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-strong);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            color: var(--text);
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            z-index: 9999;
-            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
-        }
-
-        .theme-toggle-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            background: var(--pink);
-            box-shadow: 0 0 15px var(--pink);
-        }
-
-        @media (max-width: 768px) {
-            .theme-toggle-btn {
-                right: 16px;
-                bottom: calc(100px + env(safe-area-inset-bottom));
-            }
-        }
-
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--body-bg); transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 104px 50px 50px; /* 顶部留出导航栏空间 */
-            margin: 0;
-            min-height: 100vh;
-            min-height: 100svh;
-            overflow-x: hidden;
-            overscroll-behavior: contain;
+        * {
+            box-sizing: border-box;
         }
 
         html {
+            min-height: 100%;
+            background: var(--html-bg);
             overscroll-behavior: contain;
+            transition: background var(--transition-speed) ease;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100svh;
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--body-bg);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
         }
 
         @keyframes gradientBG {
@@ -176,150 +112,10 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 音乐可视化的 Canvas */
-        #visualizer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none; 
-        }
-
-        /* 提升内容的层级 */
-        h1, .subtitle, .glass-video-container {
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 {
-            color: #ff79c6;
-            text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
-            font-size: 2.5rem;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .subtitle {
-            color: #bd93f9;
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .glass-video-container {
-            width: 95%;               
-            max-width: 1100px;         
-            margin: 40px auto;        
-            background: var(--glass); 
-            backdrop-filter: blur(12px);           
-            -webkit-backdrop-filter: blur(12px);   
-            border: 1px solid var(--glass-border); 
-            box-shadow: var(--shadow);
-            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            border-radius: 24px;      
-            padding: 24px;            
-            box-sizing: border-box;
-        }
-
-        .glass-video-container video {
-            width: 100%;
-            height: 100%;
-            aspect-ratio: 16 / 9;
-            display: block;
-            border-radius: 12px;      
-            border: none;
-            object-fit: cover;        
-            background-color: #000;
-        }
-
-        /* 烟花表情包飘落动画 */
-        @keyframes fireworkFloat {
-            0% {
-                transform: translate(-50%, 0) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(-50% + var(--tx)), var(--ty)) rotate(var(--rot)) scale(1);
-                opacity: 0;
-            }
-        }
-
-        .emoji-firework {
-            position: fixed;
-            bottom: -100px;
-            width: var(--size);
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 9999;
-            animation: fireworkFloat var(--duration) cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            pointer-events: auto;
-            cursor: pointer;
-            transition: transform 0.1s, filter 0.1s;
-            -webkit-user-drag: none;
-            user-select: none;
-        }
-        
-        .emoji-firework:hover {
-            transform: scale(1.1);
-            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.8));
-        }
-
-        /* 粒子碎裂爆炸动画 */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            animation: particleFade 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; 
-        }
-
-        @keyframes particleFade {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
-                opacity: 0;
-            }
-        }
-
-        /* 关注按钮样式 */
-        .glass-btn {
-            display: inline-block;
-            margin-top: -10px;
-            margin-bottom: 40px;
-            padding: 12px 40px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.3rem;
-            font-weight: bold;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
-            border-radius: 50px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            z-index: 10;
-        }
-
-        .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 40px 0 rgba(255, 121, 198, 0.5);
-            color: #ff79c6;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        .page {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: calc(96px + env(safe-area-inset-top)) 0 calc(36px + env(safe-area-inset-bottom));
         }
 
         /* 统一导航栏样式 */
@@ -334,9 +130,9 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--navbar-border);
-            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
             padding-top: env(safe-area-inset-top);
+            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
         }
 
         .navbar-container {
@@ -402,7 +198,7 @@
             left: 50%;
             transform: translateX(-50%) translateY(10px);
             width: 270px;
-            background: rgba(255, 255, 255, 0.93); /* Opaque premium light glass */
+            background: rgba(255, 255, 255, 0.93);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -418,12 +214,11 @@
         }
 
         html.dark .profile-popover {
-            background: rgba(26, 12, 36, 0.94); /* Opaque premium dark glass */
+            background: rgba(26, 12, 36, 0.94);
             border: 1px solid rgba(255, 121, 198, 0.25);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
         }
 
-        /* 移出桥接区域 */
         .profile-popover::before {
             content: '';
             position: absolute;
@@ -446,7 +241,7 @@
             right: 12px;
             background: none;
             border: none;
-            color: #5a4b63; /* dark text color */
+            color: #5a4b63;
             cursor: pointer;
             width: 28px;
             height: 28px;
@@ -491,7 +286,7 @@
         .profile-card-name {
             font-size: 1.15rem;
             font-weight: 800;
-            color: #1f0c2b !important; /* dark deep purple for high contrast in light mode */
+            color: #1f0c2b !important;
             margin-bottom: 6px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
@@ -503,7 +298,7 @@
 
         .profile-card-bio {
             font-size: 0.85rem;
-            color: #5b4a68 !important; /* readable dark purple in light mode */
+            color: #5b4a68 !important;
             margin-bottom: 16px;
             line-height: 1.4;
             word-break: break-all;
@@ -549,10 +344,6 @@
             box-shadow: 0 6px 15px rgba(255, 121, 198, 0.4);
         }
 
-        html.dark .profile-link-item:hover {
-            color: #fff;
-        }
-
         .profile-link-item svg {
             width: 18px;
             height: 18px;
@@ -575,7 +366,7 @@
             color: var(--pink);
         }
 
-        /* 电脑端导航链接 (B站左上角布局风格) */
+        /* 电脑端导航链接 */
         .nav-links {
             display: flex;
             align-items: center;
@@ -612,9 +403,8 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             color: var(--text);
-            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             cursor: pointer;
         }
 
@@ -655,7 +445,7 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.75);
+            border: 2px solid var(--glass-border);
             box-shadow: 0 0 10px rgba(255, 121, 198, 0.35);
         }
 
@@ -687,11 +477,11 @@
         .auth-login-btn:hover,
         .auth-logout-btn:hover,
         .auth-user-pill:hover {
-            background: rgba(255, 255, 255, 0.38);
+            background: var(--glass-strong);
             transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.5);
+            box-shadow: var(--shadow);
             color: var(--pink);
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            text-shadow: none;
         }
 
         /* 手机端汉堡菜单按钮 */
@@ -749,14 +539,13 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border-right: 1px solid var(--navbar-border);
-            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease;
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
             z-index: 999;
             padding: calc(84px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
             display: flex;
             flex-direction: column;
             gap: 12px;
-            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background var(--transition-speed) ease, border-color var(--transition-speed) ease;
         }
 
         .glass-sidebar.open {
@@ -772,22 +561,21 @@
             text-align: center;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            transition: all 0.25s ease, background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             border-radius: 14px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: all 0.25s ease;
+            transition: all 0.25s ease, background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             text-decoration: none;
             box-sizing: border-box;
             display: block;
         }
 
         .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: var(--glass-strong);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.45);
+            box-shadow: var(--shadow);
             color: var(--pink);
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            text-shadow: none;
         }
 
         /* 登录/设置弹窗 */
@@ -822,15 +610,17 @@
             border: 1px solid var(--modal-card-border);
             border-radius: 24px;
             box-shadow: var(--shadow);
-            transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease, background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             padding: 26px;
             box-sizing: border-box;
-            color: #fff;
+            color: var(--text);
             transform: translateY(18px) scale(0.92);
             opacity: 0;
             transition:
                 transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 260ms ease;
+                opacity 260ms ease,
+                background var(--transition-speed) ease,
+                border-color var(--transition-speed) ease,
+                color var(--transition-speed) ease;
         }
 
         .auth-modal.show .auth-card {
@@ -840,7 +630,7 @@
 
         .auth-card h2 {
             margin: 0 0 18px;
-            color: #ff79c6;
+            color: var(--pink);
             text-align: center;
             text-shadow: 0 0 10px rgba(255, 121, 198, 0.45);
         }
@@ -862,9 +652,9 @@
             outline: none;
             color: var(--text);
             background: var(--input-bg);
-            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             box-shadow: inset 0 1px 12px rgba(255, 255, 255, 0.08);
             font-size: 1rem;
+            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
         }
 
         .auth-email-row {
@@ -886,18 +676,23 @@
             outline: none;
             color: var(--text);
             background: var(--input-bg);
-            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
             box-shadow: inset 0 1px 12px rgba(255, 255, 255, 0.08);
             font-weight: 700;
             cursor: pointer;
+            transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
         }
 
         .auth-email-row option {
             color: #222;
         }
 
+        html.dark .auth-email-row option {
+            color: #f8f8f2;
+            background: #281432;
+        }
+
         .auth-card input::placeholder {
-            color: rgba(255, 255, 255, 0.72);
+            color: var(--muted);
         }
 
         .auth-actions {
@@ -925,9 +720,9 @@
         }
 
         .auth-actions button:hover {
-            background: rgba(255, 255, 255, 0.42);
-            color: #ff79c6;
-            box-shadow: 0 8px 24px rgba(255, 121, 198, 0.38);
+            background: var(--glass-strong);
+            color: var(--pink);
+            box-shadow: var(--shadow);
         }
 
         .auth-msg {
@@ -1027,96 +822,143 @@
             height: 48px;
         }
 
-        /* 适配手机端小屏幕 */
+        /* Toast 气泡提示 */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: min(380px, 90vw);
+        }
+
+        .toast-item {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(255, 121, 198, 0.2);
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        html.dark .toast-item {
+            background: rgba(40, 20, 50, 0.6);
+            border: 1px solid rgba(255, 121, 198, 0.35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-item.error {
+            border-color: rgba(255, 77, 141, 0.6);
+            background: rgba(255, 77, 141, 0.25);
+        }
+
+        /* Theme toggle button */
+        .theme-toggle-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-strong);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: var(--text);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 9999;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            background: var(--pink);
+            box-shadow: 0 0 15px var(--pink);
+        }
+
         @media (max-width: 768px) {
-            html,
-            body {
-                min-height: 100svh;
-                min-height: 100dvh;
-                overscroll-behavior-y: none;
+            .theme-toggle-btn {
+                right: 16px;
+                bottom: calc(100px + env(safe-area-inset-bottom));
             }
+        }
 
-            body {
-                padding: calc(84px + env(safe-area-inset-top)) 10px calc(28px + env(safe-area-inset-bottom));
+        /* View Transition 动画参数 */
+        html.dark,
+        html:not(.dark) {
+            view-transition-name: root;
+        }
+
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+
+        html[data-theme-to="dark"]::view-transition-new(root) { z-index: 2; }
+        html[data-theme-to="dark"]::view-transition-old(root) { z-index: 1; }
+        html[data-theme-to="light"]::view-transition-old(root) { z-index: 2; }
+        html[data-theme-to="light"]::view-transition-new(root) { z-index: 1; }
+
+        html[data-theme-to="dark"]::view-transition-new(root) {
+            clip-path: circle(0px at var(--vt-x) var(--vt-y));
+            animation: vt-radial-in var(--vt-duration, 520ms) ease-out forwards;
+        }
+
+        html[data-theme-to="light"]::view-transition-old(root) {
+            clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y));
+            animation: vt-radial-out var(--vt-duration, 520ms) ease-out forwards;
+        }
+
+        @keyframes vt-radial-in {
+            from { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
+            to   { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
+        }
+
+        @keyframes vt-radial-out {
+            from { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
+            to   { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
+        }
+
+        /* 移动端响应式显示控制 */
+        @media (max-width: 768px) {
+            .navbar-container {
+                width: 90%;
             }
-
-            body::before {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                background: inherit;
-                z-index: -1;
-            }
-
-            h1 {
-                margin-top: 10px;
-                font-size: clamp(1.7rem, 7vw, 2.1rem);
-                line-height: 1.18;
-                padding: 0 8px;
-            }
-
-            .subtitle {
-                font-size: 1rem;
-                margin-bottom: 18px;
-                padding: 0 8px;
-            }
-
-            .glass-video-container {
-                width: min(100%, 520px);
-                margin: 28px auto 34px;
-                padding: 14px;
-                border-radius: 22px;
-            }
-
-            .glass-video-container video {
-                border-radius: 14px;
-            }
-
-            .glass-btn {
-                font-size: 1.08rem;
-                padding: 12px 30px;
-                margin-top: 0;
-                margin-bottom: 70px;
-                max-width: calc(100vw - 52px);
-                box-sizing: border-box;
-            }
-
-            /* 移动端下导航栏隐藏及布局微调 */
-            .hamburger-btn {
-                display: flex;
-            }
-
             .nav-links {
-                display: none;
+                display: none; /* 移动端隐藏电脑导航 */
             }
-
-            /* 移动端个人简介小窗及按钮微调 */
-            .profile-popover {
-                left: -20px;
-                transform: translateY(10px);
+            .hamburger-btn {
+                display: flex; /* 移动端显示汉堡菜单 */
             }
-            .profile-popover.show {
-                transform: translateY(0);
+            .auth-nickname,
+            .auth-email {
+                max-width: 80px; /* 缩短移动端昵称显示宽度 */
             }
-            @media (max-width: 480px) {
-                .header-profile-btn span {
-                    display: none;
-                }
-                .header-profile-btn {
-                    padding: 8px;
-                }
-            }
-
-            .auth-modal {
-                align-items: flex-start;
-                padding-top: calc(92px + env(safe-area-inset-top));
-            }
-
-            .auth-card {
-                width: min(390px, calc(100vw - 32px));
-                border-radius: 26px;
-                transform: translateY(18px) scale(0.92);
+            .page {
+                padding: calc(80px + env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom));
             }
         }
     </style>
@@ -1137,7 +979,7 @@
                 <!-- 个人简介悬浮入口 -->
                 <div class="header-profile-container" id="profileContainer">
                     <button class="header-profile-btn" id="headerProfileBtn" type="button">
-                        <img class="header-profile-avatar" id="headerProfileAvatar" src="my/my.jpg" alt="头像">
+                        <img class="header-profile-avatar" id="headerProfileAvatar" src="../my/my.jpg" alt="头像">
                         <span>个人简介</span>
                     </button>
                     <!-- 悬浮小窗 -->
@@ -1146,7 +988,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </button>
                         <div class="profile-card-content">
-                            <img class="profile-card-avatar" id="profileCardAvatar" src="my/my.jpg" alt="头像">
+                            <img class="profile-card-avatar" id="profileCardAvatar" src="../my/my.jpg" alt="头像">
                             <div class="profile-card-name" id="profileCardName">疯狂混沌</div>
                             <div class="profile-card-bio" id="profileCardBio">欢迎访问我的主页！</div>
                             <div class="profile-card-links" id="profileCardLinks"></div>
@@ -1154,7 +996,7 @@
                     </div>
                 </div>
 
-                <!-- 电脑端左侧导航栏 (B站左上角布局风格) -->
+                <!-- 电脑端左侧导航栏 -->
                 <nav class="nav-links">
                     <a href="/" class="nav-item">首页</a>
                     <a href="/blog/" class="nav-item">博客</a>
@@ -1168,7 +1010,7 @@
                 <button class="auth-login-btn" id="loginBtn" type="button">登录</button>
                 
                 <button class="auth-user-pill" id="userPill" type="button" title="设置昵称">
-                    <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
+                    <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
                     <span class="auth-user-text">
                         <span class="auth-nickname" id="userNickname">未登录</span>
                         <span class="auth-email" id="userEmail"></span>
@@ -1215,7 +1057,7 @@
     <div class="auth-modal" id="profileModal">
         <form class="auth-card" id="profileForm">
             <div class="auth-profile-head">
-                <img class="auth-avatar" src="123/emoji_23.avif" alt="avatar">
+                <img class="auth-avatar" src="../123/emoji_23.avif" alt="avatar">
                 <h2>个人设置</h2>
             </div>
             <label for="nicknameInput">昵称</label>
@@ -1257,17 +1099,19 @@
         </form>
     </div>
 
-
-    <!-- ========================================== -->
-    <!-- 页面特有内容区域 (新栏目写在此处) -->
-    <!-- ========================================== -->
-    <main class="main-content" style="max-width: 800px; margin: 40px auto; padding: 20px; text-align: center;">
-        <h1 style="font-size: 2.2rem; margin-bottom: 10px; color: var(--text);">新栏目标题</h1>
-        <div style="font-size: 1.1rem; color: var(--muted); margin-bottom: 30px;">在此处编写栏目具体介绍或功能模块...</div>
-        <div class="glass-video-container" style="padding: 40px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; backdrop-filter: blur(20px);">
-            <p style="color: var(--text);">您可以复制此模板，修改 head 里的 title，并在 main 标签中填充新栏目的专属 HTML 代码。</p>
-        </div>
+    <!-- 页面主体内容占位符 -->
+    <main class="page">
+        <!-- 以后在这里写新页面的具体内容 -->
+        <section style="min-height: 400px; display: flex; align-items: center; justify-content: center; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+            <div style="text-align: center; padding: 40px;">
+                <h1 style="color: var(--pink); margin-top: 0;">新页面模板</h1>
+                <p style="color: var(--text); opacity: 0.8; font-size: 1.1rem; max-width: 500px; margin: 0 auto;">这是一个基于博客代码构建的页面模板。所有通用的导航、个人简介、登录流、主题切换和 Turnstile 验证都已预先集成并能直接运行！</p>
+            </div>
+        </section>
     </main>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script>
         // ==========================================
@@ -1289,24 +1133,6 @@
             }
         });
 
-        const API_BASE = 'https://mail.crazychaos.top/api';
-        const MAIL_URL = 'https://mail.crazychaos.top';
-        const mailNavLink = document.getElementById('mailNavLink');
-        const loginBtn = document.getElementById('loginBtn');
-        const quickLogoutBtn = document.getElementById('quickLogoutBtn');
-        const userPill = document.getElementById('userPill');
-        const userNickname = document.getElementById('userNickname');
-        const userEmail = document.getElementById('userEmail');
-        const loginModal = document.getElementById('loginModal');
-        const profileModal = document.getElementById('profileModal');
-        const loginForm = document.getElementById('loginForm');
-        const profileForm = document.getElementById('profileForm');
-        const loginMsg = document.getElementById('loginMsg');
-        const loginStatus = document.getElementById('loginStatus');
-        const profileMsg = document.getElementById('profileMsg');
-        const nicknameInput = document.getElementById('nicknameInput');
-        const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
-
         // ==========================================
         // 主题模式切换 (Theme Mode Toggle)
         // ==========================================
@@ -1314,7 +1140,7 @@
         themeToggleBtn.className = 'theme-toggle-btn';
         themeToggleBtn.type = 'button';
         themeToggleBtn.setAttribute('aria-label', '切换主题');
-        themeToggleBtn.innerHTML = '☀️'; // Default icon
+        themeToggleBtn.innerHTML = '☀️'; // 默认图标
         document.body.appendChild(themeToggleBtn);
 
         function updateThemeIcon(isDark) {
@@ -1371,13 +1197,35 @@
             });
         });
 
+        // ==========================================
+        // 1. 统一的身份验证与个人设置逻辑
+        // ==========================================
+        const API_BASE = 'https://mail.crazychaos.top/api';
+        const MAIL_URL = 'https://mail.crazychaos.top';
+        const mailNavLink = document.getElementById('mailNavLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const quickLogoutBtn = document.getElementById('quickLogoutBtn');
+        const userPill = document.getElementById('userPill');
+        const userNickname = document.getElementById('userNickname');
+        const userEmail = document.getElementById('userEmail');
+        const loginModal = document.getElementById('loginModal');
+        const profileModal = document.getElementById('profileModal');
+        const loginForm = document.getElementById('loginForm');
+        const profileForm = document.getElementById('profileForm');
+        const loginMsg = document.getElementById('loginMsg');
+        const loginStatus = document.getElementById('loginStatus');
+        const profileMsg = document.getElementById('profileMsg');
+        const nicknameInput = document.getElementById('nicknameInput');
+        const DEFAULT_LOGIN_DOMAIN = '@crazychaos.top';
 
-        mailNavLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            sidebar.classList.remove('open');
-            hamburgerBtn.classList.remove('active');
-            window.location.assign(MAIL_URL);
-        });
+        if (mailNavLink) {
+            mailNavLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                sidebar.classList.remove('open');
+                hamburgerBtn.classList.remove('active');
+                window.location.assign(MAIL_URL);
+            });
+        }
 
         let currentUser = null;
 
@@ -1415,6 +1263,24 @@
         function setMessage(target, message, isError = false) {
             target.textContent = message;
             target.style.color = isError ? '#ffedf6' : '#fff';
+        }
+
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${isError ? 'error' : ''}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
         }
 
         function authHeaders(extra = {}) {
@@ -1500,6 +1366,10 @@
                         window.renderProfile(config.profileData);
                     }
                 }
+                if (!window.turnstile) {
+                    setTimeout(initTurnstileWidget, 100);
+                    return;
+                }
                 if (siteKey && window.turnstile) {
                     const el = document.getElementById('loginTurnstile');
                     if (el) {
@@ -1572,11 +1442,13 @@
                 window.turnstile?.reset();
                 setLoginStatus('success');
                 setMessage(loginMsg, '登录成功');
+                showToast('登录成功！');
                 setTimeout(() => closeModal(loginModal), 720);
             } catch (error) {
                 window.turnstile?.reset();
                 setLoginStatus('error');
                 setMessage(loginMsg, error.message || '登录失败', true);
+                showToast(error.message || '登录失败', true);
             }
         });
 
@@ -1620,6 +1492,9 @@
 
         loadLoginUser();
 
+        // ==========================================
+        // 个人简介卡片与自定义逻辑
+        // ==========================================
         (function() {
             const DEFAULT_PROFILE = {
                 name: "疯狂混沌",
@@ -1677,11 +1552,11 @@
                 currentProfileData = data;
                 const resolvedAvatar = getRelativeAvatarPath(data.avatar || DEFAULT_PROFILE.avatar);
                 
-                // Update header button avatar
+                // 更新顶部头像
                 const headerAvatarEl = document.getElementById('headerProfileAvatar');
                 if (headerAvatarEl) headerAvatarEl.src = resolvedAvatar;
 
-                // Update card contents
+                // 更新悬浮窗头像与信息
                 const cardAvatarEl = document.getElementById('profileCardAvatar');
                 if (cardAvatarEl) cardAvatarEl.src = resolvedAvatar;
 
@@ -1691,7 +1566,7 @@
                 const cardBioEl = document.getElementById('profileCardBio');
                 if (cardBioEl) cardBioEl.textContent = data.bio || DEFAULT_PROFILE.bio;
 
-                // Render links
+                // 渲染社交链接列表
                 const linksContainer = document.getElementById('profileCardLinks');
                 if (linksContainer) {
                     linksContainer.innerHTML = '';
@@ -1708,7 +1583,7 @@
                 }
             }
 
-            // Events setup
+            // 获取节点元素
             const container = document.getElementById('profileContainer');
             const popover = document.getElementById('profilePopover');
             const profileBtn = document.getElementById('headerProfileBtn');
@@ -1730,10 +1605,10 @@
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
                     popover.classList.remove('show');
-                }, 200); // 200ms smooth delay
+                }, 200);
             }
 
-            // PC hover triggers
+            // PC 鼠标悬停事件
             container.addEventListener('mouseenter', () => {
                 if (window.innerWidth > 768) {
                     showPopover();
@@ -1746,7 +1621,7 @@
                 }
             });
 
-            // Click toggle for PC & Mobile
+            // 移动端/通用点击事件
             profileBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isOpen = popover.classList.contains('show');
@@ -1765,19 +1640,16 @@
                 popover.classList.remove('show');
             });
 
-            // Edit trigger
+            // 点击“编辑”按钮，初始化自定义模态框数据
             editTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // Close popover
                 popover.classList.remove('show');
                 
-                // Populate edit inputs
                 const data = currentProfileData;
                 document.getElementById('editProfileName').value = data.name || '';
                 document.getElementById('editProfileBio').value = data.bio || '';
                 document.getElementById('editProfileAvatar').value = data.avatar || '';
                 
-                // Render link inputs
                 editLinksContainer.innerHTML = '';
                 for (let i = 0; i < 5; i++) {
                     const link = (data.links && data.links[i]) || { name: '', url: '' };
@@ -1791,7 +1663,6 @@
                     editLinksContainer.appendChild(div);
                 }
 
-                // Open modal
                 editModal.classList.add('open');
                 requestAnimationFrame(() => {
                     editModal.classList.add('show');
@@ -1842,12 +1713,12 @@
                 }
             });
 
-            // Initial render
+            // 首次渲染简介
             renderProfile();
             window.renderProfile = renderProfile;
         })();
-        
-        // Fetch website config on page load to initialize Turnstile sitekey and profile card
+
+        // 载入全局网页配置，初始化站点人机验证和简介头像信息
         apiFetch('/setting/websiteConfig')
             .then(config => {
                 window.turnstileSiteKey = config.siteKey;
