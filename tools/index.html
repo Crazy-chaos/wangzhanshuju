@@ -998,6 +998,53 @@
             display: flex;
         }
 
+        /* Toast 气泡提示 */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: min(380px, 90vw);
+        }
+
+        .toast-item {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(255, 121, 198, 0.2);
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        html.dark .toast-item {
+            background: rgba(40, 20, 50, 0.6);
+            border: 1px solid rgba(255, 121, 198, 0.35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-item.error {
+            border-color: rgba(255, 77, 141, 0.6);
+            background: rgba(255, 77, 141, 0.25);
+        }
+
         .auth-avatar {
             width: 32px;
             height: 32px;
@@ -2082,6 +2129,9 @@
         </div>
     </div>
 
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script>
         const API_BASE = 'https://mail.crazychaos.top/api';
         const MAIL_URL = 'https://mail.crazychaos.top';
@@ -2255,6 +2305,24 @@
             target.style.color = isError ? '#ffedf6' : '#fff';
         }
 
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${isError ? 'error' : ''}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
         function normalizeLoginEmail(email, domain = DEFAULT_LOGIN_DOMAIN) {
             const value = String(email || '').trim();
             if (!value) return '';
@@ -2309,6 +2377,27 @@
             initTurnstileWidget();
         });
 
+        userPill.addEventListener('click', () => {
+            if (!currentUser) return;
+            nicknameInput.value = currentUser.nickname || '';
+            setMessage(profileMsg, '');
+            openModal(profileModal);
+        });
+
+        document.getElementById('closeLoginBtn').addEventListener('click', () => closeModal(loginModal));
+        document.getElementById('closeProfileBtn').addEventListener('click', () => closeModal(profileModal));
+        document.getElementById('goMailBtn').addEventListener('click', () => {
+            window.location.href = MAIL_URL;
+        });
+
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) closeModal(loginModal);
+        });
+
+        profileModal.addEventListener('click', (event) => {
+            if (event.target === profileModal) closeModal(profileModal);
+        });
+
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             setMessage(loginMsg, '登录中...');
@@ -2335,21 +2424,16 @@
 
                 await loadLoginUser();
                 loginForm.reset();
-                if (turnstileWidgetId !== null) {
-                    window.turnstile?.reset(turnstileWidgetId);
-                }
+                window.turnstile?.reset();
                 setLoginStatus('success');
                 setMessage(loginMsg, '登录成功');
-                setTimeout(() => {
-                    closeModal(loginModal);
-                    location.reload();
-                }, 720);
+                showToast('登录成功！');
+                setTimeout(() => closeModal(loginModal), 720);
             } catch (error) {
-                if (turnstileWidgetId !== null) {
-                    window.turnstile?.reset(turnstileWidgetId);
-                }
+                window.turnstile?.reset();
                 setLoginStatus('error');
                 setMessage(loginMsg, error.message || '登录失败', true);
+                showToast(error.message || '登录失败', true);
             }
         });
 
@@ -2386,10 +2470,10 @@
             localStorage.removeItem('token');
             renderUser(null);
             closeModal(profileModal);
-            location.reload();
         }
 
         document.getElementById('logoutBtn').addEventListener('click', () => logoutCurrentUser(profileMsg));
+        quickLogoutBtn.addEventListener('click', () => logoutCurrentUser(profileMsg));
 
         async function loadLoginUser() {
             try {
@@ -2399,9 +2483,6 @@
                 renderUser(null);
             }
         }
-
-
-        quickLogoutBtn.addEventListener('click', () => logoutCurrentUser());
 
         function renderUser(user) {
             currentUser = user;
@@ -3490,9 +3571,12 @@
         loadMeta();
         
         // Fetch website config on page load to initialize Turnstile sitekey and profile card
-        loadWebsiteConfig()
+        apiFetch('/setting/websiteConfig')
             .then(config => {
                 window.turnstileSiteKey = config.siteKey;
+                if (window.renderProfile) {
+                    window.renderProfile(config.profileData);
+                }
             })
             .catch(err => {
                 console.warn('Failed to load website config:', err);
