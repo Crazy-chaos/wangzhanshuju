@@ -2300,10 +2300,14 @@
             }
         }
 
+
+
         loginBtn.addEventListener('click', () => {
             setMessage(loginMsg, '');
             setLoginStatus('');
             openModal(loginModal);
+            initTurnstileWidget();
+        });
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -2334,7 +2338,6 @@
                 if (turnstileWidgetId !== null) {
                     window.turnstile?.reset(turnstileWidgetId);
                 }
-                setTurnstileToken('');
                 setLoginStatus('success');
                 setMessage(loginMsg, '登录成功');
                 setTimeout(() => {
@@ -2345,7 +2348,6 @@
                 if (turnstileWidgetId !== null) {
                     window.turnstile?.reset(turnstileWidgetId);
                 }
-                setTurnstileToken('');
                 setLoginStatus('error');
                 setMessage(loginMsg, error.message || '登录失败', true);
             }
