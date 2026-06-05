@@ -2047,6 +2047,46 @@
             z-index: 130002 !important;
         }
 
+        /* Fullscreen/Side-by-Side layout overrides for modal-card to prevent layout overlap */
+        .modal-card:has(.EasyMDEContainer.fullscreen) {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            background: rgba(26, 12, 36, 0.98) !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-header,
+        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-footer,
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:not(:last-child),
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:last-child > label {
+            display: none !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid {
+            display: block !important;
+            height: 100% !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) form {
+            height: 100% !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) .EasyMDEContainer.fullscreen {
+            height: 100% !important;
+            border: none !important;
+            border-radius: 0 !important;
+        }
+
+        .modal-card:has(.EasyMDEContainer.fullscreen) .CodeMirror-fullscreen {
+            top: 50px !important;
+            height: calc(100% - 50px) !important;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
