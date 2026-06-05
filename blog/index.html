@@ -2424,7 +2424,21 @@
 
         function markdownToHtml(markdown = '') {
             if (typeof marked !== 'undefined') {
+                const renderer = new marked.Renderer();
+                renderer.link = function(href, title, text) {
+                    let linkHref = href;
+                    let linkTitle = title;
+                    let linkText = text;
+                    if (href && typeof href === 'object') {
+                        linkHref = href.href;
+                        linkTitle = href.title;
+                        linkText = href.text;
+                    }
+                    const titleAttr = linkTitle ? ` title="${linkTitle}"` : '';
+                    return `<a href="${linkHref}"${titleAttr} target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+                };
                 marked.setOptions({
+                    renderer: renderer,
                     gfm: true,
                     breaks: true
                 });
