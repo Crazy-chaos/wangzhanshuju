@@ -1748,7 +1748,6 @@
             }
         }
     </style>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
     <header class="navbar">
@@ -2346,11 +2345,7 @@
                     }
                 }
                 if (!window.turnstile) {
-                    setTimeout(initTurnstileWidget, 200);
-                    return;
-                }
-                if (turnstileWidgetId !== null) {
-                    window.turnstile.reset(turnstileWidgetId);
+                    setTimeout(initTurnstileWidget, 100);
                     return;
                 }
                 if (siteKey && window.turnstile) {
@@ -2365,6 +2360,7 @@
                 }
             } catch (error) {
                 console.warn('Failed to load Turnstile config:', error);
+                setMessage(loginMsg, '人机验证配置加载失败: ' + (error.message || '未知错误'), true);
             }
         }
 
