@@ -2117,7 +2117,7 @@
                 <div>
                     <h3>标签管理</h3>
                     <form id="tagForm" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
-                        <input type="text" id="tagName" required placeholder="新标签名，例如：vpn">
+                        <input type="text" id="addTagName" required placeholder="新标签名，例如：vpn">
                         <button type="submit" class="glass-btn" style="height:40px; border-radius:10px; font-weight:bold;">新增标签</button>
                     </form>
                     <div id="adminTagList" style="max-height: 200px; overflow-y:auto; border: 1px solid var(--glass-border); padding: 10px; border-radius:10px;">
@@ -3174,10 +3174,10 @@
                 await apiFetch('/admin/tags', {
                     method: 'POST',
                     body: JSON.stringify({
-                        name: document.getElementById('tagName').value
+                        name: document.getElementById('addTagName').value
                     })
                 });
-                document.getElementById('tagName').value = '';
+                document.getElementById('addTagName').value = '';
                 loadMeta();
             } catch (err) {
                 alert('添加标签失败: ' + err.message);
