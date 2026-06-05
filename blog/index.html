@@ -1746,9 +1746,9 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: rgba(24, 12, 32, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(20, 20, 20, 0.88) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
             z-index: 12000;
         }
 
@@ -2019,6 +2019,32 @@
 
         html.dark .editor-preview pre {
             background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Fullscreen and Side-by-Side EasyMDE fixes */
+        .EasyMDEContainer.fullscreen {
+            background: rgba(26, 12, 36, 0.98) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            z-index: 130000 !important;
+        }
+        .editor-toolbar.fullscreen {
+            background: rgba(26, 12, 36, 0.98) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            z-index: 130001 !important;
+            opacity: 1 !important;
+            border-bottom: 1px solid var(--glass-border) !important;
+        }
+        .CodeMirror-fullscreen {
+            background: transparent !important;
+            z-index: 130000 !important;
+        }
+        .editor-preview-side {
+            background: rgba(26, 12, 36, 0.98) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            z-index: 130002 !important;
         }
 
         @media (max-width: 768px) {
