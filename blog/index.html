@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#ffb6cf">
     <meta name="description" content="CrazyChaos 的博客，文章元数据保存在 D1，正文保存在 R2，对外展示在 www.crazychaos.top。">
-    <meta property="og:title" content="塔菲喵博客">
+    <meta property="og:title" content="博客">
     <meta property="og:description" content="笔记、教程、更新记录和一点点粉色废话。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.crazychaos.top/blog/">
@@ -13,8 +13,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="塔菲喵博客">
-    <title>塔菲喵博客</title>
+    <meta name="apple-mobile-web-app-title" content="博客">
+    <title>博客</title>
     
     <!-- 网页标签页的头像 (Favicon) 相对路径指向 SubscribeTaFFyNya -->
     <link rel="icon" href="../123/emoji_23.avif" type="image/avif">
@@ -29,6 +29,9 @@
     <!-- 引入 highlight.js -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <!-- EasyMDE Markdown Editor -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <!-- 防闪烁脚本，读取本地 theme 设定 -->
     <script>
         (function() {
@@ -873,10 +876,10 @@
 
         .hero {
             position: relative;
-            min-height: 290px;
+            min-height: 200px;
             display: grid;
             align-items: end;
-            padding: 42px;
+            padding: 38px;
             border-radius: 28px;
             border: 1px solid var(--glass-border);
             background: var(--hero-bg);
@@ -885,18 +888,6 @@
             -webkit-backdrop-filter: blur(18px);
             overflow: hidden;
             transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-        }
-
-        .hero::after {
-            content: "";
-            position: absolute;
-            right: -60px;
-            top: -40px;
-            width: 260px;
-            height: 260px;
-            background: url("../123/emoji_1.webp") center / contain no-repeat;
-            opacity: 0.28;
-            transform: rotate(13deg);
         }
 
         .hero h1 {
@@ -1314,17 +1305,7 @@
             display: none;
         }
 
-        .floating-sticker {
-            position: fixed;
-            right: 7vw;
-            bottom: 8vh;
-            width: 92px;
-            border-radius: 18px;
-            transform: rotate(-10deg);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
-            pointer-events: none;
-            opacity: 0.82;
-        }
+
 
         /* 适配手机端与小屏幕 */
         @media (max-width: 768px) {
@@ -1387,14 +1368,8 @@
             }
 
             .hero {
-                min-height: 230px;
-                padding: 28px 22px;
+                padding: 24px;
                 border-radius: 22px;
-            }
-
-            .hero::after {
-                width: 180px;
-                height: 180px;
             }
 
             .content-grid {
@@ -1455,11 +1430,7 @@
                 padding: 12px;
             }
 
-            .floating-sticker {
-                width: 70px;
-                right: 18px;
-                bottom: calc(18px + env(safe-area-inset-bottom));
-            }
+
         }
 
         /* RSS Subscription Button */
@@ -1729,6 +1700,335 @@
             from { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
             to   { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
         }
+
+        /* ==========================================================================
+           Blog Management & EasyMDE Custom Styles
+           ========================================================================== */
+        
+        /* Admin controls and general glass button */
+        .admin-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .glass-btn {
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--text);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.25s ease, background var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .glass-btn:hover {
+            background: var(--glass-strong);
+            transform: translateY(-2px);
+            color: var(--pink);
+        }
+
+        /* Modals and forms */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(24, 12, 32, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 12000;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(720px, 95vw);
+            max-height: 85vh;
+            overflow-y: auto;
+            background: rgba(45, 28, 48, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
+            padding: 28px;
+            color: #fff;
+        }
+
+        html.dark .modal-card {
+            background: rgba(26, 12, 36, 0.94);
+            border-color: rgba(255, 121, 198, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--pink);
+            text-shadow: 0 0 10px rgba(255, 121, 198, 0.45);
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--pink);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            text-align: left;
+        }
+
+        .form-span-2 {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: var(--input-bg);
+            color: var(--text);
+            outline: none;
+            font-size: 0.95rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--pink);
+            background: var(--glass-strong);
+        }
+
+        select option {
+            background-color: #2d1c30;
+            color: #fff;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            padding: 10px 12px;
+            resize: vertical;
+        }
+
+        .upload-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .upload-row input {
+            flex: 1;
+        }
+
+        .upload-indicator {
+            font-size: 0.8rem;
+            color: var(--pink);
+            font-weight: bold;
+        }
+
+        .upload-progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+            border-radius: 99px;
+            transition: width 0.1s ease;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-footer button {
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-submit {
+            background: var(--pink);
+            border: 1px solid var(--pink);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 121, 198, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 121, 198, 0.45);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--pink);
+        }
+
+        /* Blog list inside manager table */
+        .blog-manager-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        .blog-manager-table th, 
+        .blog-manager-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .blog-manager-table th {
+            font-weight: 800;
+            color: var(--pink);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .blog-manager-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .blog-post-cover-thumb {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* EasyMDE Theme Adaptations */
+        .EasyMDEContainer {
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--input-bg) !important;
+        }
+
+        .editor-toolbar {
+            border: none !important;
+            border-bottom: 1px solid var(--glass-border) !important;
+            background: var(--glass) !important;
+            opacity: 1 !important;
+        }
+
+        .editor-toolbar button {
+            color: var(--text) !important;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .editor-toolbar button:hover,
+        .editor-toolbar button.active {
+            background: var(--glass-strong) !important;
+            color: var(--pink) !important;
+        }
+
+        .editor-toolbar i.separator {
+            border-right-color: var(--glass-border) !important;
+        }
+
+        .CodeMirror {
+            border: none !important;
+            background: transparent !important;
+            color: var(--text) !important;
+            font-family: inherit !important;
+            font-size: 0.95rem !important;
+            min-height: 250px;
+        }
+
+        .CodeMirror-cursor {
+            border-left-color: var(--text) !important;
+        }
+
+        .editor-preview-side,
+        .editor-preview {
+            background: var(--modal-card-bg) !important;
+            color: var(--text) !important;
+            border: none !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .editor-preview pre {
+            background: rgba(0, 0, 0, 0.2) !important;
+            color: inherit !important;
+        }
+
+        html.dark .editor-preview pre {
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-span-2 {
+                grid-column: span 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1871,10 +2171,16 @@
     <main class="page">
         <section class="hero">
             <div>
-                <h1>塔菲喵博客</h1>
+                <h1>博客</h1>
                 <p>这里会显示发布后的笔记、教程、更新记录和一点点粉色废话。</p>
             </div>
         </section>
+
+        <!-- 管理员控制 -->
+        <div class="admin-controls admin-only" id="blogAdminControls">
+            <button class="glass-btn" style="padding: 10px 20px; border-radius: 12px;" id="publishBlogBtn">发布博客</button>
+            <button class="glass-btn" style="padding: 10px 20px; border-radius: 12px;" id="manageBlogBtn">管理博客</button>
+        </div>
 
         <section class="panel search-panel">
             <input class="search-input" id="searchInput" type="search" placeholder="搜索标题、摘要、分类或标签">
@@ -1933,11 +2239,129 @@
         </section>
     </main>
 
-    <!-- 底部贴纸 -->
-    <img class="floating-sticker" src="../123/emoji_20.avif" alt="">
+
 
     <!-- Toast 容器 -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 博客管理模态框 -->
+    <div class="modal" id="blogManagerModal">
+        <div class="modal-card" style="width: min(1000px, 95vw);">
+            <div class="modal-header">
+                <h2>博客管理面板</h2>
+                <button class="close-modal-btn" id="closeBlogManagerBtn">&times;</button>
+            </div>
+            
+            <div class="controls-row" style="margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;">
+                <div class="search-wrapper" style="display: flex; gap: 10px; flex: 1; min-width: 280px;">
+                    <input type="text" class="search-input" id="blogSearchInput" placeholder="输入文章标题、Slug 或摘要搜索...">
+                    <select class="sort-select" id="blogStatusFilter" style="border-radius: 999px; height: 44px; padding: 0 14px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.18); color: #fff; outline: none; cursor: pointer; font-weight: 700;">
+                        <option value="" style="background-color: #2d1c30; color: #fff;">所有状态</option>
+                        <option value="published" style="background-color: #2d1c30; color: #fff;">已发布</option>
+                        <option value="draft" style="background-color: #2d1c30; color: #fff;">草稿</option>
+                    </select>
+                    <button class="glass-btn" style="padding: 0 20px; border-radius: 999px; font-weight: bold; height: 44px;" id="blogSearchBtn">筛选</button>
+                </div>
+                <button class="glass-btn" style="padding: 10px 20px; border-radius: 12px; background: var(--pink); border-color: var(--pink); height: 44px; color: #fff;" id="createPostBtn">新建文章</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="blog-manager-table">
+                    <thead>
+                        <tr>
+                            <th>封面</th>
+                            <th>标题</th>
+                            <th>分类</th>
+                            <th>可见性</th>
+                            <th>状态</th>
+                            <th>作者</th>
+                            <th>发布日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blogManagerTableBody">
+                        <!-- 动态载入列表 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            <div style="display: flex; justify-content: center; gap: 14px; margin-top: 20px;" id="blogPaginationRow">
+                <button class="glass-btn" style="padding: 8px 20px; border-radius: 10px; font-weight: bold;" id="prevBlogPageBtn">上一页</button>
+                <span style="align-self: center; font-weight: bold;" id="blogPageIndicator">第 1 页</span>
+                <button class="glass-btn" style="padding: 8px 20px; border-radius: 10px; font-weight: bold;" id="nextBlogPageBtn">下一页</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 博客编辑模态框 -->
+    <div class="modal" id="blogEditorModal" style="z-index: 12100;">
+        <div class="modal-card" style="width: min(920px, 95vw);">
+            <div class="modal-header">
+                <h2 id="blogEditorTitle">撰写新文章</h2>
+                <button class="close-modal-btn" id="closeBlogEditorBtn">&times;</button>
+            </div>
+            <form id="blogForm">
+                <input type="hidden" id="blogFormId">
+                <div class="form-grid">
+                    <div class="form-group form-span-2">
+                        <label for="blogFormTitle">文章标题 *</label>
+                        <input type="text" id="blogFormTitle" required placeholder="输入引人注目的标题...">
+                    </div>
+                    <div class="form-group">
+                        <label for="blogFormSlug">URL Slug (唯一标识) *</label>
+                        <input type="text" id="blogFormSlug" required placeholder="例如：my-first-blog-post">
+                    </div>
+                    <div class="form-group">
+                        <label for="blogFormCategory">文章分类 *</label>
+                        <input type="text" id="blogFormCategory" required placeholder="例如：教程、技术、分享等">
+                    </div>
+                    <div class="form-group form-span-2">
+                        <label for="blogFormDescription">文章摘要 / 描述 *</label>
+                        <textarea id="blogFormDescription" required placeholder="一两句话简要描述一下文章内容..." style="height: 60px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogFormVisibility">可见性 *</label>
+                        <select id="blogFormVisibility" required>
+                            <option value="public">🔓 游客公开可见</option>
+                            <option value="logged_in">🔒 仅登录用户可见</option>
+                            <option value="private">👁️ 仅自己可见</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogFormStatus">发布状态 *</label>
+                        <select id="blogFormStatus" required>
+                            <option value="published">已发布</option>
+                            <option value="draft" selected>草稿</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-span-2">
+                        <label for="blogFormTags">标签 (以英文逗号分隔)</label>
+                        <input type="text" id="blogFormTags" placeholder="例如：教程, 技术, cloudflare">
+                    </div>
+                    <div class="form-group form-span-2">
+                        <label>上传文章封面</label>
+                        <div class="upload-row">
+                            <input type="text" id="blogFormCoverUrl" placeholder="输入封面图片 URL 或点击上传">
+                            <button type="button" class="glass-btn" style="height:40px; padding: 0 14px; border-radius:10px;" id="uploadBlogCoverBtn">上传图片</button>
+                            <span class="upload-indicator" id="blogCoverUploadIndicator"></span>
+                        </div>
+                        <div class="upload-progress-container" id="blogCoverProgressContainer">
+                            <div class="upload-progress-bar" id="blogCoverProgressBar"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-span-2">
+                        <label>文章正文 (Markdown 支持) *</label>
+                        <textarea id="blogEditorTextarea" placeholder="在这里写下你的奇思妙想..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelBlogEditorBtn">取消</button>
+                    <button type="submit" class="btn-submit">保存文章</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // ==========================================
@@ -2158,6 +2582,16 @@
             return value.includes('@') ? value : `${value}${domain || DEFAULT_LOGIN_DOMAIN}`;
         }
 
+        function hasBlogPermission(user) {
+            if (!user) return false;
+            if (user.type === 0) return true;
+            if (!Array.isArray(user.permKeys)) return false;
+            return user.permKeys.includes('*') || 
+                   user.permKeys.includes('blog:manage') || 
+                   user.permKeys.includes('blog:manage_group') || 
+                   user.permKeys.includes('blog:manage_own');
+        }
+
         function renderUser(user) {
             currentUser = user;
 
@@ -2165,6 +2599,12 @@
             const editTrigger = document.getElementById('profileEditTrigger');
             if (editTrigger) {
                 editTrigger.style.display = isAdmin ? 'flex' : 'none';
+            }
+
+            const showBlogControls = hasBlogPermission(user);
+            const adminControlsEl = document.getElementById('blogAdminControls');
+            if (adminControlsEl) {
+                adminControlsEl.style.display = showBlogControls ? 'flex' : 'none';
             }
 
             if (!user) {
@@ -3053,6 +3493,418 @@
                     window.renderProfile(null);
                 }
             });
+
+        // ==========================================
+        // 博客管理面板与 EasyMDE 编辑器集成 (Blog Management & EasyMDE Integration)
+        // ==========================================
+        let currentBlogPage = 1;
+        let currentBlogStatus = '';
+        let currentBlogQuery = '';
+        let totalBlogPages = 1;
+        const BLOG_PAGE_SIZE = 15;
+        let easyMDEInstance = null;
+
+        function openBlogManager() {
+            openModal(document.getElementById('blogManagerModal'));
+            currentBlogPage = 1;
+            currentBlogStatus = '';
+            currentBlogQuery = '';
+            document.getElementById('blogSearchInput').value = '';
+            document.getElementById('blogStatusFilter').value = '';
+            loadBlogList();
+        }
+
+        async function loadBlogList() {
+            const tableBody = document.getElementById('blogManagerTableBody');
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">正在努力加载博客列表...</td></tr>';
+            
+            try {
+                const query = new URLSearchParams({
+                    page: currentBlogPage,
+                    pageSize: BLOG_PAGE_SIZE
+                });
+                if (currentBlogStatus) query.set('status', currentBlogStatus);
+                if (currentBlogQuery) query.set('q', currentBlogQuery);
+                
+                const data = await apiFetch(`/blog/admin/list?${query.toString()}`);
+                
+                tableBody.innerHTML = '';
+                if (!data.list || data.list.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">暂无博客文章 ＞﹏＜</td></tr>';
+                    document.getElementById('blogPaginationRow').style.display = 'none';
+                    return;
+                }
+                
+                data.list.forEach(post => {
+                    const tr = document.createElement('tr');
+                    
+                    // Cover column
+                    const coverUrl = post.coverUrl || '../123/emoji_1.webp';
+                    const coverTd = `<td><img src="${coverUrl}" class="blog-post-cover-thumb" alt=""></td>`;
+                    
+                    // Title & Slug
+                    const titleTd = `<td>
+                        <div style="font-weight:bold; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(post.title)}</div>
+                        <div style="font-size:0.75rem; opacity:0.6; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(post.slug)}</div>
+                    </td>`;
+                    
+                    // Category
+                    const categoryTd = `<td><span class="badge" style="background:rgba(255,255,255,0.15);">${escapeHtml(post.category || '未分类')}</span></td>`;
+                    
+                    // Visibility
+                    let visBadge = '';
+                    if (post.visibility === 'public') {
+                        visBadge = '<span class="badge visibility-public">🌎 公开</span>';
+                    } else if (post.visibility === 'logged_in') {
+                        visBadge = '<span class="badge visibility-login">🔒 仅登录</span>';
+                    } else {
+                        visBadge = '<span class="badge visibility-role" style="background:#dc3545;">👁️ 仅自己</span>';
+                    }
+                    const visibilityTd = `<td>${visBadge}</td>`;
+                    
+                    // Status
+                    let statusBadge = '';
+                    if (post.status === 'published') {
+                        statusBadge = '<span class="badge" style="background:#28a745; color:#fff;">已发布</span>';
+                    } else {
+                        statusBadge = '<span class="badge" style="background:#6c757d; color:#fff;">草稿</span>';
+                    }
+                    const statusTd = `<td>${statusBadge}</td>`;
+                    
+                    // Author
+                    const authorName = post.authorNickname || post.authorEmail?.split('@')[0] || post.createdBy || '未知';
+                    const authorTd = `<td>
+                        <div style="font-weight:500;">${escapeHtml(authorName)}</div>
+                        <div style="font-size:0.7rem; opacity:0.5;">${escapeHtml(post.authorEmail || '')}</div>
+                    </td>`;
+                    
+                    // Date
+                    const pubDate = post.publishedAt || post.createdAt;
+                    const dateStr = pubDate ? new Date(pubDate).toLocaleDateString() : '-';
+                    const dateTd = `<td>${dateStr}</td>`;
+                    
+                    // Actions
+                    const actionsTd = `<td>
+                        <div style="display:flex; gap:8px;">
+                            <button class="glass-btn" style="padding:4px 10px; border-radius:6px; font-size:0.8rem;" onclick="editBlogPost('${escapeHtml(post.slug)}')">编辑</button>
+                            <button class="glass-btn" style="padding:4px 10px; border-radius:6px; font-size:0.8rem; background:#dc3545;" onclick="deleteBlogPost('${escapeHtml(post.slug)}', '${escapeHtml(post.title.replace(/'/g, "\\'"))}')">删除</button>
+                        </div>
+                    </td>`;
+                    
+                    tr.innerHTML = coverTd + titleTd + categoryTd + visibilityTd + statusTd + authorTd + dateTd + actionsTd;
+                    tableBody.appendChild(tr);
+                });
+                
+                totalBlogPages = Math.ceil(data.total / BLOG_PAGE_SIZE) || 1;
+                document.getElementById('blogPageIndicator').textContent = `第 ${currentBlogPage} / ${totalBlogPages} 页`;
+                document.getElementById('prevBlogPageBtn').disabled = currentBlogPage === 1;
+                document.getElementById('nextBlogPageBtn').disabled = currentBlogPage === totalBlogPages;
+                document.getElementById('blogPaginationRow').style.display = totalBlogPages > 1 ? 'flex' : 'none';
+                
+            } catch (err) {
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:#ff4d8d;">加载失败: ${err.message}</td></tr>`;
+                document.getElementById('blogPaginationRow').style.display = 'none';
+            }
+        }
+
+        window.editBlogPost = async (slug) => {
+            try {
+                const post = await apiFetch(`/blog/post/${encodeURIComponent(slug)}`);
+                
+                document.getElementById('blogFormId').value = post.postId || post.id || '';
+                document.getElementById('blogFormTitle').value = post.title || '';
+                document.getElementById('blogFormSlug').value = post.slug || '';
+                document.getElementById('blogFormCategory').value = post.category || '';
+                document.getElementById('blogFormDescription').value = post.summary || '';
+                document.getElementById('blogFormVisibility').value = post.visibility || 'public';
+                document.getElementById('blogFormStatus').value = post.status || 'draft';
+                document.getElementById('blogFormTags').value = (post.tags || []).join(', ');
+                document.getElementById('blogFormCoverUrl').value = post.coverKey || '';
+                document.getElementById('blogCoverUploadIndicator').textContent = '';
+                
+                document.getElementById('blogEditorTitle').textContent = '编辑文章';
+                
+                initEasyMDE(post.content || '');
+                openModal(document.getElementById('blogEditorModal'));
+            } catch (err) {
+                alert('获取文章详情失败: ' + err.message);
+            }
+        };
+
+        window.deleteBlogPost = async (slug, title) => {
+            if (!confirm(`确定要永久删除文章【${title}】吗？此操作无法恢复，且会同步删除其在 R2 的正文与封面文件。`)) return;
+            
+            try {
+                await apiFetch(`/blog/post/${encodeURIComponent(slug)}`, { method: 'DELETE' });
+                showToast('删除文章成功！');
+                loadBlogList();
+            } catch (err) {
+                alert('删除文章失败: ' + err.message);
+            }
+        };
+
+        function initEasyMDE(initialValue = '') {
+            if (easyMDEInstance) {
+                easyMDEInstance.value(initialValue);
+                return;
+            }
+            
+            easyMDEInstance = new EasyMDE({
+                element: document.getElementById('blogEditorTextarea'),
+                initialValue: initialValue,
+                autoDownloadFontAwesome: true,
+                spellChecker: false,
+                autosave: {
+                    enabled: true,
+                    uniqueId: "TaffyBlogEditorAutoSave",
+                    delay: 10000,
+                },
+                renderingConfig: {
+                    codeSyntaxHighlighting: true
+                },
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "|",
+                    "link", "image", "table", "|",
+                    "preview", "side-by-side", "fullscreen", "|",
+                    "guide"
+                ]
+            });
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+        async function uploadBlogCover(file, indicatorElement, progressBarElement, progressContainerElement) {
+            indicatorElement.textContent = '准备上传...';
+            if (progressContainerElement) {
+                progressContainerElement.style.display = 'block';
+            }
+            if (progressBarElement) {
+                progressBarElement.style.width = '0%';
+            }
+            try {
+                const content = await fileToBase64(file);
+                const payload = JSON.stringify({
+                    content: content,
+                    filename: file.name,
+                    contentType: file.type
+                });
+
+                return new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', `${API_BASE}/blog/upload`, true);
+                    
+                    const headers = authHeaders({
+                        'Content-Type': 'application/json'
+                    });
+                    for (const [key, val] of Object.entries(headers)) {
+                        xhr.setRequestHeader(key, val);
+                    }
+
+                    xhr.withCredentials = true;
+
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            if (progressBarElement) {
+                                progressBarElement.style.width = `${percent}%`;
+                            }
+                            indicatorElement.textContent = `正在上传 ${percent}%...`;
+                        }
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.code === 200 && response.data) {
+                                    indicatorElement.textContent = '上传成功 ✓';
+                                    if (progressBarElement) {
+                                        progressBarElement.style.width = '100%';
+                                    }
+                                    setTimeout(() => {
+                                        if (progressContainerElement) {
+                                            progressContainerElement.style.display = 'none';
+                                        }
+                                    }, 2000);
+                                    resolve(response.data.key);
+                                } else {
+                                    throw new Error(response.message || '请求失败');
+                                }
+                            } catch (err) {
+                                indicatorElement.textContent = '上传失败 ✕';
+                                if (progressContainerElement) progressContainerElement.style.display = 'none';
+                                alert('图片上传失败: ' + err.message);
+                                reject(err);
+                            }
+                        } else {
+                            indicatorElement.textContent = '上传失败 ✕';
+                            if (progressContainerElement) progressContainerElement.style.display = 'none';
+                            alert('图片上传失败: 状态码 ' + xhr.status);
+                            reject(new Error('上传失败'));
+                        }
+                    };
+
+                    xhr.onerror = (err) => {
+                        indicatorElement.textContent = '上传失败 ✕';
+                        if (progressContainerElement) progressContainerElement.style.display = 'none';
+                        alert('网络上传错误');
+                        reject(err);
+                    };
+
+                    xhr.send(payload);
+                });
+            } catch (err) {
+                indicatorElement.textContent = '上传失败 ✕';
+                if (progressContainerElement) progressContainerElement.style.display = 'none';
+                alert('读取图片失败: ' + err.message);
+                throw err;
+            }
+        }
+
+        // 博客事件监听器绑定 (Event Listeners Binding)
+        document.getElementById('manageBlogBtn').addEventListener('click', openBlogManager);
+        
+        document.getElementById('publishBlogBtn').addEventListener('click', () => {
+            document.getElementById('blogForm').reset();
+            document.getElementById('blogFormId').value = '';
+            document.getElementById('blogFormStatus').value = 'draft';
+            document.getElementById('blogFormVisibility').value = 'public';
+            document.getElementById('blogCoverUploadIndicator').textContent = '';
+            document.getElementById('blogEditorTitle').textContent = '撰写新文章';
+            
+            initEasyMDE('');
+            openModal(document.getElementById('blogEditorModal'));
+        });
+
+        document.getElementById('closeBlogManagerBtn').addEventListener('click', () => {
+            closeModal(document.getElementById('blogManagerModal'));
+        });
+        document.getElementById('closeBlogEditorBtn').addEventListener('click', () => {
+            closeModal(document.getElementById('blogEditorModal'));
+        });
+        document.getElementById('cancelBlogEditorBtn').addEventListener('click', () => {
+            closeModal(document.getElementById('blogEditorModal'));
+        });
+
+        document.getElementById('createPostBtn').addEventListener('click', () => {
+            document.getElementById('blogForm').reset();
+            document.getElementById('blogFormId').value = '';
+            document.getElementById('blogFormStatus').value = 'draft';
+            document.getElementById('blogFormVisibility').value = 'public';
+            document.getElementById('blogCoverUploadIndicator').textContent = '';
+            document.getElementById('blogEditorTitle').textContent = '撰写新文章';
+            
+            initEasyMDE('');
+            openModal(document.getElementById('blogEditorModal'));
+        });
+
+        document.getElementById('uploadBlogCoverBtn').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async () => {
+                if (input.files && input.files[0]) {
+                    const key = await uploadBlogCover(
+                        input.files[0], 
+                        document.getElementById('blogCoverUploadIndicator'),
+                        document.getElementById('blogCoverProgressBar'),
+                        document.getElementById('blogCoverProgressContainer')
+                    );
+                    document.getElementById('blogFormCoverUrl').value = key;
+                }
+            };
+            input.click();
+        });
+
+        document.getElementById('blogSearchBtn').addEventListener('click', () => {
+            currentBlogQuery = document.getElementById('blogSearchInput').value.trim();
+            currentBlogStatus = document.getElementById('blogStatusFilter').value;
+            currentBlogPage = 1;
+            loadBlogList();
+        });
+        document.getElementById('blogSearchInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                currentBlogQuery = document.getElementById('blogSearchInput').value.trim();
+                currentBlogStatus = document.getElementById('blogStatusFilter').value;
+                currentBlogPage = 1;
+                loadBlogList();
+            }
+        });
+
+        document.getElementById('prevBlogPageBtn').addEventListener('click', () => {
+            if (currentBlogPage > 1) {
+                currentBlogPage -= 1;
+                loadBlogList();
+            }
+        });
+        document.getElementById('nextBlogPageBtn').addEventListener('click', () => {
+            if (currentBlogPage < totalBlogPages) {
+                currentBlogPage += 1;
+                loadBlogList();
+            }
+        });
+
+        document.getElementById('blogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('blogFormId').value;
+            
+            const content = easyMDEInstance ? easyMDEInstance.value() : '';
+            if (!content.trim()) {
+                alert('文章正文不能为空！');
+                return;
+            }
+            
+            const payload = {
+                title: document.getElementById('blogFormTitle').value.trim(),
+                slug: document.getElementById('blogFormSlug').value.trim(),
+                summary: document.getElementById('blogFormDescription').value.trim(),
+                category: document.getElementById('blogFormCategory').value.trim(),
+                tags: document.getElementById('blogFormTags').value.split(',').map(t => t.trim()).filter(Boolean),
+                visibility: document.getElementById('blogFormVisibility').value,
+                status: document.getElementById('blogFormStatus').value,
+                coverKey: document.getElementById('blogFormCoverUrl').value.trim(),
+                content: content
+            };
+            if (id) {
+                payload.id = id;
+            }
+            
+            try {
+                await apiFetch('/blog/post', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                if (easyMDEInstance) {
+                    easyMDEInstance.clearAutosavedValue();
+                }
+                
+                closeModal(document.getElementById('blogEditorModal'));
+                showToast('文章保存成功！');
+                
+                // If we are currently viewing the management table, reload it
+                const managerModal = document.getElementById('blogManagerModal');
+                if (managerModal.classList.contains('open')) {
+                    loadBlogList();
+                }
+                
+                // Reload posts listing in the background
+                loadPosts(true);
+            } catch (err) {
+                alert('保存文章失败: ' + err.message);
+            }
+        });
 
         loadPosts(true);
     </script>
