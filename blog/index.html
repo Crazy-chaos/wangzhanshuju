@@ -1746,9 +1746,9 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: rgba(20, 20, 20, 0.88) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
+            background: rgba(24, 12, 32, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 12000;
         }
 
@@ -2023,32 +2023,40 @@
 
         /* Fullscreen and Side-by-Side EasyMDE fixes */
         .EasyMDEContainer.fullscreen {
-            background: rgba(26, 12, 36, 0.98) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
+            background: #ffffff !important;
             z-index: 130000 !important;
         }
+        html.dark .EasyMDEContainer.fullscreen {
+            background: #1e1224 !important;
+        }
+
         .editor-toolbar.fullscreen {
-            background: rgba(26, 12, 36, 0.98) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
+            background: #ffffff !important;
             z-index: 130001 !important;
             opacity: 1 !important;
             border-bottom: 1px solid var(--glass-border) !important;
         }
+        html.dark .editor-toolbar.fullscreen {
+            background: #1e1224 !important;
+        }
+
         .CodeMirror-fullscreen {
             background: transparent !important;
             z-index: 130000 !important;
         }
+
         .editor-preview-side {
-            background: rgba(26, 12, 36, 0.98) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
+            background: #ffffff !important;
             z-index: 130002 !important;
+        }
+        html.dark .editor-preview-side {
+            background: #1e1224 !important;
         }
 
         /* Fullscreen/Side-by-Side layout overrides for modal-card to prevent layout overlap */
         .modal-card:has(.EasyMDEContainer.fullscreen) {
+            position: fixed !important;
+            inset: 0 !important;
             width: 100vw !important;
             max-width: 100vw !important;
             height: 100vh !important;
@@ -2056,8 +2064,13 @@
             border-radius: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
+            border: none !important;
             overflow: hidden !important;
-            background: rgba(26, 12, 36, 0.98) !important;
+            background: #ffffff !important;
+            z-index: 150000 !important;
+        }
+        html.dark .modal-card:has(.EasyMDEContainer.fullscreen) {
+            background: #1e1224 !important;
         }
 
         .modal-card:has(.EasyMDEContainer.fullscreen) .modal-header,
