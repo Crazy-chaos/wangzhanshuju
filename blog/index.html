@@ -2022,18 +2022,14 @@
         }
 
         /* Fullscreen and Side-by-Side EasyMDE fixes */
-        .EasyMDEContainer.fullscreen {
+        .modal-card:has(.CodeMirror-fullscreen) .EasyMDEContainer {
             position: fixed !important;
             inset: 0 !important;
-            background: rgba(45, 28, 48, 0.8) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
             z-index: 130000 !important;
             border-radius: 28px !important;
             border: none !important;
-        }
-        html.dark .EasyMDEContainer.fullscreen {
-            background: rgba(26, 12, 36, 0.8) !important;
+            background: transparent !important;
+            overflow: hidden !important;
         }
 
         .editor-toolbar.fullscreen {
@@ -2043,18 +2039,21 @@
             z-index: 130001 !important;
             opacity: 1 !important;
             border-bottom: 1px solid var(--glass-border) !important;
-            border-top-left-radius: 28px !important;
-            border-top-right-radius: 28px !important;
         }
         html.dark .editor-toolbar.fullscreen {
             background: rgba(26, 12, 36, 0.8) !important;
         }
 
         .CodeMirror-fullscreen {
-            background: transparent !important;
+            background: rgba(45, 28, 48, 0.8) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
             z-index: 130000 !important;
             top: 50px !important;
             height: calc(100% - 50px) !important;
+        }
+        html.dark .CodeMirror-fullscreen {
+            background: rgba(26, 12, 36, 0.8) !important;
         }
 
         .editor-preview-side {
@@ -2062,31 +2061,30 @@
             backdrop-filter: blur(10px) !important;
             -webkit-backdrop-filter: blur(10px) !important;
             z-index: 130002 !important;
-            border-bottom-right-radius: 28px !important;
         }
         html.dark .editor-preview-side {
             background: rgba(26, 12, 36, 0.8) !important;
         }
 
         /* Prevent scroll and remove padding on the modal-card when editor is in fullscreen/split-preview */
-        .modal-card:has(.EasyMDEContainer.fullscreen) {
+        .modal-card:has(.CodeMirror-fullscreen) {
             overflow: hidden !important;
             padding: 0 !important;
         }
 
-        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-header,
-        .modal-card:has(.EasyMDEContainer.fullscreen) .modal-footer,
-        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:not(:last-child),
-        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid > .form-group:last-child > label {
+        .modal-card:has(.CodeMirror-fullscreen) .modal-header,
+        .modal-card:has(.CodeMirror-fullscreen) .modal-footer,
+        .modal-card:has(.CodeMirror-fullscreen) form > .form-grid > .form-group:not(:last-child),
+        .modal-card:has(.CodeMirror-fullscreen) form > .form-grid > .form-group:last-child > label {
             display: none !important;
         }
 
-        .modal-card:has(.EasyMDEContainer.fullscreen) form > .form-grid {
+        .modal-card:has(.CodeMirror-fullscreen) form > .form-grid {
             display: block !important;
             height: 100% !important;
         }
 
-        .modal-card:has(.EasyMDEContainer.fullscreen) form {
+        .modal-card:has(.CodeMirror-fullscreen) form {
             height: 100% !important;
         }
 
@@ -3759,6 +3757,7 @@
                 renderingConfig: {
                     codeSyntaxHighlighting: true
                 },
+                syncSideBySidePreviewScroll: false,
                 toolbar: [
                     { name: "bold", action: EasyMDE.toggleBold, className: "fa fa-bold", title: "加粗 (Ctrl-B)" },
                     { name: "italic", action: EasyMDE.toggleItalic, className: "fa fa-italic", title: "斜体 (Ctrl-I)" },
