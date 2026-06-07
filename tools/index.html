@@ -1410,6 +1410,7 @@
             line-height: 1.7;
             margin-bottom: 24px;
             color: #fff;
+            white-space: pre-wrap !important;
         }
 
         .iframe-container {
@@ -2558,7 +2559,7 @@
 
         function renderDetail(tool) {
             detailTitle.textContent = tool.title;
-            detailDescription.textContent = tool.description || '无详细介绍。';
+            detailDescription.textContent = (tool.description || '无详细介绍。').replace(/\\n/g, '\n');
             detailCover.src = tool.coverUrl || '../123/emoji_1.webp';
             detailCategory.textContent = `分类: ${tool.category ? tool.category.name : '未分类'}`;
             detailViews.textContent = tool.viewCount;
